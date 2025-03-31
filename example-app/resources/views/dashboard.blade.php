@@ -2,6 +2,12 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Dashboard') }}
+            <button onclick="window.history.back()" class="ml-10 font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    Volver
+                </button> 
+            <div class="mt-6">
+                
+            </div>
         </h2>
     </x-slot>
 
@@ -12,6 +18,7 @@
                     {{ __("You're logged in!") }}
                 </div>
             </div>
+
         </div>
     </div>
 </x-app-layout>
