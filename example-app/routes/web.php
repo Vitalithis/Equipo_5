@@ -3,7 +3,7 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Redirect;
 
 
 /*
@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 //});
 
 // returns the home page with all posts
-Route::get('/', PostController::class .'@index')->name('posts.index');
+Route::get('/', function () {
+  return Redirect::route('login');
+});
 // returns the form for adding a post
 
 
