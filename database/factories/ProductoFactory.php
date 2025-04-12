@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Categoria;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,6 +17,8 @@ class ProductoFactory extends Factory
         $ubicaciones = ['Interior', 'Exterior', 'Sol directo', 'Sombra'];
         $frecuencias = ['1 vez por semana', '2 veces por semana', 'Cada 15 días'];
 
+        $categoria = Categoria::inRandomOrder()->first(); // Selecciona una categoría aleatoria existente
+
         return [
             'nombre' => $this->faker->unique()->words(2, true),
             'nombre_cientifico' => $this->faker->optional()->words(3, true),
@@ -25,7 +28,6 @@ class ProductoFactory extends Factory
             'categoria' => $this->faker->randomElement($categorias),
             'imagen' => $this->faker->imageUrl(640, 480, 'plants', true),
             'codigo_barras' => $this->faker->unique()->ean13(),
-
             'cuidados' => $this->faker->sentence(15),
             'nivel_dificultad' => $this->faker->randomElement($dificultades),
             'frecuencia_riego' => $this->faker->randomElement($frecuencias),
@@ -36,5 +38,14 @@ class ProductoFactory extends Factory
             'tamano' => $this->faker->randomElement(['Pequeña', 'Mediana', 'Grande']),
             'activo' => $this->faker->boolean(90),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function ($producto) {
+            // Asociamos el producto con categorías aleatorias (mínimo 1)
+            $categoriaIds = Categoria::inRandomOrder()->take(2)->pluck('id')->toArray(); // Selecciona hasta 2 categorías aleatorias
+            $producto->categorias()->sync($categoriaIds); // Relaciona las categorías con el producto
+        });
     }
 }

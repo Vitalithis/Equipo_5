@@ -11,7 +11,6 @@ export default {
 
     theme: {
         colors: {
-            // Colores base
             efore: "#F8F6F4",
             eprimary: "#3E0345",
             esecondary: "#8090BF",
@@ -19,54 +18,69 @@ export default {
             eaccent2: "#AEC68D",
 
             // Variaciones de efore
-            "efore-100": "#F9F7F5", // Muy claro
-            "efore-200": "#F0E9E3", // Claro
-            "efore-300": "#E8D9C7", // Medio claro
-            "efore-400": "#D0B39C", // Medio
-            "efore-500": "#B88D71", // Original (base)
-            "efore-600": "#9F6B47", // Oscuro
-            "efore-700": "#7F492B", // Muy oscuro
+            "efore-100": "#F9F7F5",
+            "efore-200": "#F0E9E3",
+            "efore-300": "#E8D9C7",
+            "efore-400": "#D0B39C",
+            "efore-500": "#B88D71",
+            "efore-600": "#9F6B47",
+            "efore-700": "#7F492B",
+            "efore-800": "#633419",
+            "efore-900": "#4A260E",
 
             // Variaciones de eprimary
             "eprimary-100": "#6A145F",
             "eprimary-200": "#5B0D59",
             "eprimary-300": "#4D064F",
             "eprimary-400": "#40013F",
-            "eprimary-500": "#3E0345", // Original
+            "eprimary-500": "#3E0345",
             "eprimary-600": "#32022F",
             "eprimary-700": "#26021A",
+            "eprimary-800": "#1A0110",
+            "eprimary-900": "#0F0008",
 
             // Variaciones de esecondary
             "esecondary-100": "#AAB8D9",
             "esecondary-200": "#92A1C7",
             "esecondary-300": "#7A8AAD",
             "esecondary-400": "#617396",
-            "esecondary-500": "#8090BF", // Original
+            "esecondary-500": "#8090BF",
             "esecondary-600": "#63749B",
             "esecondary-700": "#4C5C7F",
+            "esecondary-800": "#384761",
+            "esecondary-900": "#262F41",
 
             // Variaciones de eaccent
             "eaccent-100": "#F8F9A6",
             "eaccent-200": "#F8F87E",
             "eaccent-300": "#F8F656",
             "eaccent-400": "#F8F52E",
-            "eaccent-500": "#F6E867", // Original
+            "eaccent-500": "#F6E867",
             "eaccent-600": "#E7D23D",
             "eaccent-700": "#CBBB28",
+            "eaccent-800": "#A6941A",
+            "eaccent-900": "#83710F",
 
             // Variaciones de eaccent2
             "eaccent2-100": "#B2D7A7",
             "eaccent2-200": "#A3C98F",
             "eaccent2-300": "#94BA77",
             "eaccent2-400": "#85AB5F",
-            "eaccent2-500": "#AEC68D", // Original
+            "eaccent2-500": "#AEC68D",
             "eaccent2-600": "#8E9E74",
             "eaccent2-700": "#70825C",
+            "eaccent2-800": "#586945",
+            "eaccent2-900": "#415130",
         },
+
         extend: {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
+
+            fill: theme => ({
+                ...theme("colors"),
+            }),
         },
     },
 

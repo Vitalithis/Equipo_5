@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,4 +27,10 @@ class Producto extends Model
         'tamano',
         'activo',
     ];
+
+    // Relación muchos a muchos con Categoria
+    public function categorias()
+    {
+        return $this->belongsToMany(Categoria::class, 'productos_categorias');
+    }
 }
