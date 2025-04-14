@@ -38,7 +38,16 @@
 
             <!-- Product Catalog -->
             <div class="col-span-3 bg-gray-50 p-4 rounded">
-                <h2 class="text-xl font-semibold mb-4">Catálogo de Productos</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Catálogo de Productos</h2>
+
+                    <!-- Botón de Pedidos -->
+                    <a href="{{ route('pedidos.index') }}"
+                       class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm shadow">
+                        Ir a Pedidos
+                    </a>
+                </div>
+
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-white p-4 shadow rounded">
                         <h3 class="font-bold">Producto 1</h3>
