@@ -26,7 +26,7 @@ class ProductoFactory extends Factory
             'precio' => $this->faker->randomFloat(2, 2, 30),
             'stock' => $this->faker->numberBetween(0, 50),
             'categoria' => $this->faker->randomElement($categorias),
-            'imagen' => $this->faker->imageUrl(640, 480, 'plants', true),
+            'imagen' => 'https://placehold.co/640x480?text=' . urlencode($this->faker->word()),
             'codigo_barras' => $this->faker->unique()->ean13(),
             'cuidados' => $this->faker->sentence(15),
             'nivel_dificultad' => $this->faker->randomElement($dificultades),
@@ -45,7 +45,7 @@ class ProductoFactory extends Factory
         return $this->afterCreating(function ($producto) {
             // Asociamos el producto con categorías aleatorias (mínimo 1)
             $categoriaIds = Categoria::inRandomOrder()->take(2)->pluck('id')->toArray(); // Selecciona hasta 2 categorías aleatorias
-            $producto->categorias()->sync($categoriaIds); // Relaciona las categorías con el producto
+            $producto->categoria()->sync($categoriaIds); // Relaciona las categorías con el producto
         });
     }
 }

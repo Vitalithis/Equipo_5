@@ -29,8 +29,8 @@ class Producto extends Model
     ];
 
     // Relación muchos a muchos con Categoria
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsToMany(Categoria::class, 'productos_categorias');
+        return $this->belongsToMany(Categoria::class, 'producto_categoria');
     }
 }

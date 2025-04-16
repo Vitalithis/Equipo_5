@@ -19,7 +19,9 @@ class ProductoCategoriaSeeder extends Seeder
             $categoriaIds = Categoria::inRandomOrder()->take(rand(1, 3))->pluck('id')->toArray();
 
             // Asociamos las categorías seleccionadas al producto
-            $producto->categorias()->sync($categoriaIds);
+            $producto->categoria()->sync($categoriaIds);
+
         }
+
     }
 }

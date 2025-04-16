@@ -9,8 +9,8 @@ class Categoria extends Model
 {
     protected $fillable = ['nombre'];
 
-    public function productos()
+    public function producto()
     {
-        return $this->belongsToMany(Producto::class, 'productos_categorias');
+        return $this->belongsToMany(Producto::class, 'producto_categoria');
     }
 }
