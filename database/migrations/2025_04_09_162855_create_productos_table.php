@@ -32,7 +32,7 @@ return new class extends Migration
             $table->text('beneficios')->nullable();
             $table->boolean('toxica')->default(false); // para mascotas
             $table->string('origen')->nullable();
-            $table->string('tamano')->nullable(); // altura o tamaño de la maceta
+            $table->integer('tamano')->nullable(); // altura o tamaño de la maceta
             $table->boolean('activo')->default(true); // para publicación o no
         });
     }

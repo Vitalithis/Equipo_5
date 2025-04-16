@@ -35,7 +35,7 @@ class ProductoFactory extends Factory
             'beneficios' => $this->faker->sentence(10),
             'toxica' => $this->faker->boolean(20), // 20% probabilidad de ser tóxica
             'origen' => $this->faker->country(),
-            'tamano' => $this->faker->randomElement(['Pequeña', 'Mediana', 'Grande']),
+            'tamano' => $this->faker->randomElement([0,1,2,3,4,5,6,7,8,9,10]), // Tamaño en m
             'activo' => $this->faker->boolean(90),
         ];
     }
