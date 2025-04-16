@@ -44,8 +44,8 @@ Route::get('/categorias/{id}', [ProductCategory::class, 'show']);
 */
 
 
-Route::get('/categorias', [CategoriaController::class, 'home']);
-Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
+Route::get('/categoria', [CategoriaController::class, 'home']);
+Route::get('/categoria/{id}', [CategoriaController::class, 'show']);
 
 
 require __DIR__ . '/auth.php';

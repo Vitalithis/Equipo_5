@@ -7,6 +7,7 @@ use App\Models\Producto;
 
 class Categoria extends Model
 {
+    protected $table = 'categorias';
     protected $fillable = ['nombre'];
 
     public function producto()

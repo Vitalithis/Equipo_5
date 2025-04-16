@@ -24,7 +24,7 @@ class ProductoFactory extends Factory
             'nombre_cientifico' => $this->faker->optional()->words(3, true),
             'descripcion' => $this->faker->sentence(12),
             'precio' => $this->faker->randomFloat(2, 2, 30),
-            'stock' => $this->faker->numberBetween(0, 50),
+            'cantidad' => $this->faker->numberBetween(0, 50),
             'categoria' => $this->faker->randomElement($categorias),
             'imagen' => 'https://placehold.co/640x480?text=' . urlencode($this->faker->word()),
             'codigo_barras' => $this->faker->unique()->ean13(),

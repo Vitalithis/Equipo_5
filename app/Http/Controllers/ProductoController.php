@@ -8,7 +8,7 @@ class ProductoController extends Controller
 {
     public function home()
     {
-        $productos = Producto::all();
-        return view('home', compact('producto'));
+        $producto = Producto::all();
+        return view('home', compact('productos'));
     }
 }

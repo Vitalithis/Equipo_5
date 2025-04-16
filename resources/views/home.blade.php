@@ -94,17 +94,18 @@
                                     <li class="flex items-center gap-2 text-base py-1">
                                         <input id="filter-color-2" name="{{ $categoria->nombre }}" value="eprimary"
                                             type="checkbox" class="col-start-1 row-start-1 appearance-none rounded-sm
-                                                                                border border-gray-300 bg-white
-                                                                            checked:border-eprimary-100 checked:bg-eprimary-100
-                                                                            indeterminate:border-eprimary-100 indeterminate:bg-eprimary-100
-                                                                            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eprimary-100
-                                                                            focus:ring-2 focus:ring-eprimary-100
-                                                                            disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100
-                                                                            forced-colors:appearance-auto">
+                                        border border-gray-300 bg-white
+                                    checked:border-eprimary-100 checked:bg-eprimary-100
+                                    indeterminate:border-eprimary-100 indeterminate:bg-eprimary-100
+                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eprimary-100
+                                    focus:ring-2 focus:ring-eprimary-100
+                                    disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100
+                                    forced-colors:appearance-auto">
 
                                         <span>{{ $categoria->nombre }}</span>
                                     </li>
                                 @endforeach
+
                             </ul>
                         </div>
                     </div>
@@ -173,16 +174,17 @@
                 <h2 class="text-xl font-semibold mb-4">Catálogo de Productos</h2>
                 <div class="grid grid-cols-3 gap-4">
 
-                    @foreach ( $productos as $producto )
-                    <div class="bg-white p-4 shadow rounded">
-                        <!----
-                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{$producto->nombre}}"
-                            class="w-full h-32 object-cover mb-4 rounded">---->
-                        <img src="{{ $producto->imagen}}" alt="{{$producto->nombre}}" class="w-full h-32 object-cover mb-4 rounded">
-                        <h3 class="font-bold">{{$producto->nombre}}</h3>
-                        <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
-                        <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
-                    </div>
+                    @foreach ($productos as $producto)
+                        <div class="bg-white p-4 shadow rounded">
+                            <!----
+                                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{$producto->nombre}}"
+                                    class="w-full h-32 object-cover mb-4 rounded">---->
+                            <img src="{{ $producto->imagen}}" alt="{{$producto->nombre}}"
+                                class="w-full h-32 object-cover mb-4 rounded">
+                            <h3 class="font-bold">{{$producto->nombre}}</h3>
+                            <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
+                            <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -196,17 +198,17 @@
 
             // SVG for Minus icon
             const minusSVG = `
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
-                                                                        <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
-                                                                    </svg>
-                                                                    `;
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+                                                                            <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
+                                                                        </svg>
+                                                                        `;
 
             // SVG for Plus icon
             const plusSVG = `
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
-                                                                        <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                                                                    </svg>
-                                                                    `;
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+                                                                            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                                                                        </svg>
+                                                                        `;
 
             // Toggle the content's max-height for smooth opening and closing
             if (content.style.maxHeight && content.style.maxHeight !== '0px') {

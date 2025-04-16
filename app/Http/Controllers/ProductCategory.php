@@ -9,11 +9,11 @@ class ProductCategory extends Controller
 {
     public function index()
     {
-        // Obtiene todos los registros de la tabla producto_categorias
-        $categorias = ProductoCategoria::all();
+        // Obtiene todos los registros de la tabla producto_categoria
+        $categoria = ProductoCategoria::all();
 
-        // Retorna la vista 'categorias.index' y le pasa los datos
-        return view('categoria.home', compact('categoria'));
+        // Retorna la vista 'categoria.index' y le pasa los datos
+        return view('categorias.home', compact('categorias'));
     }
 
     public function show($id)
@@ -21,6 +21,6 @@ class ProductCategory extends Controller
         // Obtiene un registro específico por ID
         $categoria = ProductoCategoria::findOrFail($id);
 
-        return view('categoria.home', compact('categoria'));
+        return view('categorias.home', compact('categorias'));
     }
 }

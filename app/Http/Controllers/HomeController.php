@@ -10,9 +10,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categoria = Categoria::all();
-        $producto = Producto::all();
+        $categorias = Categoria::all();
+        $productos = Producto::all();
 
-        return view('home', compact('categoria', 'producto'));
+        return view('home', compact('categorias', 'productos'));
     }
 }
