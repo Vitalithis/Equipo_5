@@ -11,6 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         $categorias = Categoria::all();
+        dump($categorias);
         $productos = Producto::paginate(12);
 
         return view('home', compact('categorias', 'productos'));
