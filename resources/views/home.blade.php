@@ -4,6 +4,13 @@
 
 @section('content')
 <!-- Hero Section -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
 <section class="relative bg-gray-100">
     <div class="w-full h-[70vh] overflow-hidden relative">
         <!-- Slider Wrapper -->
@@ -11,19 +18,19 @@
             <!-- Slider Position 1 -->
             <div class="w-full flex-shrink-0 flex items-center justify-center">
                 <img src="{{ asset('/storage/home/slides/slide1.webp') }}" alt="Slide 1"
-                    class="w-full h-full object-cover">
+                    class="w-full h-full object-cover opacity-70 mix-blend-darken brightness-50">
             </div>
 
             <!-- Slider Position 2 -->
             <div class="w-full flex-shrink-0 flex items-center justify-center">
                 <img src="{{ asset('storage/home/slides/slide-2.webp') }}" alt="Slide 2"
-                    class="w-full h-full object-cover">
+                    class="w-full h-full object-cover opacity-70 mix-blend-darken brightness-50">
             </div>
 
             <!-- Slider Position 3 -->
             <div class="w-full flex-shrink-0 flex items-center justify-center">
                 <img src="{{ asset('storage/home/slides/slide-3.webp') }}" alt="Slide 3"
-                    class="w-full h-full object-cover">
+                    class="w-full h-full object-cover opacity-70 mix-blend-darken brightness-50">
             </div>
         </div>
 
@@ -34,6 +41,42 @@
     </div>
 </section>
 
+<!-- Últimos productos -->
+<section class="bg-gray-50 ">
+    <div class="container mx-auto py-20">
+        <h2 class="text-2xl font-semibold mb-4 text-eprimary text-center">Últimos Productos agregados</h2>
+        <div class="grid grid-cols-4 gap-4">
+            @foreach ($productos->take(4) as $producto)
+            <div class="bg-white p-4 shadow rounded hover:p-2 hover:shadow-lg transition-all duration-300 hover:bg-eaccent"
+                data-height="{{$producto->tamano}}" data-category="{{$producto->categoria}}">
+                <!-- Imagen del producto -->
+                <img src="{{ $producto->imagen }}" alt="{{$producto->nombre}}"
+                    class="w-full h-40 object-cover mb-4 rounded">
+                <h3 class="font-bold text-eprimary-100 text-xl">{{$producto->nombre}}</h3>
+                <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
+                <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!--Nuestro Catálogo Reveal on Slide-->
+<section class="bg-eaccent-500 py-16 font-[Poppins] ">
+    <div class="container mx-auto px-4 py-16">
+        <div class="flex justify-center items-center mb-6 flex-col">
+            <h2 class="text-left text-5xl sm:text-6xl lg:text-7xl font-extrabold text-eprimary leading-none  align-text-top -ml-40" data-aos="fade-right" data-aos-duration="1000">
+                Nuestro
+            </h2>
+            <h2 class="text-right text-3xl sm:text-5xl lg:text-6xl font-thin text-eprimary leading-tight ml-40 mt-5 align-bottom font-[Dancing Script]" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                Catálogo
+            </h2>
+        </div>
+        <p class="text-center text-gray-600 text-2xl" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+            Explora nuestra amplia variedad de plantas.
+        </p>
+    </div>
+</section>
 <!-- Main Content -->
 <section class="container mx-auto py-8">
     <div class="grid grid-cols-4 gap-4">
@@ -204,7 +247,6 @@
 
     </div>
 </section>
-
 <script>
     function toggleAccordion(index) {
         const content = document.getElementById(`content-${index}`);
@@ -246,15 +288,22 @@
         iconSpan.innerHTML = isAscending ? descIcon : ascIcon;
         textSpan.textContent = isAscending ? 'Ordenar Descendente' : 'Ordenar Ascendente';
     }
-     const slider = document.getElementById('slider');
+    const slider = document.getElementById('slider');
     const indicatorsContainer = document.getElementById('indicators');
     const slides = slider.children;
     const totalSlides = slides.length;
     let currentIndex = 0;
     let interval;
-
-    const iconActive = `{!! \App\Helpers\SvgHelper::inline('tall-fill', 'fill-eaccent2-9') !!}`;
-    const iconInactive = '⚪'; // Ícono para slide inactivo
+    const iconActive = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-eaccent2-9 w-5 h-5">
+  <rect width="256" height="256" fill="none"/>
+  <path fill='#AEC68D' d="M200,144h-76.7l22.41-22.41a59.55,59.55,0,0,0,26.1,6.36,49.56,49.56,0,0,0,25.89-7.22c23.72-14.36,36.43-47.6,34-88.92a8,8,0,0,0-7.52-7.52c-41.32-2.43-74.56,10.28-88.93,34-9.35,15.45-9.59,34.11-.86,52L120,124.68l-12.21-12.21c6-13.25,5.57-27-1.39-38.48C95.53,56,70.61,46.41,39.73,48.22a8,8,0,0,0-7.51,7.51C30.4,86.6,40,111.52,58,122.4A38.22,38.22,0,0,0,78,128a45,45,0,0,0,18.52-4.19L108.69,136l-8,8H56a8,8,0,0,0,0,16h9.59L78.8,219.47A15.89,15.89,0,0,0,94.42,232h67.17a15.91,15.91,0,0,0,15.62-12.53L190.42,160H200a8,8,0,0,0,0-16Z"/>
+</svg>
+`;
+    const iconInactive = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-eaccent2-9 w-5 h-5">
+  <rect width="256" height="256" fill="none"/>
+  <path  d="M200,144h-76.7l22.41-22.41a59.55,59.55,0,0,0,26.1,6.36,49.56,49.56,0,0,0,25.89-7.22c23.72-14.36,36.43-47.6,34-88.92a8,8,0,0,0-7.52-7.52c-41.32-2.43-74.56,10.28-88.93,34-9.35,15.45-9.59,34.11-.86,52L120,124.68l-12.21-12.21c6-13.25,5.57-27-1.39-38.48C95.53,56,70.61,46.41,39.73,48.22a8,8,0,0,0-7.51,7.51C30.4,86.6,40,111.52,58,122.4A38.22,38.22,0,0,0,78,128a45,45,0,0,0,18.52-4.19L108.69,136l-8,8H56a8,8,0,0,0,0,16h9.59L78.8,219.47A15.89,15.89,0,0,0,94.42,232h67.17a15.91,15.91,0,0,0,15.62-12.53L190.42,160H200a8,8,0,0,0,0-16Z"/>
+</svg>`; // Ícono para slide inactivo
 
     // Crear indicadores
     for (let i = 0; i < totalSlides; i++) {
