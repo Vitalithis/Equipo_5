@@ -6,7 +6,105 @@
  **/
 
 /* global moment:false, Chart:false, Sparkline:false */
+// SECCIÓN DE GESTIÓN DE ROLES (SOLO SUPERADMIN)
+// =============================================
 
+function initializeRoleManagement() {
+  // Verificar si el usuario es superadmin (ajusta según tu sistema de autenticación)
+  if (typeof currentUser === 'undefined' || currentUser.role !== 'superadmin') {
+    return; // Salir si no es superadmin
+  }
+
+  // Crear el HTML dinámicamente
+  const roleManagementHTML = `
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Gestión de Roles</h3>
+      </div>
+      <div class="card-body">
+        <table id="roles-table" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Rol Actual</th>
+              <th>Cambiar Rol</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Datos se cargarán via AJAX -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  // Insertar en el dashboard (ajusta el selector según tu layout)
+  $('.content-wrapper').append(roleManagementHTML);
+
+  // Cargar datos de usuarios
+  loadUsersForRoleManagement();
+}
+
+function loadUsersForRoleManagement() {
+  // AJAX para obtener usuarios (usa tu endpoint real)
+  $.ajax({
+    url: '/api/users',
+    method: 'GET',
+    success: function(users) {
+      const $tableBody = $('#roles-table tbody');
+      $tableBody.empty();
+
+      users.forEach(user => {
+        const isCurrentSuperadmin = user.role === 'superadmin';
+        $tableBody.append(`
+          <tr>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>
+              <select 
+                class="form-control role-select" 
+                data-user-id="${user.id}"
+                ${isCurrentSuperadmin ? 'disabled' : ''}
+              >
+                <option value="">Seleccionar</option>
+                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
+              </select>
+            </td>
+          </tr>
+        `);
+      });
+
+      // Inicializar eventos
+      $('.role-select').change(function() {
+        const userId = $(this).data('user-id');
+        const newRole = $(this).val();
+        updateUserRole(userId, newRole);
+      });
+    }
+  });
+}
+
+function updateUserRole(userId, newRole) {
+  if (!confirm('¿Estás seguro de cambiar este rol?')) return;
+
+  $.ajax({
+    url: `/api/users/${userId}/role`,
+    method: 'PUT',
+    data: { role: newRole },
+    success: function() {
+      toastr.success('Rol actualizado correctamente');
+    },
+    error: function() {
+      toastr.error('Error al actualizar el rol');
+    }
+  });
+}
+
+// Inicializar cuando el DOM esté listo
+$(document).ready(function() {
+  initializeRoleManagement();
+});
 $(function () {
   'use strict'
 

@@ -16,20 +16,20 @@
 <div class="flex h-screen">
 
   <!-- Sidebar -->
-  <div class="bg-green-800 text-white w-64 flex-shrink-0" :class="{'-ml-64': !sidebarOpen}" class="lg:-ml-0">
-    <div class="p-4 border-b border-green-700">
+  <div class="bg-blue-800 text-white w-64 flex-shrink-0" :class="{'-ml-64': !sidebarOpen}" class="lg:-ml-0">
+    <div class="p-4 border-b border-blue-700">
       <div class="flex items-center space-x-2">
         <img src="dist/img/logoeditha.png" alt="Logo" class="h-8 w-8 rounded-full">
-        <span class="text-lg font-semibold">Sala Venta</span>
+        <span class="text-lg font-semibold">Planta de Producción</span>
       </div>
     </div>
     
-    <div class="p-4 border-b border-green-700">
+    <div class="p-4 border-b border-blue-700">
       <div class="flex items-center space-x-3">
         <img src="dist/img/user2-160x160.jpg" alt="User" class="h-10 w-10 rounded-full">
         <div>
           <div class="font-medium">{{ Auth::user()->name }}</div>
-          <div class="text-green-200 text-sm">Administrador</div>
+          <div class="text-blue-200 text-sm">Administrador</div>
         </div>
       </div>
     </div>
@@ -37,14 +37,14 @@
     <nav class="p-4">
       <ul>
         <li class="mb-1">
-          <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
             <span>Catalogo</span>
           </a>
         </li>
         <!-- Más elementos del menú -->
         <li class="mb-1">
-          <a href="#" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="#" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
           <i class="fa-regular fa-circle-user"></i>
           <span>Roles</span>
           </a>
@@ -142,7 +142,8 @@
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Roles</a>
-              <a href="{{ route('dashboard2') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>              
+              <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sala Ventas</a>              
+              
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -173,10 +174,10 @@
             </div>
             
             <!-- Tarjeta de Productos -->
-            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-green-500 hover:shadow-md transition-shadow">
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-blue-500 hover:shadow-md transition-shadow">
               <h3 class="text-gray-500 uppercase text-sm font-semibold">Productos</h3>
               <p class="text-2xl font-bold mt-2">142</p>
-              <a href="#" class="mt-3 inline-flex items-center text-green-500 hover:text-green-700">
+              <a href="#" class="mt-3 inline-flex items-center text-blue-500 hover:text-blue-700">
                 Ver lista <i class="fas fa-arrow-right ml-1"></i>
               </a>
             </div>
@@ -206,7 +207,7 @@
     <footer class="bg-white border-t py-4 px-6">
       <div class="flex justify-between items-center">
         <div>
-          <strong>Copyright &copy; {{ date('Y') }} <a href="/" class="text-green-600">Plantas Editha</a>.</strong> Todos los derechos reservados.
+          <strong>Copyright &copy; {{ date('Y') }} <a href="/" class="text-blue-600">Plantas Editha</a>.</strong> Todos los derechos reservados.
         </div>
       </div>
     </footer>
