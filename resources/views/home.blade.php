@@ -5,20 +5,31 @@
 @section('content')
 <!-- Hero Section -->
 <section class="relative bg-gray-100">
-    <div class="w-full h-[70vh] overflow-hidden">
-        <div class="flex h-full">
+    <div class="w-full h-[70vh] overflow-hidden relative">
+        <!-- Slider Wrapper -->
+        <div id="slider" class="flex h-full transition-transform duration-700">
             <!-- Slider Position 1 -->
-            <div class="w-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
-                <h1 class="text-4xl font-bold">Slider Position 1</h1>
+            <div class="w-full flex-shrink-0 flex items-center justify-center">
+                <img src="{{ asset('/storage/home/slides/slide1.webp') }}" alt="Slide 1"
+                    class="w-full h-full object-cover">
             </div>
+
             <!-- Slider Position 2 -->
-            <div class="w-full flex-shrink-0 bg-gray-300 flex items-center justify-center">
-                <h1 class="text-4xl font-bold">Slider Position 2</h1>
+            <div class="w-full flex-shrink-0 flex items-center justify-center">
+                <img src="{{ asset('storage/home/slides/slide-2.webp') }}" alt="Slide 2"
+                    class="w-full h-full object-cover">
             </div>
+
             <!-- Slider Position 3 -->
-            <div class="w-full flex-shrink-0 bg-gray-400 flex items-center justify-center">
-                <h1 class="text-4xl font-bold">Slider Position 3</h1>
+            <div class="w-full flex-shrink-0 flex items-center justify-center">
+                <img src="{{ asset('storage/home/slides/slide-3.webp') }}" alt="Slide 3"
+                    class="w-full h-full object-cover">
             </div>
+        </div>
+
+        <!-- Indicators -->
+        <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10" id="indicators">
+            <!-- Los íconos se inyectan por JS -->
         </div>
     </div>
 </section>
@@ -235,5 +246,47 @@
         iconSpan.innerHTML = isAscending ? descIcon : ascIcon;
         textSpan.textContent = isAscending ? 'Ordenar Descendente' : 'Ordenar Ascendente';
     }
+     const slider = document.getElementById('slider');
+    const indicatorsContainer = document.getElementById('indicators');
+    const slides = slider.children;
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let interval;
+
+    const iconActive = `{!! \App\Helpers\SvgHelper::inline('tall-fill', 'fill-eaccent2-9') !!}`;
+    const iconInactive = '⚪'; // Ícono para slide inactivo
+
+    // Crear indicadores
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.classList.add('text-2xl', 'transition-transform', 'duration-300');
+        dot.innerHTML = i === 0 ? iconActive : iconInactive;
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => {
+            clearInterval(interval); // si hace click, detenemos el auto slide
+            goToSlide(i);
+        });
+        indicatorsContainer.appendChild(dot);
+    }
+
+    function updateIndicators(index) {
+        Array.from(indicatorsContainer.children).forEach((dot, i) => {
+            dot.innerHTML = i === index ? iconActive : iconInactive;
+        });
+    }
+
+    function goToSlide(index) {
+        slider.style.transform = `translateX(-${index * 100}%)`;
+        currentIndex = index;
+        updateIndicators(index);
+    }
+
+    function nextSlide() {
+        const nextIndex = (currentIndex + 1) % totalSlides;
+        goToSlide(nextIndex);
+    }
+
+    // Iniciar auto slide
+    interval = setInterval(nextSlide, 4000); // cambia cada 4s
 </script>
 @endsection
