@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,21 +18,28 @@ use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');  
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+//ruta para dashboard2
+Route::get('/dashboard2', function () {
+    return view('dashboard2'); 
+})->middleware(['auth', 'verified'])->name('dashboard2');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
     Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
 });
+
 Route::middleware(['auth', 'superadmin'])->group(function () {
     // Rutas solo para superadmin
     Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
