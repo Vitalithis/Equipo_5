@@ -140,7 +140,11 @@
             
             <div x-show="open" @click.away="open = false" 
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+              <li class="mb-1">
+                  <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      {{ __('Perfil') }}
+                  </a>
+              </li>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Roles</a>
               <a href="{{ route('dashboard2') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>              
               <form method="POST" action="{{ route('logout') }}">
