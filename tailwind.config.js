@@ -11,11 +11,12 @@ export default {
 
     theme: {
         colors: {
-            efore: "#F8F6F4",
-            eprimary: "#3E0345",
-            esecondary: "#8090BF",
-            eaccent: "#F6E867",
-            eaccent2: "#AEC68D",
+            // Colores base
+            efore: "#F8F6F4", //marfil
+            eprimary: "#3E0345", //purpura
+            esecondary: "#8090BF", //azul grisaseo
+            eaccent: "#F6E867", //amarillo suave
+            eaccent2: "#AEC68D", //verde claro, para notis, burbujas, etc
 
             // Variaciones de efore
             "efore-100": "#F9F7F5",
