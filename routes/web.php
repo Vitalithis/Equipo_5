@@ -27,5 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
+    Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
+});
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    // Rutas solo para superadmin
+    Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
+    Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+});
 
 require __DIR__.'/auth.php';
