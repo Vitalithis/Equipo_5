@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProductoController;
+
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +17,16 @@ use App\Http\Controllers\LoginController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('home');
 });
+*/
+
+Route::get('/', [HomeController::class, 'index']);
+//Route::get("/", [CategoriaController::class,"home"]);
+//Route::get('/', [ProductoController::class, 'home']);
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -27,5 +37,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+/*
+use App\Http\Controllers\ProductCategory;
 
-require __DIR__.'/auth.php';
+Route::get('/categorias', [ProductCategory::class, 'home']);
+Route::get('/categorias/{id}', [ProductCategory::class, 'show']);
+*/
+
+
+Route::get('/categoria', [CategoriaController::class, 'home']);
+Route::get('/categoria/{id}', [CategoriaController::class, 'show']);
+
+
+require __DIR__ . '/auth.php';

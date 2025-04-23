@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('nombre_cientifico')->nullable();
             $table->text('descripcion')->nullable();
             $table->decimal('precio', 8, 2);
-            $table->integer('stock')->default(0);
+            $table->integer('cantidad')->default(0);
             $table->string('categoria');
             $table->string('imagen')->nullable();
             $table->string('codigo_barras')->unique();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->text('beneficios')->nullable();
             $table->boolean('toxica')->default(false); // para mascotas
             $table->string('origen')->nullable();
-            $table->string('tamano')->nullable(); // altura o tamaño de la maceta
+            $table->integer('tamano')->nullable(); // altura o tamaño de la maceta
             $table->boolean('activo')->default(true); // para publicación o no
         });
     }
