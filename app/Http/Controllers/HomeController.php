@@ -10,6 +10,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('carrito');  // Carga la vista 'carrito.blade.php'
+        return view('cart');  // Carga resources/views/cart.blade.php
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-// app/Http/Livewire/Cart.php
+// app/Http/Livewire/cart.php
 
 namespace App\Http\Livewire;
 
 use Livewire\Component;
 
-class Cart extends Component
+class cart extends Component
 {
     public $cart = [];
 
