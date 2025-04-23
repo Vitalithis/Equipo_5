@@ -19,7 +19,7 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-/*
+
 Route::get('/', function () {
     return view('home');
 })->name('home');  
@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-/*
+
 use App\Http\Controllers\ProductCategory;
 
 Route::middleware('auth:sanctum')->group(function() {
