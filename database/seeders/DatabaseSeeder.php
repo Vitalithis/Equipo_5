@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProductoSeeder::class,
         ]);
+
+        $this->call([
+            VentaSeeder::class,
+        ]);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
