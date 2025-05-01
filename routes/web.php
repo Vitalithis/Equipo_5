@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\WebpayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,10 @@ Route::post('/cart/add',    [CartController::class,'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class,'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class,'remove'])->name('cart.remove');
 Route::post('/cart/clear',  [CartController::class,'clear'])->name('cart.clear');
+
+// ruta de webpay
+Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
+Route::get('/confirmar', [WebpayController::class, 'confirmar'])->name('webpay.confirm');
 
 
 require __DIR__.'/auth.php';
