@@ -193,6 +193,9 @@
                     <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
                     <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
                 </div>
+                
+
+
                 @endforeach
             </div>
 

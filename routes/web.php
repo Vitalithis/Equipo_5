@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,5 +49,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
     Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
+
+
+Route::get('/cart', [CartController::class, 'index'])
+     ->name('cart.index');
+     Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+
 
 require __DIR__.'/auth.php';
