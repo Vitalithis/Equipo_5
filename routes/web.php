@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\WebpayController;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProductoController;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +20,15 @@ use App\Http\Controllers\WebpayController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
-
+Route::get('/',[HomeController::class,'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+//ruta para dashboard2
+Route::get('/dashboard2', function () {
+    return view('dashboard2'); 
+})->middleware(['auth', 'verified'])->name('dashboard2');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,17 +36,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+use App\Http\Controllers\ProductCategory;
 
-Route::get('/', [ProductController::class,'index'])->name('products.index');
-Route::get('/cart', [CartController::class,'index'])->name('cart.index');
-Route::post('/cart/add',    [CartController::class,'add'])->name('cart.add');
-Route::post('/cart/update', [CartController::class,'update'])->name('cart.update');
-Route::post('/cart/remove', [CartController::class,'remove'])->name('cart.remove');
-Route::post('/cart/clear',  [CartController::class,'clear'])->name('cart.clear');
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
+    Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
+});
 
-// ruta de webpay
-Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
-Route::get('/confirmar', [WebpayController::class, 'confirmar'])->name('webpay.confirm');
-
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    // Rutas solo para superadmin
+    Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
+    Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+});
 
 require __DIR__.'/auth.php';
