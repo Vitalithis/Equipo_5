@@ -20,11 +20,14 @@ use App\Http\Controllers\CartController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/',[HomeController::class,'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/ingresos', function () {
+    return view('ingresos');
+})->name('ingresos');
 
 //ruta para dashboard2
 Route::get('/dashboard2', function () {
