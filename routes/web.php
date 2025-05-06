@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,11 +20,14 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/',[HomeController::class,'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/ingresos', function () {
+    return view('ingresos');
+})->name('ingresos');
 
 //ruta para dashboard2
 Route::get('/dashboard2', function () {
@@ -48,5 +52,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
     Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
+
+
+Route::get('/cart', [CartController::class, 'index'])
+     ->name('cart.index');
+     Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+
 
 require __DIR__.'/auth.php';
