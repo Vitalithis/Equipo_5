@@ -2,84 +2,115 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Boleta Electrónica</title>
+    <title>Boleta Pedido #{{ $pedido->id }}</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-            color: #1f2937;
-            padding: 2rem;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 20px;
         }
         .header {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #4CAF50;
+        }
+        .company-info {
+            font-size: 10px;
+            color: #777;
         }
         .section-title {
-            font-weight: 600;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 5px;
+            margin-bottom: 5px;
         }
-        .table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            margin-bottom: 15px;
         }
-        .table th, .table td {
-            border: 1px solid #e5e7eb;
-            padding: 0.5rem;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+        th {
+            background-color: #f2f2f2;
             text-align: left;
         }
-        .table th {
-            background-color: #f3f4f6;
-            font-weight: 600;
+        .text-right {
+            text-align: right;
+        }
+        .summary {
+            margin-top: 10px;
+            text-align: right;
+        }
+        .summary p {
+            margin: 2px 0;
         }
         .footer {
-            margin-top: 2rem;
             text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
+            margin-top: 30px;
+            font-size: 10px;
+            color: #777;
         }
     </style>
 </head>
 <body>
-    <div class="header">Boleta Electrónica</div>
+    <div class="header">
+        <h1>Vivero Plantas Editha</h1>
+        <p class="company-info">
+            RUT: 12.345.678-9 | Av. Pedro Aguirre Cerda 2999, San Pedro de la Paz | +56 9 1234 5678
+        </p>
+    </div>
 
-    <p><span class="section-title">ID del Pedido:</span> {{ $pedido->id }}</p>
-    <p><span class="section-title">Nombre:</span> {{ $pedido->nombre }}</p>
-    <p><span class="section-title">Estado:</span> {{ ucfirst($pedido->estado) }}</p>
-    <p><span class="section-title">Fecha de Creación:</span> {{ $pedido->created_at->format('d/m/Y H:i') }}</p>
+    <div>
+        <div class="section-title">Datos del Pedido</div>
+        <p><strong>Fecha:</strong> {{ $pedido->created_at->format('d-m-Y H:i') }}</p>
+        <p><strong>N° Pedido:</strong> {{ $pedido->id }}</p>
+        <p><strong>Cliente:</strong> {{ $pedido->usuario->name }}</p>
+        <p><strong>Método de entrega:</strong> {{ $pedido->metodo_entrega }}</p>
+        <p><strong>Dirección:</strong> {{ $pedido->direccion ?? 'No disponible' }}</p>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Campo</th>
-                <th>Valor</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>ID</td>
-                <td>{{ $pedido->id }}</td>
-            </tr>
-            <tr>
-                <td>Nombre</td>
-                <td>{{ $pedido->nombre }}</td>
-            </tr>
-            <tr>
-                <td>Estado</td>
-                <td>{{ ucfirst($pedido->estado) }}</td>
-            </tr>
-            <tr>
-                <td>Fecha</td>
-                <td>{{ $pedido->created_at->format('d/m/Y H:i') }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <div class="section-title">Productos</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Precio Unitario</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($pedido->detalles as $detalle)
+                    <tr>
+                        <td>{{ $detalle->nombre_producto_snapshot }}</td>
+                        <td class="text-right">{{ $detalle->cantidad }}</td>
+                        <td class="text-right">${{ number_format($detalle->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="text-right">${{ number_format($detalle->subtotal, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <p><strong>Subtotal:</strong> ${{ number_format($subtotal, 0, ',', '.') }}</p>
+        <p><strong>Descuento (10%):</strong> -${{ number_format($descuento, 0, ',', '.') }}</p>
+        <p><strong>Total Final:</strong> ${{ number_format($totalFinal, 0, ',', '.') }}</p>
+    </div>
 
     <div class="footer">
-        Este documento es una representación no oficial de la boleta para uso del cliente.
+        Gracias por su compra<br>
+        Documento generado electrónicamente - No requiere firma ni timbre
     </div>
 </body>
 </html>

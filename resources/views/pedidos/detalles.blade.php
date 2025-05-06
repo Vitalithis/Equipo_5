@@ -17,6 +17,14 @@
                         </li>
                     @endforeach
                 </ul>
+
+                {{--  Botón para generar boleta--}}
+                <div class="mt-4">
+                    <a href="{{ route('boletas.provisoria', $pedido->id) }}"
+                       class="inline-block bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded shadow transition">
+                        Ver boleta provisoria
+                    </a>
+                </div>
             </div>
         </div>
     </td>

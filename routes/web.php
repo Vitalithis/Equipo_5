@@ -11,6 +11,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\BoletaController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
 //Pedidos
 Route::resource('pedidos', PedidoController::class);
+//boleta
+Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
+Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
 
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 

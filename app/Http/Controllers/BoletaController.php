@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pedido;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+
 class BoletaController extends Controller
 {
-    public function generar(Request $request)
+    public function generar(Pedido $pedido)
     {
-        $pedidoId = $request->input('pedido_id');
+        $pedido->load(['usuario', 'detalles']);
 
-        $pedido = Pedido::find($pedidoId);
+        $subtotal = $pedido->detalles->sum('subtotal');
+        $descuento = $subtotal * 0.10;
+        $totalFinal = $subtotal - $descuento;
 
-        if (!$pedido) {
-            return redirect()->back()->with('error', 'El pedido no existe.');
-        }
-
-        // Generar PDF usando la vista Blade
-        $pdf = Pdf::loadView('boletas.pdf', compact('pedido'));
-
-        return $pdf->download('boleta-pedido' . $pedido->id . '.pdf');
+        return view('boletas.boleta', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
     }
+    public function generarPDF(Pedido $pedido)
+    {
+        $pedido->load(['usuario', 'detalles']);
+        $subtotal = $pedido->detalles->sum('subtotal');
+        $descuento = $subtotal * 0.10;
+        $totalFinal = $subtotal - $descuento;
+
+        $pdf = Pdf::loadView('boletas.pdf', compact('pedido', 'subtotal', 'descuento', 'totalFinal'))
+                ->setPaper('A4');
+        return $pdf->download('boleta-pedido-' . $pedido->id . '.pdf');
+    }
+
 }

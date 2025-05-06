@@ -19,14 +19,14 @@
   <div class="bg-green-800 text-white w-64 flex-shrink-0" :class="{'-ml-64': !sidebarOpen}" class="lg:-ml-0">
     <div class="p-4 border-b border-green-700">
       <div class="flex items-center space-x-2">
-        <img src="dist/img/logoeditha.png" alt="Logo" class="h-8 w-8 rounded-full">
+        <img src="{{ asset('dist/img/logoeditha.png') }}" alt="Logo" class="h-8 w-8 rounded-full">
         <span class="text-lg font-semibold">Sala Venta</span>
       </div>
     </div>
     
     <div class="p-4 border-b border-green-700">
       <div class="flex items-center space-x-3">
-        <img src="dist/img/user2-160x160.jpg" alt="User" class="h-10 w-10 rounded-full">
+        <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-10 w-10 rounded-full">
         <div>
           <div class="font-medium">{{ Auth::user()->name }}</div>
           <div class="text-green-200 text-sm">Administrador</div>
@@ -121,8 +121,8 @@
                 <!-- Ejemplo de mensaje -->
                 <a href="#" class="block px-4 py-3 hover:bg-gray-50">
                   <div class="flex items-start">
-                    <img src="dist/img/user2-160x160.jpg" alt="User" class="h-10 w-10 rounded-full">
-                    <div class="ml-3">
+                  <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-10 w-10 rounded-full">
+                  <div class="ml-3">
                       <p class="text-sm font-medium text-gray-900">Juan Pérez</p>
                       <p class="text-sm text-gray-500">¿Tenemos stock de rosas?</p>
                       <p class="text-xs text-gray-400">Hace 30 minutos</p>
@@ -140,7 +140,7 @@
           <!-- User Profile Dropdown -->
           <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-              <img src="dist/img/user2-160x160.jpg" alt="User" class="h-8 w-8 rounded-full">
+              <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-8 w-8 rounded-full">
               <span class="hidden md:inline">{{ Auth::user()->name }}</span>
             </button>
             
