@@ -34,45 +34,21 @@
                             <td class="px-6 py-4">{{ $pedido->usuario->name }}</td>
                             <td class="px-6 py-4">${{ number_format($pedido->total, 0, ',', '.') }}</td>
                             <td class="px-6 py-4">
-                                <form action="{{ route('pedidos.update', $pedido->id) }}" method="POST" class="flex items-center gap-2">
-                                    @csrf
-                                    @method('PUT')
-
-                                    @php
-                                        $estados = [
-                                            'pendiente' => 'Pendiente',
-                                            'en_preparacion' => 'En preparación',
-                                            'en_camino' => 'En camino',
-                                            'enviado' => 'Enviado',
-                                            'entregado' => 'Entregado',
-                                            'listo_para_retiro' => 'Listo para retiro',
-                                        ];
-                                    @endphp
-
-                                    <select name="estado_pedido"
-                                            class="rounded border border-efore-400 px-2 py-1 text-sm bg-white text-eprimary focus:ring-2 focus:ring-eaccent2-500">
-                                        @foreach ($estados as $valor => $texto)
-                                            <option value="{{ $valor }}" @selected($pedido->estado_pedido === $valor)>
-                                                {{ $texto }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-
-                                    <button type="submit"
-                                            class="bg-eaccent2 hover:bg-eaccent2-400 text-eprimary font-semibold px-3 py-1 rounded shadow transition text-sm">
-                                        Guardar
-                                    </button>
-                                </form>
+                                @include('pedidos.estado_form', ['pedido' => $pedido])
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center space-x-4 overflow-x-auto text-sm"> 
-
-
-
-                                    </div>
-
-                                    </td>
-                            </tr>
+                                <button onclick="toggleDetalles({{ $pedido->id }})"
+                                        class="flex items-center justify-center w-8 h-8 text-eaccent2 hover:text-eaccent2-400 transition">
+                                    <svg id="arrow-{{ $pedido->id }}" class="w-5 h-5 transform transition-transform duration-300"
+                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        @include('pedidos.detalles', ['pedido' => $pedido])
                     @endforeach
                 </tbody>
             </table>
@@ -81,4 +57,22 @@
         <p class="text-eprimary mt-6">No hay pedidos registrados.</p>
     @endif
 </div>
+
+<script>
+function toggleDetalles(id) {
+    const detalles = document.getElementById('detalles-' + id);
+    const arrow = document.getElementById('arrow-' + id);
+    const isOpen = detalles.classList.contains('max-h-[500px]');
+
+    if (isOpen) {
+        detalles.classList.remove('max-h-[500px]', 'opacity-100');
+        detalles.classList.add('max-h-0', 'opacity-0');
+        arrow.classList.remove('rotate-180');
+    } else {
+        detalles.classList.remove('max-h-0', 'opacity-0');
+        detalles.classList.add('max-h-[500px]', 'opacity-100');
+        arrow.classList.add('rotate-180');
+    }
+}
+</script>
 @endsection
