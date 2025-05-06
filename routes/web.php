@@ -64,6 +64,8 @@ Route::resource('pedidos', PedidoController::class);
 //boleta
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
 Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
+Route::get('/boletas/{pedido}/subir', [BoletaController::class, 'subir'])->name('boletas.subir');
+Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.guardar');
 
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
