@@ -1,6 +1,9 @@
-@extends('layouts.app')
+@extends('dashboard')
 
 @section('title', 'Gestión de Pedidos')
+
+@section('default-content')
+@endsection
 
 @section('content')
 <div class="max-w-6xl mx-auto px-6 py-10 bg-efore rounded shadow">
@@ -64,33 +67,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-4 overflow-x-auto text-sm"> 
 
-                                    {{-- Generar boleta --}}
-                                    <div class="pl-4 border-l border-r border-efore-300">
-                                        <form action="{{ route('pedidos.generarBoleta', $pedido->id) }}" method="GET">
-                                            <button type="submit" class="bg-white border border-gray-300 hover:bg-gray-100 text-eprimary font-semibold px-3 py-1 rounded shadow transition">
-                                                Boleta
-                                            </button>
-                                        </form>
-                                    </div>
 
-                                    {{-- Subir archivo --}}
-                                    <div class="pl-4 border-l border-r border-efore-300">
-                                        <form action="{{ route('pedidos.subirBoleta', $pedido->id) }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
-                                            @csrf
-                                            <input type="file" name="boleta_pdf" accept="application/pdf"
-                                                class="text-xs border border-gray-300 rounded px-2 py-1 max-w-[180px] truncate">
-                                            <button type="submit" class="bg-white border border-gray-300 hover:bg-gray-100 text-eprimary font-semibold px-3 py-1 rounded shadow transition">
-                                                Subir SII
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                    {{-- Ver detalles --}}
-                                    <div class="pl-4 border-l border-efore-300">
-                                        <a href="{{ route('pedidos.show', $pedido->id) }}" class="text-blue-600 hover:text-blue-800 underline">
-                                            Ver Detalles
-                                        </a>
-                                    </div>
 
                                     </div>
 

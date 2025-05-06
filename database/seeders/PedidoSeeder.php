@@ -19,19 +19,19 @@ class PedidoSeeder extends Seeder
         // Crear productos
         $producto1 = Producto::create([
             'nombre' => 'Planta A', 'nombre_cientifico' => 'Plantae A',
-            'descripcion' => 'Descripción A', 'precio' => 5000, 'stock' => 10,
+            'descripcion' => 'Descripción A', 'precio' => 5000,
             'categoria' => 'Interior', 'codigo_barras' => '1234567890123'
         ]);
 
         $producto2 = Producto::create([
             'nombre' => 'Planta B', 'nombre_cientifico' => 'Plantae B',
-            'descripcion' => 'Descripción B', 'precio' => 7000, 'stock' => 15,
+            'descripcion' => 'Descripción B', 'precio' => 7000,
             'categoria' => 'Exterior', 'codigo_barras' => '1234567890124'
         ]);
 
         $producto3 = Producto::create([
             'nombre' => 'Planta C', 'nombre_cientifico' => 'Plantae C',
-            'descripcion' => 'Descripción C', 'precio' => 9000, 'stock' => 8,
+            'descripcion' => 'Descripción C', 'precio' => 9000,
             'categoria' => 'Interior', 'codigo_barras' => '1234567890125'
         ]);
 

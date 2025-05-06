@@ -10,6 +10,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 
+use App\Http\Controllers\PedidoController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +22,8 @@ use App\Http\Controllers\CartController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/',[HomeController::class,'index']);
 Route::get('/dashboard', function () {
@@ -53,6 +57,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
 
+//Pedidos
+Route::resource('pedidos', PedidoController::class);
+
+Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
 Route::get('/cart', [CartController::class, 'index'])
      ->name('cart.index');

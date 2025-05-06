@@ -2,37 +2,50 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'usuario_id',
-        'fecha_pedido',
-        'metodo_entrega',
-        'direccion_entrega',
-        'estado_pedido',         // este sí va
-        'subtotal',
-        'descuento',
-        'impuesto',
         'total',
-        'forma_pago',
-        'estado_pago',
-        'monto_pagado',
-        'tipo_documento',
-        'documento_generado',
-        'observaciones',
-        'boleta_final_path'
+        'estado_pedido',
     ];
 
     public function usuario()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
-    public function detalles()
+    // app/Models/Pedido.php
+
+    public static function estadosPorMetodo()
     {
-        return $this->hasMany(DetallePedido::class);
+        return [
+            'envio_domicilio' => [
+                'pendiente' => 'Pendiente',
+                'en_preparacion' => 'En preparación',
+                'en_camino' => 'En camino',
+                'enviado' => 'Enviado',
+                'entregado' => 'Entregado',
+            ],
+            'retiro_tienda' => [
+                'pendiente' => 'Pendiente',
+                'en_preparacion' => 'En preparación',
+                'listo_para_retiro' => 'Listo para retiro',
+                'entregado' => 'Entregado',
+            ],
+        ];
     }
+
+    public function estadosPermitidos()
+    {
+        $mapa = self::estadosPorMetodo();
+        return $mapa[$this->metodo_entrega] ?? [];
+    }
+
 }
 

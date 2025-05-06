@@ -49,6 +49,12 @@
           <span>Roles</span>
           </a>
         </li>
+        <li class="mb-1">
+        <a href="{{ route('pedidos.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+            <i class="fa-solid fa-gauge"></i>
+            <span>Gestión de pedidos</span>
+        </a>
+        </li>
       </ul>
     </nav>
   </div>
@@ -157,10 +163,11 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto p-6">
+    @yield('content')
+      @section('default-content')
+
       <div class="max-w-7xl mx-auto">
         <div class="bg-white rounded-lg shadow-sm p-6">
-
-          
           <!-- Contenido del dashboard -->
           <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Tarjeta de Ventas -->
@@ -200,6 +207,7 @@
           </div>
         </div>
       </div>
+      @show
     </main>
 
     <!-- Footer -->
