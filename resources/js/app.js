@@ -1,5 +1,3 @@
-// resources/js/app.js
-
 import './bootstrap';
 
 import Alpine from 'alpinejs';
@@ -18,13 +16,53 @@ function getCart() {
 function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
-function renderCart() {
-  const cart = getCart();
+
+// Función para enviar el carrito al backend
+function enviarCarritoAlBackend() {
+  const cart = getCart(); // Obtén el carrito desde localStorage (ya en el frontend)
+
+  fetch('/guardar-carrito', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Asegúrate de incluir el token CSRF
+    },
+    body: JSON.stringify({ items: Object.values(cart) })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Carrito guardado:', data);
+  })
+  .catch(error => {
+    console.error('Error al guardar el carrito:', error);
+  });
+}
+
+// Función para obtener el carrito del backend
+function obtenerCarritoDelBackend() {
+  fetch('/obtener-carrito')
+    .then(response => response.json())
+    .then(data => {
+      if (data.items) {
+        // Aquí puedes actualizar el DOM con los datos del carrito
+        console.log('Carrito recuperado:', data.items);
+        renderCartItems(data.items);
+      } else {
+        console.log(data.message); // Mensaje si no hay carrito
+      }
+    })
+    .catch(error => {
+      console.error('Error al obtener el carrito:', error);
+    });
+}
+
+// Función para renderizar el carrito en el frontend
+function renderCartItems(cartItems) {
   const container = document.getElementById('cart-items');
   if (!container) return;
   container.innerHTML = '';
   let total = 0;
-  Object.values(cart).forEach(item => {
+  cartItems.forEach(item => {
     const sub = item.precio * item.cantidad;
     total += sub;
     const div = document.createElement('div');
@@ -50,7 +88,7 @@ function renderCart() {
   const totalEl = document.getElementById('cart-total');
   if (totalEl) totalEl.innerText = total.toFixed(2);
 
-  // Listeners para botones
+  // Listeners para botones de incremento, decremento y eliminación
   document.querySelectorAll('.increment').forEach(btn => {
     btn.onclick = () => updateQty(btn.dataset.id, +1);
   });
@@ -62,6 +100,7 @@ function renderCart() {
   });
 }
 
+// Función para actualizar la cantidad de un item
 function updateQty(id, delta) {
   const cart = getCart();
   if (!cart[id]) return;
@@ -69,29 +108,55 @@ function updateQty(id, delta) {
   if (cart[id].cantidad < 1) delete cart[id];
   saveCart(cart);
   renderCart();
+  enviarCarritoAlBackend(); // Opcional: Enviar los cambios al backend
 }
 
+// Función para eliminar un item del carrito
 function removeItem(id) {
   const cart = getCart();
   delete cart[id];
   saveCart(cart);
   renderCart();
+  enviarCarritoAlBackend(); // Opcional: Enviar los cambios al backend
 }
 
-// Inicialización al cargar DOM
+// Función para vaciar el carrito
+document.getElementById('clear-cart').addEventListener('click', () => {
+  if (confirm('¿Estás seguro de vaciar el carrito?')) {
+    // Vaciar carrito en el backend
+    fetch('/vaciar-carrito', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Asegúrate de incluir el token CSRF
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Carrito vaciado en el backend:', data);
+      localStorage.removeItem(CART_KEY); // Vaciar localStorage
+      renderCart(); // Actualizar vista
+    })
+    .catch(error => {
+      console.error('Error al vaciar el carrito:', error);
+    });
+  }
+});
+
+// Inicializar el carrito al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-  renderCart();
+  obtenerCarritoDelBackend(); // Obtener el carrito del backend al cargar la página
 
   // Botones "Agregar al carrito"
   document.querySelectorAll('.add-to-cart').forEach(btn => {
     btn.onclick = () => {
-      const id       = btn.dataset.id;
+      const id = btn.dataset.id;
       const cantidad = parseInt(btn.dataset.cantidad) || 1;
-      const nombre   = btn.closest('div').querySelector('h3').innerText;
-      const precio   = parseFloat(btn.closest('div').querySelector('p').innerText.replace('$', ''));
-      const imagen   = btn.dataset.imagen || '';
-      const cart     = getCart();
-      const item     = { id, nombre, precio, imagen, cantidad };
+      const nombre = btn.closest('div').querySelector('h3').innerText;
+      const precio = parseFloat(btn.closest('div').querySelector('p').innerText.replace('$', ''));
+      const imagen = btn.dataset.imagen || '';
+      const cart = getCart();
+      const item = { id, nombre, precio, imagen, cantidad };
 
       if (cart[id]) {
         cart[id].cantidad += cantidad;
@@ -101,15 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       saveCart(cart);
       renderCart();
+      // Opcionalmente puedes guardar el carrito en el backend aquí
+      enviarCarritoAlBackend();
     };
   });
-
-  // Botón "Vaciar carrito"
-  const clearBtn = document.getElementById('clear-cart');
-  if (clearBtn) {
-    clearBtn.onclick = () => {
-      localStorage.removeItem(CART_KEY);
-      renderCart();
-    };
-  }
 });

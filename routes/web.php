@@ -54,9 +54,18 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 });
 
 
+     
+// Ruta para mostrar el carrito y nombrarla "cart.index"
 Route::get('/cart', [CartController::class, 'index'])
-     ->name('cart.index');
-     Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+     ->name('cart.index')
+     ->middleware('auth'); // opcional: si requieres que el usuario esté autenticado
+Route::post('/guardar-carrito', [CartController::class, 'guardarCarrito'])->middleware('auth');
+
+// Ruta para obtener el carrito
+Route::get('/obtener-carrito', [CartController::class, 'obtenerCarrito'])->middleware('auth');
+
+// Ruta para vaciar el carrito
+Route::post('/vaciar-carrito', [CartController::class, 'vaciarCarrito'])->middleware('auth');
 
 
 require __DIR__.'/auth.php';
