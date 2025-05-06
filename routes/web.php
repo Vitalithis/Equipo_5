@@ -2,8 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PedidoController;
-use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProductoController;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,22 +20,19 @@ use App\Http\Controllers\BoletaController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::prefix('pedidos')->name('pedidos.')->group(function () {
-    Route::get('/', [PedidoController::class, 'index'])->name('index'); // Mostrar todos los pedidos
-    Route::get('{pedido}', [PedidoController::class, 'show'])->name('show'); // Ver detalles del pedido
-    Route::put('{pedido}', [PedidoController::class, 'update'])->name('update'); // Cambiar estado del pedido
-    Route::get('{pedido}/boleta', [PedidoController::class, 'generarBoleta'])->name('generarBoleta'); // Generar PDF
-    Route::post('{pedido}/boleta-subida', [PedidoController::class, 'subirBoleta'])->name('subirBoleta'); // Subir PDF del SII
-});
-
-
-Route::get('/', function () {
-    return view('home');
-});
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/',[HomeController::class,'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/ingresos', function () {
+    return view('ingresos');
+})->name('ingresos');
+
+//ruta para dashboard2
+Route::get('/dashboard2', function () {
+    return view('dashboard2'); 
+})->middleware(['auth', 'verified'])->name('dashboard2');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -38,6 +40,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/boletas/generar', [BoletaController::class, 'generar'])->name('boletas.generar');
+use App\Http\Controllers\ProductCategory;
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
+    Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
+});
+
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    // Rutas solo para superadmin
+    Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
+    Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+});
+
+
+Route::get('/cart', [CartController::class, 'index'])
+     ->name('cart.index');
+     Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+
 
 require __DIR__.'/auth.php';

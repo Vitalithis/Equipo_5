@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Producto extends Model
 {
     use HasFactory;
+    protected $table = 'productos';
 
     protected $fillable = [
         'nombre',
@@ -28,4 +28,10 @@ class Producto extends Model
         'tamano',
         'activo',
     ];
+
+    // Relación muchos a muchos con Categoria
+    public function categoria()
+    {
+        return $this->belongsToMany(Categoria::class, 'producto_categoria');
+    }
 }
