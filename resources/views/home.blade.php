@@ -184,19 +184,25 @@
             <h2 class="text-2xl font-semibold mb-4 text-eprimary">Catálogo de Productos</h2>
             <div class="grid grid-cols-3 gap-4">
 
-                @foreach ($productos as $producto)
-                <div class="bg-white p-4 shadow rounded hover:p-2 hover:shadow-lg transition-all duration-300 hover:bg-eaccent" data-height="{{$producto->tamano}}" data-category="{{$producto->categoria}}">
-                    <!-- Imagen del producto -->
-                    <img src="{{ $producto->imagen }}" alt="{{$producto->nombre}}"
-                        class="w-full h-40 object-cover mb-4 rounded">
-                    <h3 class="font-bold text-eprimary-100 text-xl">{{$producto->nombre}}</h3>
-                    <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
-                    <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
-                </div>
-                
+            @foreach ($productos as $producto)
+<div class="bg-white p-4 shadow rounded hover:p-2 hover:shadow-lg transition-all duration-300 hover:bg-eaccent" data-height="{{$producto->tamano}}" data-category="{{$producto->categoria}}">
+    <!-- Imagen del producto -->
+    <img src="{{ $producto->imagen }}" alt="{{$producto->nombre}}" class="w-full h-40 object-cover mb-4 rounded">
+    <h3 class="font-bold text-eprimary-100 text-xl">{{$producto->nombre}}</h3>
+    <p class="text-sm text-gray-600">{{$producto->dificultad}}</p>
+    <p class="text-sm text-gray-600">{{$producto->descripcion}}</p>
 
+    <!-- Formulario para agregar al carrito -->
+    <form action="{{ route('cart.add', $producto->id) }}" method="POST">
+        @csrf
+        <label for="cantidad" class="text-sm text-gray-600">Cantidad:</label>
+        <input type="number" name="cantidad" value="1" min="1" class="w-16 p-2 border border-gray-300 rounded mb-2">
+        
+        <button type="submit" class="mt-2 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded">Añadir al carrito</button>
+    </form>
+</div>
+@endforeach
 
-                @endforeach
             </div>
 
             <!-- Paginación -->

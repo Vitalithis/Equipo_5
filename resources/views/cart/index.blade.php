@@ -15,6 +15,7 @@
                             <h3 class="text-lg font-semibold text-gray-900">{{ $item['nombre'] }}</h3>
                             <p class="text-sm text-gray-500">Precio: ${{ number_format($item['precio'], 0, ',', '.') }}</p>
                             <div class="flex items-center mt-2 gap-2">
+                                <!-- Formulario para actualizar la cantidad -->
                                 <form action="{{ route('cart.update', $id) }}" method="POST" class="flex items-center">
                                     @csrf
                                     @method('PUT')
@@ -23,6 +24,7 @@
                                     <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Actualizar</button>
                                 </form>
 
+                                <!-- Formulario para eliminar el producto del carrito -->
                                 <form action="{{ route('cart.remove', $id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -45,16 +47,22 @@
                 @endphp
                 <p class="text-lg font-semibold text-gray-700 mb-2">Total: ${{ number_format($total, 0, ',', '.') }}</p>
 
+                <!-- Vaciar el carrito -->
                 <form action="{{ route('cart.clear') }}" method="POST" class="mb-4">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded">Vaciar Carrito</button>
                 </form>
 
-                <a href="{{ route('checkout.index') }}"
-                   class="block text-center bg-green-600 hover:bg-green-700 text-white py-2 rounded transition">
-                    Proceder al Pago
-                </a>
+                {{-- Paso 6-7: Formulario para proceder al pago con Transbank --}}
+                <form action="{{ route('checkout.pay') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="amount" value="{{ $total }}">
+                    <button type="submit"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition">
+                        Proceder al Pago con Webpay
+                    </button>
+                </form>
             </div>
         </div>
     @else
@@ -64,107 +72,4 @@
         </div>
     @endif
 </div>
-@endsection
-
-
-@section('scripts')
-<script>
-  // Leer/guardar carrito en localStorage
-  const CART_KEY = 'my_ecom_cart';
-  function getCart() {
-    return JSON.parse(localStorage.getItem(CART_KEY) || '{}');
-  }
-  function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }
-
-  // Renderizar carrito en DOM
-  function renderCart() {
-    const cart = getCart();
-    const container = document.getElementById('cart-items');
-    container.innerHTML = '';
-    let total = 0;
-    for (let id in cart) {
-      const item = cart[id];
-      const sub = item.price * item.quantity;
-      total += sub;
-      const div = document.createElement('div');
-      div.className = 'flex items-center justify-between bg-white p-4 rounded shadow';
-      div.innerHTML = `
-        <div class="flex items-center space-x-4">
-          <img src="/storage/${item.image}" class="w-12 h-12 object-cover rounded">
-          <div>
-            <h4 class="font-semibold">${item.name}</h4>
-            <p class="text-sm text-gray-600">$${item.price.toFixed(2)} c/u</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-2">
-          <button class="px-2 bg-gray-200 rounded decrement" data-id="${id}">−</button>
-          <span>${item.quantity}</span>
-          <button class="px-2 bg-gray-200 rounded increment" data-id="${id}">+</button>
-          <button class="ml-4 text-red-500 remove" data-id="${id}">Eliminar</button>
-        </div>
-        <div class="ml-4 font-semibold">$${sub.toFixed(2)}</div>
-      `;
-      container.appendChild(div);
-    }
-    document.getElementById('cart-total').innerText = total.toFixed(2);
-
-    // Attach event listeners
-    document.querySelectorAll('.increment').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const id = e.target.dataset.id;
-        const cart = getCart();
-        cart[id].quantity++;
-        saveCart(cart);
-        renderCart();
-      });
-    });
-    document.querySelectorAll('.decrement').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const id = e.target.dataset.id;
-        const cart = getCart();
-        if (cart[id].quantity>1) cart[id].quantity--;
-        else delete cart[id];
-        saveCart(cart);
-        renderCart();
-      });
-    });
-    document.querySelectorAll('.remove').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const id = e.target.dataset.id;
-        const cart = getCart();
-        delete cart[id];
-        saveCart(cart);
-        renderCart();
-      });
-    });
-  }
-
-  // Inicializar
-  document.addEventListener('DOMContentLoaded', ()=>{
-    renderCart();
-
-    // Add buttons en productos
-    document.querySelectorAll('.add-to-cart').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const id = e.target.dataset.id;
-        const name = e.target.dataset.name;
-        const price = parseFloat(e.target.dataset.price);
-        const image = e.target.dataset.image;
-        const cart = getCart();
-        if (cart[id]) cart[id].quantity++;
-        else cart[id] = { name, price, image, quantity: 1 };
-        saveCart(cart);
-        renderCart();
-      });
-    });
-
-    // Vaciar carrito
-    document.getElementById('clear-cart').addEventListener('click', ()=>{
-      localStorage.removeItem(CART_KEY);
-      renderCart();
-    });
-  });
-</script>
 @endsection
