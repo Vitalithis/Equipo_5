@@ -55,8 +55,30 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 });
 
 
+// Ruta para mostrar el carrito y nombrarla "cart.index"
 Route::get('/cart', [CartController::class, 'index'])
-    ->name('cart.index');
+
+     ->name('cart.index')
+     ->middleware('auth'); // opcional: si requieres que el usuario esté autenticado
+Route::post('/guardar-carrito', [CartController::class, 'guardarCarrito'])->middleware('auth');
+
+// Ruta para obtener el carrito
+Route::get('/obtener-carrito', [CartController::class, 'obtenerCarrito'])->middleware('auth');
+
+// Ruta para vaciar el carrito
+Route::post('/vaciar-carrito', [CartController::class, 'vaciarCarrito'])->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/pagar',      [WebpayController::class, 'pagar'])->name('webpay.pagar');
+    Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
+});
+Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::post('/cart/add/{id}', [CartController::class, 'agregarProducto'])->name('cart.add');
+Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
