@@ -9,8 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\WebpayController;
-use App\Http\Controllers\CheckoutController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,8 +20,9 @@ use App\Http\Controllers\CheckoutController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/',[HomeController::class,'index']);
+Route::get('/', [HomeController::class, 'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -32,7 +32,7 @@ Route::get('/ingresos', function () {
 
 //ruta para dashboard2
 Route::get('/dashboard2', function () {
-    return view('dashboard2'); 
+    return view('dashboard2');
 })->middleware(['auth', 'verified'])->name('dashboard2');
 
 Route::middleware('auth')->group(function () {
@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
 
 use App\Http\Controllers\ProductCategory;
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
     Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
 });
@@ -55,31 +55,22 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 });
 
 
-     
-// Ruta para mostrar el carrito y nombrarla "cart.index"
 Route::get('/cart', [CartController::class, 'index'])
-     ->name('cart.index')
-     ->middleware('auth'); // opcional: si requieres que el usuario esté autenticado
-Route::post('/guardar-carrito', [CartController::class, 'guardarCarrito'])->middleware('auth');
+    ->name('cart.index');
+Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
 
-// Ruta para obtener el carrito
-Route::get('/obtener-carrito', [CartController::class, 'obtenerCarrito'])->middleware('auth');
+Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
+Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
 
-// Ruta para vaciar el carrito
-Route::post('/vaciar-carrito', [CartController::class, 'vaciarCarrito'])->middleware('auth');
+Route::get('/sobre-nosotros', function () {
+    return view('about'); // Asegúrate de tener una vista resources/views/about.blade.php
+})->name('about');
+Route::get('/contacto', function () {
+    return view('contact'); // Asegúrate de tener resources/views/contact.blade.php
+})->name('contact');
+Route::get('/faq', function () {
+    return view('faq'); // Asegúrate de tener resources/views/contact.blade.php
+})->name('faq');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/pagar',      [WebpayController::class, 'pagar'])->name('webpay.pagar');
-    Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
-});
-Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
-Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
-Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
-Route::post('/cart/add/{id}', [CartController::class, 'agregarProducto'])->name('cart.add');
-Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
-Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

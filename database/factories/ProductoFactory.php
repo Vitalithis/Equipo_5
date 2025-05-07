@@ -21,6 +21,7 @@ class ProductoFactory extends Factory
 
         return [
             'nombre' => $this->faker->unique()->words(2, true),
+            'slug' => $this->faker->unique()->slug(),
             'nombre_cientifico' => $this->faker->optional()->words(3, true),
             'descripcion' => $this->faker->sentence(12),
             'precio' => $this->faker->randomFloat(2, 2, 30),

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
+
+            $table->string('slug')->unique();
             $table->string('nombre')->unique();
             $table->string('nombre_cientifico')->nullable();
             $table->text('descripcion')->nullable();
@@ -34,6 +36,7 @@ return new class extends Migration
             $table->string('origen')->nullable();
             $table->integer('tamano')->nullable(); // altura o tamaño de la maceta
             $table->boolean('activo')->default(true); // para publicación o no
+
         });
     }
 
