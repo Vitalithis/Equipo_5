@@ -61,10 +61,11 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 //Pedidos
 Route::resource('pedidos', PedidoController::class);
 //boleta
+// Boletas
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
 Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
-Route::get('/boletas/{pedido}/subir', [BoletaController::class, 'subir'])->name('boletas.subir');
-Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.guardar');
+Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
+Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
 
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 

@@ -1,17 +1,70 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
-
 use App\Models\Pedido;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
-
 
 class BoletaController extends Controller
 {
-    public function generar(Pedido $pedido)
+    /**
+     * Mostrar boleta provisoria (pantalla simple).
+     */
+    public function generar($pedidoId)
     {
-        $pedido->load(['usuario', 'detalles']);
+        $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
+
+        $subtotal = $pedido->detalles->sum('subtotal');
+        $descuento = $subtotal * 0.10;
+        $totalFinal = $subtotal - $descuento;
+
+        return view('boletas.provisoria', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
+    }
+
+    /**
+     * Generar y descargar PDF.
+     */
+    public function generarPDF($pedidoId)
+    {
+        $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
+
+        $subtotal = $pedido->detalles->sum('subtotal');
+        $descuento = $subtotal * 0.10;
+        $totalFinal = $subtotal - $descuento;
+
+        $pdf = PDF::loadView('boletas.pdf', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
+
+        return $pdf->download("boleta_pedido_{$pedido->id}.pdf");
+    }
+
+    /**
+     * Guardar boleta PDF subida por el usuario.
+     */
+    public function guardar(Request $request, $pedidoId)
+    {
+        $request->validate([
+            'boleta' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        $pedido = Pedido::findOrFail($pedidoId);
+
+        $file = $request->file('boleta');
+        $path = $file->store('boletas', 'public');
+
+        $pedido->boleta_final_path = $path;
+        $pedido->save();
+
+        return redirect()->back()->with('success', 'Boleta subida correctamente.');
+    }
+
+    /**
+     * Generar boleta provisoria desde otra vista.
+     */
+    public function generarProvisoria($pedidoId)
+    {
+        $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
 
         $subtotal = $pedido->detalles->sum('subtotal');
         $descuento = $subtotal * 0.10;
@@ -19,37 +72,4 @@ class BoletaController extends Controller
 
         return view('boletas.boleta', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
     }
-    public function generarPDF(Pedido $pedido)
-    {
-        $pedido->load(['usuario', 'detalles']);
-        $subtotal = $pedido->detalles->sum('subtotal');
-        $descuento = $subtotal * 0.10;
-        $totalFinal = $subtotal - $descuento;
-
-        $pdf = Pdf::loadView('boletas.pdf', compact('pedido', 'subtotal', 'descuento', 'totalFinal'))
-                ->setPaper('A4');
-        return $pdf->download('boleta-pedido-' . $pedido->id . '.pdf');
-    }
-
-    public function subir($id)
-{
-    $pedido = Pedido::findOrFail($id);
-    return view('boletas.subir', compact('pedido'));
-}
-
-public function guardar(Request $request, $id)
-{
-    $request->validate([
-        'boleta_pdf' => 'required|mimes:pdf|max:2048',
-    ]);
-
-    $pedido = Pedido::findOrFail($id);
-    $path = $request->file('boleta_pdf')->store('boletas', 'public');
-
-    $pedido->boleta_final_path = $path;
-    $pedido->save();
-
-    return redirect()->route('pedidos.index')->with('success', 'Boleta SII subida correctamente.');
-}
-
 }
