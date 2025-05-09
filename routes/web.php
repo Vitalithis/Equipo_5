@@ -25,9 +25,8 @@ use App\Http\Controllers\BoletaController;
 |
 */
 
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/',[HomeController::class,'index']);
+Route::get('/', [HomeController::class, 'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -37,7 +36,7 @@ Route::get('/ingresos', function () {
 
 //ruta para dashboard2
 Route::get('/dashboard2', function () {
-    return view('dashboard2'); 
+    return view('dashboard2');
 })->middleware(['auth', 'verified'])->name('dashboard2');
 
 Route::middleware('auth')->group(function () {
@@ -48,7 +47,7 @@ Route::middleware('auth')->group(function () {
 
 use App\Http\Controllers\ProductCategory;
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
     Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
 });
@@ -70,8 +69,21 @@ Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->na
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
 Route::get('/cart', [CartController::class, 'index'])
-     ->name('cart.index');
-     Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+    ->name('cart.index');
+Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
 
+Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
+Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
 
-require __DIR__.'/auth.php';
+Route::get('/sobre-nosotros', function () {
+    return view('about'); // Asegúrate de tener una vista resources/views/about.blade.php
+})->name('about');
+Route::get('/contacto', function () {
+    return view('contact'); // Asegúrate de tener resources/views/contact.blade.php
+})->name('contact');
+Route::get('/faq', function () {
+    return view('faq'); // Asegúrate de tener resources/views/contact.blade.php
+})->name('faq');
+
+require __DIR__ . '/auth.php';
