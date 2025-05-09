@@ -1,4 +1,4 @@
-<form action="{{ route('pedidos.update', $pedido->id) }}" method="POST" class="flex items-center gap-2">
+<form action="{{ route('pedidos.update', $pedido->id) }}" method="POST" class="flex items-center gap-2" onclick="event.stopPropagation();">
     @csrf
     @method('PUT')
 
