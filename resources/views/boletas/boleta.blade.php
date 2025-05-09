@@ -51,7 +51,7 @@
 
     <div class="text-center text-gray-600">
         <p>Gracias por su compra</p>
-        <p class="text-xs">Documento generado electrónicamente - No requiere firma ni timbre</p>
+        <p class="text-xs">Documento generado electrónicamente - No válido como documento fiscal</p>
     </div>
 
     <div class="mt-6 text-center">
