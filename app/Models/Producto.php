@@ -10,6 +10,7 @@ class Producto extends Model
     protected $table = 'productos';
 
     protected $fillable = [
+        'slug',
         'nombre',
         'nombre_cientifico',
         'descripcion',
@@ -17,7 +18,6 @@ class Producto extends Model
         'stock',
         'categoria',
         'imagen',
-        'codigo_barras',
         'cuidados',
         'nivel_dificultad',
         'frecuencia_riego',
@@ -37,4 +37,15 @@ class Producto extends Model
     protected $casts = [
     'precio' => 'integer',
 ];
+
+    // Evento para asignar automáticamente el código de barras
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($producto) {
+            $maxCodigoBarras = self::max('codigo_barras');
+            $producto->codigo_barras = $maxCodigoBarras ? $maxCodigoBarras + 1 : 1;
+        });
+    }
 }
