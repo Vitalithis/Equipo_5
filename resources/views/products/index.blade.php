@@ -61,14 +61,14 @@
         <p class="text-gray-600 mt-4 text-lg font-semibold">${{ number_format($producto->precio, 3) }}</p>
 
         
-
         <form action="{{ route('cart.add', $producto->id) }}" method="POST" class="mt-2">
-        @csrf
-        <input type="hidden" name="cantidad" value="1">
-        <button class="add-to-cart mt-4 bg-eaccent hover:bg-eaccent2 text-white px-6 py-3 rounded-lg font-bold transition duration-300 ease-in-out transform hover:scale-105">
-            Agregar al carrito
-        </button>
-    </form>
+    @csrf
+    <input type="hidden" name="cantidad" value="1">
+    <button class="add-to-cart mt-4 bg-eaccent hover:bg-eaccent2 text-white px-6 py-3 rounded-lg font-bold transition duration-300 ease-in-out transform hover:scale-105">
+        Agregar al carrito
+    </button>
+</form>
+
 
 
         <p class="text-gray-600 mt-4"><strong>Cantidad disponible:</strong> {{ $producto->cantidad }}</p>

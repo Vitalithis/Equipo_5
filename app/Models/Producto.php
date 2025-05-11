@@ -34,4 +34,7 @@ class Producto extends Model
     {
         return $this->belongsTo(Categoria::class, 'producto_categoria');
     }
+    protected $casts = [
+    'precio' => 'integer',
+];
 }

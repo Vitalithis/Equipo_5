@@ -10,6 +10,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 
+use App\Http\Controllers\WebpayController;
+use App\Http\Controllers\CheckoutController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,13 +57,60 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 });
 
 
-Route::get('/cart', [CartController::class, 'index'])
-    ->name('cart.index');
-Route::post('/carrito/agregar/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::middleware(['auth'])->group(function () {
+    // Mostrar carrito
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+    // Agregar producto al carrito (sesión)
+    Route::post('/cart/agregar', [CartController::class, 'agregarProducto'])->name('cart.agregar');
+
+    // Actualizar producto en el carrito (sesión)
+    Route::post('/cart/actualizar/{id}', [CartController::class, 'actualizarProducto'])->name('cart.actualizar');
+
+    // Eliminar producto del carrito (sesión)
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+    // Vaciar carrito (sesión)
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+
+    // Agregar producto al carrito (BD)
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+
+    // Guardar carrito en base de datos
+    Route::post('/cart/guardar', [CartController::class, 'guardarCarrito'])->name('cart.guardar');
+
+    // Obtener carrito desde base de datos
+    Route::get('/cart/obtener', [CartController::class, 'obtenerCarrito'])->name('cart.obtener');
+
+    // Vaciar carrito en base de datos
+    Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
+    Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    //Route::post('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+
+});
+Route::middleware('auth')->group(function () {
+    Route::get('/pagar',      [WebpayController::class, 'pagar'])->name('webpay.pagar');
+    Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
+});
+// Routes de paypal
+Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+
+Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
 Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
+
 
 Route::get('/sobre-nosotros', function () {
     return view('about'); // Asegúrate de tener una vista resources/views/about.blade.php

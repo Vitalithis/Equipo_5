@@ -22,7 +22,9 @@ class WebpayController extends Controller
     $items = CartItem::where('user_id', $userId)->get();
 
     // Convertir monto total a entero
-    $amount = intval($items->sum(fn($i) => $i->precio_unitario * $i->cantidad));
+    $amount = $items->sum(fn($i) => (int)$i->precio_unitario * (int)$i->cantidad);
+    $amount = intval($amount); // adicional por seguridad
+
 
     if ($amount <= 0) {
         return redirect()->route('cart.index')->with('error', 'Tu carrito está vacío.');

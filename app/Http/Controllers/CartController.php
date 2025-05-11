@@ -54,33 +54,29 @@ class CartController extends Controller
         return response()->json(['message' => 'Carrito vacío.']);
     }
 
+    // Añadir al carrito
     public function add(Request $request, $id)
 {
-    $user = auth()->user(); // Usuario autenticado
-    $producto = Producto::findOrFail($id); // Buscar producto por ID
-
+    $producto = Producto::findOrFail($id); // Buscar producto
     $cantidad = $request->input('cantidad', 1);
 
-    // Buscar si el producto ya está en el carrito del usuario
-    $item = CartItem::where('user_id', $user->id)
-        ->where('producto_id', $producto->id)
-        ->first();
+    // Obtener carrito actual de la sesión
+    $cart = session()->get('cart', []);
 
-    if ($item) {
-        // Si ya existe, incrementamos la cantidad
-        $item->cantidad += $cantidad;
-        $item->save();
+    if (isset($cart[$id])) {
+        $cart[$id]['cantidad'] += $cantidad;
     } else {
-        // Si no existe, lo creamos
-        CartItem::create([
-            'user_id' => $user->id,
-            'producto_id' => $producto->id,
+        $cart[$id] = [
+            'nombre'   => $producto->nombre,
+            'precio'   => $producto->precio,
             'cantidad' => $cantidad,
-            'precio_unitario' => $producto->precio,
-        ]);
+            'imagen'   => $producto->imagen ?? '/images/default.png',
+        ];
     }
 
-    return redirect()->back()->with('success', 'Producto añadido al carrito.');
+    session()->put('cart', $cart);
+
+    return redirect()->route('cart.index')->with('success', 'Producto añadido al carrito.');
 }
 
 
