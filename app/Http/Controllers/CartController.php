@@ -53,6 +53,7 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Carrito vacío.']);
     }
+
     public function add(Request $request, $id)
 {
     $user = auth()->user(); // Usuario autenticado
@@ -81,36 +82,31 @@ class CartController extends Controller
 
     return redirect()->back()->with('success', 'Producto añadido al carrito.');
 }
-public function agregarProducto(Request $request, $id)
-{
-    // Obtener el producto
-    $producto = Producto::findOrFail($id);
 
-    // Obtener la cantidad del producto, si no la proporciona, asignar 1
-    $cantidad = $request->input('cantidad', 1);
 
-    // Verificar si el producto ya está en el carrito de la sesión
-    $cart = session()->get('cart', []);
+public function agregarProducto(Request $request) {
+    $productoId = $request->input('id');
+    $producto = Producto::find($productoId);
 
-    if (isset($cart[$id])) {
-        // Si el producto ya está en el carrito, solo actualizamos la cantidad
-        $cart[$id]['cantidad'] += $cantidad;
-    } else {
-        // Si el producto no está en el carrito, lo agregamos
-        $cart[$id] = [
-            'nombre' => $producto->nombre,
-            'precio' => $producto->precio,
-            'cantidad' => $cantidad,
-            'imagen' => $producto->imagen,
-        ];
+    if (!$producto) {
+        return redirect()->back()->with('error', 'Producto no encontrado.');
     }
 
-    // Guardar el carrito en la sesión
+    $cart = session()->get('cart', []);
+
+    $cart[$productoId] = [
+        'nombre'   => $producto->nombre,
+        'precio'   => $producto->precio,
+        'cantidad' => 1,
+        'imagen'   => $producto->imagen ?? '/images/default.png', // Ajusta según sea necesario
+    ];
+
     session()->put('cart', $cart);
 
-    // Redirigir a la página del carrito
-    return redirect()->route('cart.index')->with('success', 'Producto agregado al carrito');
+    return redirect()->route('cart.index')->with('success', 'Producto agregado al carrito correctamente.');
 }
+
+
 public function actualizarProducto(Request $request, $id)
 {
     // Obtener el carrito de la sesión
@@ -147,6 +143,7 @@ public function clear()
     // Redirigir al carrito con un mensaje de éxito
     return redirect()->route('cart.index')->with('success', 'Carrito vaciado.');
 }
+
 
 }
 
