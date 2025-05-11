@@ -39,7 +39,7 @@ class CheckoutController extends Controller
         if ($response->isApproved()) {
             // Aquí podrías guardar la orden, limpiar el carrito, etc.
             session()->forget('cart');
-            return view('checkout.success', ['response' => $response]);
+            return view('checkouts.success', ['response' => $response]);
         } else {
             return redirect()->route('checkout.cancel');
         }
