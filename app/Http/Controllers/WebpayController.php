@@ -3,42 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CartItem;
 use Transbank\Webpay\WebpayPlus\Transaction;
+use Transbank\Webpay\WebpayPlus\WebpayPlus;
 
 class WebpayController extends Controller
 {
-    public function pagar()
+    public function __construct()
     {
-        $cart = session('cart', []);
-        $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
-
-        $transaction = new Transaction();
-
-        $response = $transaction->create(
-            uniqid(), // buyOrder
-            uniqid(), // sessionId
-            $total,
-            route('webpay.confirm') // URL de retorno
-        );
-
-        return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
+        // Configura WebpayPlus usando el config/transbank.php
+        WebpayPlus::configureForTesting(); // o configureUsing(config('transbank'))
     }
 
-    public function confirmar(Request $request)
-    {
-        $token = $request->get('token_ws');
+    // Inicia la transacción
+    public function pagar(Request $request)
+{
+    $userId = auth()->id();
+    $items = CartItem::where('user_id', $userId)->get();
 
-        $transaction = new Transaction();
-        $response = $transaction->commit($token);
+    // Convertir monto total a entero
+    $amount = $items->sum(fn($i) => (int)$i->precio_unitario * (int)$i->cantidad);
+    $amount = intval($amount); // adicional por seguridad
 
-        if ($response->isApproved()) {
-            // Procesar orden, limpiar carrito, guardar venta, etc.
-            session()->forget('cart');
-            return redirect()->route('home')->with('success', 'Pago aprobado con Webpay');
-        }
 
-        return redirect()->route('home')->with('error', 'Pago rechazado');
+    if ($amount <= 0) {
+        return redirect()->route('cart.index')->with('error', 'Tu carrito está vacío.');
     }
+
+    $buyOrder  = uniqid('order_');
+    $sessionId = session()->getId();
+    $returnUrl = route('webpay.respuesta');
+
+    $transaction = new Transaction();
+    $response = $transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
+
+    return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
 }
 
 
+    // Recibe la respuesta de Webpay
+    public function respuesta(Request $request)
+    {
+        $token = $request->get('token_ws');
+        if (! $token) {
+            return redirect()->route('cart.index')->with('error', 'Transacción cancelada.');
+        }
+
+        $transaction = new Transaction();
+        $result = $transaction->commit($token);
+
+        if ($result->isApproved()) {
+            // Aquí puedes marcar los CartItem como comprados o vaciar el carrito
+            CartItem::where('user_id', auth()->id())->delete();
+
+            return redirect()->route('cart.index')
+                             ->with('success', 'Pago exitoso. Orden: ' . $result->getBuyOrder());
+        }
+
+        return redirect()->route('cart.index')->with('error', 'Pago rechazado.');
+    }
+}

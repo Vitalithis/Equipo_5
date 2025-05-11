@@ -1,71 +1,145 @@
 <?php
-// app/Http/Controllers/CartController.php
 
 namespace App\Http\Controllers;
-
+use App\Models\Producto; // Asegúrate de tener esto al inicio
+use App\Models\CartItem;
 use Illuminate\Http\Request;
-use App\Models\CartItem;    // si usas persistencia
-use App\Models\Producto;
 
 class CartController extends Controller
 {
-    // Vista del carrito
     public function index()
     {
-        return view('cart.index');
+        // Cargar y devolver la vista con los elementos del carrito
+        return view('cart.index'); // Aquí hacemos referencia a la vista cart.index
     }
 
-    // (Opcional) endpoints AJAX para persistir en sesión o BD
-
-    public function add(Request $req)
+    // Guardar el carrito en la base de datos
+    public function guardarCarrito(Request $request)
     {
-        $data = $req->validate([
-            'id'       => 'required|integer',
-            'cantidad' => 'required|integer|min:1',
-        ]);
+        $user = auth()->user(); // Obtener el usuario autenticado
 
-        // Ejemplo guardando en session
-        $productos = session()->get('cart', []);
-        $prod   = Producto::findOrFail($data['id']);
-        $item   = [
-            'id'       => $prod->id,
-            'nombre'   => $prod->nombre,
-            'precio'   => $prod->precio,
-            'imagen'   => $prod->imagen,
-            'cantidad' => $data['cantidad'],
-        ];
-        $productos[$prod->id] = $item;
-        session()->put('cart', $productos);
+        // Borrar el carrito previo (si existe)
+        CartItem::where('user_id', $user->id)->delete();
 
-        return response()->json(['success'=>true,'cart'=>$productos]);
-    }
-
-    public function update(Request $req)
-    {
-        $data = $req->validate([
-            'id'       => 'required|integer',
-            'cantidad' => 'required|integer|min:1',
-        ]);
-        $cart = session()->get('cart', []);
-        if(isset($cart[$data['id']])) {
-            $cart[$data['id']]['cantidad'] = $data['cantidad'];
-            session()->put('cart',$cart);
+        // Guardar cada item del carrito
+        foreach ($request->items as $item) {
+            CartItem::create([
+                'user_id' => $user->id,
+                'producto_id' => $item['id'],
+                'cantidad' => $item['cantidad'],
+                'precio_unitario' => $item['precio'],
+            ]);
         }
-        return response()->json(['success'=>true,'cart'=>$cart]);
+
+        return response()->json(['message' => 'Carrito guardado con éxito.']);
     }
 
-    public function remove(Request $req)
+    // Obtener el carrito del usuario
+    public function obtenerCarrito()
     {
-        $id = $req->validate(['id'=>'required|integer'])['id'];
-        $cart = session()->get('cart', []);
-        unset($cart[$id]);
-        session()->put('cart',$cart);
-        return response()->json(['success'=>true,'cart'=>$cart]);
+        $user = auth()->user(); // Obtener el usuario autenticado
+        $cartItems = CartItem::where('user_id', $user->id)->with('producto')->get();
+
+        return response()->json([
+            'items' => $cartItems,
+        ]);
     }
 
-    public function clear()
+    // Vaciar el carrito del usuario
+    public function vaciarCarrito()
     {
-        session()->forget('cart');
-        return response()->json(['success'=>true]);
+        $user = auth()->user(); // Obtener el usuario autenticado
+        CartItem::where('user_id', $user->id)->delete();
+
+        return response()->json(['message' => 'Carrito vacío.']);
     }
+
+    // Añadir al carrito
+    public function add(Request $request, $id)
+{
+    $producto = Producto::findOrFail($id); // Buscar producto
+    $cantidad = $request->input('cantidad', 1);
+
+    // Obtener carrito actual de la sesión
+    $cart = session()->get('cart', []);
+
+    if (isset($cart[$id])) {
+        $cart[$id]['cantidad'] += $cantidad;
+    } else {
+        $cart[$id] = [
+            'nombre'   => $producto->nombre,
+            'precio'   => $producto->precio,
+            'cantidad' => $cantidad,
+            'imagen'   => $producto->imagen ?? '/images/default.png',
+        ];
+    }
+
+    session()->put('cart', $cart);
+
+    return redirect()->route('cart.index')->with('success', 'Producto añadido al carrito.');
 }
+
+
+public function agregarProducto(Request $request) {
+    $productoId = $request->input('id');
+    $producto = Producto::find($productoId);
+
+    if (!$producto) {
+        return redirect()->back()->with('error', 'Producto no encontrado.');
+    }
+
+    $cart = session()->get('cart', []);
+
+    $cart[$productoId] = [
+        'nombre'   => $producto->nombre,
+        'precio'   => $producto->precio,
+        'cantidad' => 1,
+        'imagen'   => $producto->imagen ?? '/images/default.png', // Ajusta según sea necesario
+    ];
+
+    session()->put('cart', $cart);
+
+    return redirect()->route('cart.index')->with('success', 'Producto agregado al carrito correctamente.');
+}
+
+
+public function actualizarProducto(Request $request, $id)
+{
+    // Obtener el carrito de la sesión
+    $cart = session()->get('cart', []);
+
+    // Verificar si el producto existe en el carrito
+    if (isset($cart[$id])) {
+        // Actualizar la cantidad del producto
+        $cart[$id]['cantidad'] = $request->input('cantidad', $cart[$id]['cantidad']);
+        
+        // Guardar el carrito actualizado en la sesión
+        session()->put('cart', $cart);
+
+        return redirect()->route('cart.index')->with('success', 'Carrito actualizado');
+    }
+
+    return redirect()->route('cart.index')->with('error', 'Producto no encontrado en el carrito');
+}
+public function remove($id)
+{
+    // Eliminar el producto del carrito de la sesión
+    $cart = session('cart', []);
+    unset($cart[$id]);
+    session(['cart' => $cart]);
+
+    // Retornar una respuesta
+    return redirect()->route('cart.index')->with('success', 'Producto eliminado del carrito.');
+}
+public function clear()
+{
+    // Vaciar el carrito en la sesión
+    session()->forget('cart');
+
+    // Redirigir al carrito con un mensaje de éxito
+    return redirect()->route('cart.index')->with('success', 'Carrito vaciado.');
+}
+
+
+}
+
