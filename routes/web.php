@@ -30,6 +30,31 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+// Todo lo que es gestión de productos del catalogo
+Route::get('dashboard.catalogo', [ProductoController::class, 'dashboard_show'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.catalogo');
+Route::get('/dashboard/catalogo/create', [ProductoController::class, 'create'])->name('catalogo.create');
+Route::post('/dashboard/catalogo', [ProductoController::class, 'store'])->name('catalogo.store');
+
+Route::get('/dashboard/catalogo/{id}/edit', [ProductoController::class, 'edit'])->name('catalogo_edit');
+
+Route::put('/dashboard/catalogo/{id}', [ProductoController::class, 'update'])->name('catalogo.update');
+
+Route::delete('/dashboard/catalogo/{id}', [ProductoController::class, 'destroy'])->name('catalogo.destroy');
+
+// Todo lo relacionado a descuentos y promos
+Route::get('/dashboard/descuentos', function () {
+    return view('dashboard.descuentos');
+})->middleware(['auth', 'verified'])->name('dashboard.descuentos');
+
+Route::get('dashboard/descuentos/create', [CategoriaController::class, 'create'])->name('descuentos.create');
+Route::post('/dashboard/descuentos', [CategoriaController::class, 'store'])->name('descuentos.store');
+Route::get('/dashboard/descuentos/{id}/edit', [CategoriaController::class, 'edit'])->name('descuentos_edit');
+Route::put('/dashboard/descuentos/{id}', [CategoriaController::class, 'update'])->name('descuentos.update');
+Route::delete('/dashboard/descuentos/{id}', [CategoriaController::class, 'destroy'])->name('descuentos.destroy');
+
+
 Route::get('/ingresos', function () {
     return view('ingresos');
 })->name('ingresos');
@@ -78,13 +103,13 @@ Route::get('/productos', [ProductoController::class, 'home'])->name('products.in
 Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
 
 Route::get('/sobre-nosotros', function () {
-    return view('about'); // Asegúrate de tener una vista resources/views/about.blade.php
+    return view('about');
 })->name('about');
 Route::get('/contacto', function () {
-    return view('contact'); // Asegúrate de tener resources/views/contact.blade.php
+    return view('contact');
 })->name('contact');
 Route::get('/faq', function () {
-    return view('faq'); // Asegúrate de tener resources/views/contact.blade.php
+    return view('faq');
 })->name('faq');
 
 require __DIR__ . '/auth.php';

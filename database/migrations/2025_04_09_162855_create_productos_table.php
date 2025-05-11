@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('categoria');
             $table->string('imagen')->nullable();
             $table->string('codigo_barras')->unique();
-
+            $table->integer('stock')->default(0);
             // Información adicional
             $table->text('cuidados')->nullable();
             $table->string('nivel_dificultad')->nullable(); // fácil, intermedio, experto

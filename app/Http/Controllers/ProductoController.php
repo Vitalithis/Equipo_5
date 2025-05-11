@@ -81,4 +81,45 @@ class ProductoController extends Controller
 
         return view('home', compact('productos'));
     }
+    public function dashboard_show()
+    {
+        $productos = Producto::all();
+        return view('dashboard.catalogo', compact('productos'));
+    }
+
+    public function create()
+    {
+        $categorias = Categoria::all();
+        $dificultades = Producto::distinct()->pluck('nivel_dificultad');
+        return view('dashboard.catalogo_edit', compact('categorias', 'dificultades'));
+    }
+
+    public function store(Request $request)
+    {
+        $producto = new Producto();
+        $producto->fill($request->all());
+        $producto->save();
+
+        return redirect()->route('dashboard.catalogo')->with('success', 'Producto creado correctamente.');
+    }
+    public function edit($id)
+    {
+
+        $producto = Producto::findOrFail($id);
+        $categorias = Categoria::all();
+        $dificultades = Producto::distinct()->pluck('nivel_dificultad');
+        return view('dashboard\catalogo_edit', compact('producto', 'categorias', 'dificultades'));
+    }
+    public function update(Request $request, $id)
+    {
+        $producto = Producto::findOrFail($id);
+        $producto->update($request->all());
+        return redirect()->route('dashboard.catalogo')->with('success', 'Producto actualizado correctamente.');
+    }
+    public function destroy($id)
+    {
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
+        return redirect()->route('dashboard.catalogo')->with('success', 'Producto eliminado correctamente.');
+    }
 }

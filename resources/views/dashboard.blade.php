@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Plantas Editha | Dashboard</title>
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -25,7 +25,7 @@
         <span class="text-lg font-semibold">Sala Venta</span>
       </div>
     </div>
-    
+
     <div class="p-4 border-b border-green-700">
       <div class="flex items-center space-x-3">
         <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-10 w-10 rounded-full">
@@ -35,11 +35,11 @@
         </div>
       </div>
     </div>
-    
+
     <nav class="p-4">
       <ul>
         <li class="mb-1">
-          <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="{{ route('dashboard.catalogo') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
             <span>Catalogo</span>
           </a>
@@ -57,6 +57,11 @@
             <span>Gestión de pedidos</span>
         </a>
         </li>
+        <li class="mb-1">
+          <a href="{{ route('dashboard.descuentos') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+            <i class="fa-solid fa-gauge"></i>
+            <span>Descuentos y promociones</span>
+          </a>
       </ul>
     </nav>
   </div>
@@ -72,7 +77,7 @@
           </button>
           <h1 class="ml-4 text-xl font-semibold text-gray-800">Dashboard</h1>
         </div>
-        
+
         <div class="flex items-center space-x-4">
           <!-- Notifications Dropdown -->
           <div class="relative" x-data="{ open: false }">
@@ -80,8 +85,8 @@
               <i class="fas fa-bell"></i>
               <span class="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
             </button>
-            
-            <div x-show="open" @click.away="open = false" 
+
+            <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-50">
               <div class="p-4 border-b">
                 <h3 class="text-lg font-medium">Notificaciones (3)</h3>
@@ -106,15 +111,15 @@
               </a>
             </div>
           </div>
-          
+
           <!-- Messages Dropdown -->
           <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none relative">
               <i class="fas fa-envelope"></i>
               <span class="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 rounded-full text-xs text-white flex items-center justify-center">5</span>
             </button>
-            
-            <div x-show="open" @click.away="open = false" 
+
+            <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-50">
               <div class="p-4 border-b">
                 <h3 class="text-lg font-medium">Mensajes (5)</h3>
@@ -138,19 +143,19 @@
               </a>
             </div>
           </div>
-          
+
           <!-- User Profile Dropdown -->
           <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
               <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-8 w-8 rounded-full">
               <span class="hidden md:inline">{{ Auth::user()->name }}</span>
             </button>
-            
-            <div x-show="open" @click.away="open = false" 
+
+            <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Roles</a>
-              <a href="{{ route('dashboard2') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>              
+              <a href="{{ route('dashboard2') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -180,7 +185,7 @@
                 Ver detalles <i class="fas fa-arrow-right ml-1"></i>
               </a>
             </div>
-            
+
             <!-- Tarjeta de Productos -->
             <div class="bg-white rounded-lg shadow p-6 border-t-4 border-green-500 hover:shadow-md transition-shadow">
               <h3 class="text-gray-500 uppercase text-sm font-semibold">Productos</h3>
@@ -189,7 +194,7 @@
                 Ver lista <i class="fas fa-arrow-right ml-1"></i>
               </a>
             </div>
-            
+
             <!-- Tarjeta de Clientes -->
             <div class="bg-white rounded-lg shadow p-6 border-t-4 border-yellow-500 hover:shadow-md transition-shadow">
               <h3 class="text-gray-500 uppercase text-sm font-semibold">Clientes</h3>
@@ -227,14 +232,14 @@
   document.addEventListener('alpine:init', () => {
     Alpine.data('dashboard', () => ({
       sidebarOpen: true,
-      
+
       init() {
         // Verificar el tamaño de pantalla al cargar
         this.handleResize();
         // Escuchar cambios de tamaño
         window.addEventListener('resize', this.handleResize.bind(this));
       },
-      
+
       handleResize() {
         // Cerrar sidebar en móviles por defecto
         if (window.innerWidth < 1024) {
