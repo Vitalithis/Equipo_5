@@ -21,12 +21,17 @@ class DatabaseSeeder extends Seeder
             'role' => 'superadmin'
         ]);
 
-        // Ejecutar otros seeders
+
         $this->call([
+            CategoriaSeeder::class,
             ProductoSeeder::class,
+            ProductoCategoriaSeeder::class,
+            PedidoSeeder::class
+            
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)
         // \App\Models\User::factory(10)->create();
+
     }
 }
