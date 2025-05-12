@@ -38,6 +38,12 @@
 
     <nav class="p-4">
       <ul>
+                <li class="mb-1">
+          <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+            <i class="fa-solid fa-gauge"></i>
+            <span>Home</span>
+          </a>
+        </li>
         <li class="mb-1">
           <a href="{{ route('dashboard.catalogo') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
@@ -153,13 +159,10 @@
 
             <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
-              <li class="mb-1">
-                  <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      {{ __('Perfil') }}
-                  </a>
-              </li>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Roles</a>
               <a href="{{ route('dashboard2') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>
+
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
