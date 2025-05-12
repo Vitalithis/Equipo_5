@@ -45,9 +45,9 @@
 
     <!-- Últimos productos -->
     <section class="bg-gray-50 ">
-        <div class="container mx-auto py-20">
-            <h2 class="text-2xl font-semibold mb-4 text-eprimary text-center">Últimos Productos agregados</h2>
-            <div class="grid grid-cols-4 gap-4">
+        <div class="ntainer mx-auto px-4 py-10">
+            <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-eprimary text-center">Últimos Productos agregados</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach ($productos->take(4) as $producto)
                     <div class="bg-white p-4 shadow rounded hover:p-2 hover:shadow-lg transition-all duration-300 hover:bg-eaccent"
                         data-height="{{$producto->tamano}}" data-category="{{$producto->categoria}}">
