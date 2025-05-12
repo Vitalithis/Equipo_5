@@ -41,15 +41,24 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Cerrar sesión</x-dropdown-link>
-                            </form>
-                        </x-slot>
+                    <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
+
+                    @role('admin|superadmin')
+                        <x-dropdown-link :href="route('dashboard')">Sala Venta</x-dropdown-link>
+                        <x-dropdown-link :href="route('dashboard2')">Planta Producción</x-dropdown-link>
+                    @endrole
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                            Cerrar sesión
+                        </x-dropdown-link>
+                    </form>
+                </x-slot>
                     </x-dropdown>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">Iniciar sesión</a>
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline mr-4">Iniciar sesión</a>
+                    <a href="{{ route('register') }}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">Registrarse</a>     
                 @endauth
             </div>
 
