@@ -110,9 +110,6 @@ Route::middleware(['auth'])->group(function () {
     // Eliminar producto del carrito (sesión)
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
-    // Vaciar carrito (sesión)
-    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
 
     // Agregar producto al carrito (BD)
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
