@@ -25,7 +25,7 @@
                                 </form>
 
                                 <!-- Formulario para eliminar el producto del carrito -->
-                                <form action="{{ route('cart.remove', $id) }}" method="POST">
+                                <form action="{{ route('cart.remove.solo', $id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="ml-2 text-red-500 hover:underline text-sm">Eliminar</button>

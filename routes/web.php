@@ -66,6 +66,7 @@ Route::get('/dashboard2', function () {
     return view('dashboard2');
 })->middleware(['auth', 'verified'])->name('dashboard2');
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -107,7 +108,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/actualizar/{id}', [CartController::class, 'actualizarProducto'])->name('cart.actualizar');
 
     // Eliminar producto del carrito (sesión)
-    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.solo');
+
+    // Vaciar carrito (sesión)
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.todo');
 
 
     // Agregar producto al carrito (BD)
