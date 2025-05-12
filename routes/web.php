@@ -18,6 +18,9 @@ use App\Http\Controllers\BoletaController;
 
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
+
+use App\Http\Controllers\RoleController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,9 +34,16 @@ use App\Http\Controllers\CheckoutController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+//rutas de dashboards
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard');
+
+Route::get('/dashboard2', function () {
+    return view('dashboard2');
+})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+
+
 // Todo lo que es gestión de productos del catalogo
 Route::get('dashboard.catalogo', [ProductoController::class, 'dashboard_show'])
     ->middleware(['auth', 'verified'])
@@ -164,5 +174,15 @@ Route::get('/contacto', function () {
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
+
+//ruta protediga de los roles
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::post('/roles/{user}/assign', [RoleController::class, 'assign'])->name('roles.assign');
+});
+Route::get('/dashboard2', function () {
+    return view('dashboard2');
+})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+
 
 require __DIR__ . '/auth.php';
