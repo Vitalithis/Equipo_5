@@ -47,6 +47,6 @@ class CheckoutController extends Controller
 
     public function cancel()
     {
-        return view('checkout.cancel');
+        return view('checkouts.cancel');
     }
 }
