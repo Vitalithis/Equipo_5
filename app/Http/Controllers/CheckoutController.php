@@ -13,7 +13,7 @@ class CheckoutController extends Controller
         $amount = $request->input('amount');
         $sessionId = uniqid();
         $buyOrder = uniqid('ORDER_');
-        $returnUrl = route('checkouts.response');
+        $returnUrl = route('checkouts');
 
         $response = (new Transaction)->create(
             $buyOrder,

@@ -31,6 +31,8 @@ use App\Http\Controllers\CheckoutController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -134,7 +136,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pagar',      [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
 });
-// Routes de paypal
+// Routes de webpay
 Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
 Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
 Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');

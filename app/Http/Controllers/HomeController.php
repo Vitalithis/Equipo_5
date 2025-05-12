@@ -12,6 +12,7 @@ class HomeController extends Controller
     {
         $categorias = Categoria::all();
         $productos = Producto::paginate(12);
-        return view('home', compact('categorias', 'productos'));
+        $ultimos = Producto::toma4ultimos();
+        return view('home', compact('categorias', 'productos', 'ultimos'));
     }
 }
