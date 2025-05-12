@@ -16,5 +16,8 @@ class CategoriaSeeder extends Seeder
         Categoria::create(['nombre' => 'Medicinal']);
         Categoria::create(['nombre' => 'Árbol']);
         Categoria::create(['nombre' => 'Decorativa']);
+
+
+        $this->command->info('Categorias creadas exitosamente.');
     }
 }

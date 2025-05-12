@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Producto extends Model
 {
     use HasFactory;
-    protected $table = 'productos';
 
+    protected $table = 'productos';
     protected $fillable = [
         'slug',
         'nombre',
@@ -16,7 +17,6 @@ class Producto extends Model
         'descripcion',
         'precio',
         'stock',
-        'categoria',
         'imagen',
         'cuidados',
         'nivel_dificultad',
@@ -29,23 +29,27 @@ class Producto extends Model
         'activo',
     ];
 
-    // Relación muchos a muchos con Categoria
-    public function categoria()
+    // Relación muchos a muchos con Categoria (CORRECTA)
+    public function categorias()
     {
-        return $this->belongsTo(Categoria::class, 'producto_categoria');
+        return $this->belongsToMany(Categoria::class, 'producto_categoria');
     }
-    protected $casts = [
-    'precio' => 'integer',
-];
 
-    // Evento para asignar automáticamente el código de barras
-    protected static function boot()
+    // Si necesitas mantener acceso al campo 'categoria' como string (opcional)
+    public function getCategoriaAttribute()
     {
-        parent::boot();
+        return $this->categorias()->first()?->nombre;
+    }
 
-        static::creating(function ($producto) {
-            $maxCodigoBarras = self::max('codigo_barras');
-            $producto->codigo_barras = $maxCodigoBarras ? $maxCodigoBarras + 1 : 1;
-        });
+    protected $casts = [
+        'precio' => 'float', // Cambiado a float para manejar decimales
+        'activo' => 'boolean',
+    ];
+
+    // Relación con Descuento
+    public function descuentos()
+    {
+        return $this->belongsToMany(Descuento::class, 'descuento_producto')
+            ->withTimestamps();
     }
 }

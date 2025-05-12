@@ -13,21 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear Super Admin
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@editha.com',
-            'password' => Hash::make('editha'), // Cambia esta contraseña
-            'role' => 'superadmin'
-        ]);
-
-
         $this->call([
+            AdminSeeder::class,
             CategoriaSeeder::class,
+            DescuentoSeeder::class,
             ProductoSeeder::class,
             ProductoCategoriaSeeder::class,
-            PedidoSeeder::class
-            
+            PedidoSeeder::class,
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)

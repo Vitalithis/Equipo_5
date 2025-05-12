@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProductoController;
 
+use App\Http\Controllers\DescuentoController;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -46,15 +48,13 @@ Route::put('/dashboard/catalogo/{id}', [ProductoController::class, 'update'])->n
 Route::delete('/dashboard/catalogo/{id}', [ProductoController::class, 'destroy'])->name('catalogo.destroy');
 
 // Todo lo relacionado a descuentos y promos
-Route::get('/dashboard/descuentos', function () {
-    return view('dashboard.descuentos');
-})->middleware(['auth', 'verified'])->name('dashboard.descuentos');
+Route::get('/dashboard/descuentos', [DescuentoController::class, 'mostrarTodos'])->middleware(['auth', 'verified'])->name('dashboard.descuentos');
 
-Route::get('dashboard/descuentos/create', [CategoriaController::class, 'create'])->name('descuentos.create');
-Route::post('/dashboard/descuentos', [CategoriaController::class, 'store'])->name('descuentos.store');
-Route::get('/dashboard/descuentos/{id}/edit', [CategoriaController::class, 'edit'])->name('descuentos_edit');
-Route::put('/dashboard/descuentos/{id}', [CategoriaController::class, 'update'])->name('descuentos.update');
-Route::delete('/dashboard/descuentos/{id}', [CategoriaController::class, 'destroy'])->name('descuentos.destroy');
+Route::get('dashboard/descuentos/create',     [DescuentoController::class, 'create'])->name('descuentos.create');
+Route::post('/dashboard/descuentos',          [DescuentoController::class, 'store'])->name('descuentos.store');
+Route::get('/dashboard/descuentos/{id}/edit', [DescuentoController::class, 'edit'])->name('descuentos_edit');
+Route::put('/dashboard/descuentos/{id}',      [DescuentoController::class, 'update'])->name('descuentos.update');
+Route::delete('/dashboard/descuentos/{id}',   [DescuentoController::class, 'destroy'])->name('descuentos.destroy');
 
 
 Route::get('/ingresos', function () {
@@ -145,6 +145,9 @@ Route::get('/checkout/response', [CheckoutController::class, 'response'])->name(
 Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+
+// Ruta para aplicar un descuento al carrito
+Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
 
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
