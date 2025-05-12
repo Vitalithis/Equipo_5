@@ -18,7 +18,7 @@ class ProductoFactory extends Factory
             'slug' => $this->faker->unique()->slug(),
             'nombre_cientifico' => $this->faker->optional(70)->words(3, true),
             'descripcion' => $this->faker->paragraph(3),
-            'precio' => $this->faker->randomFloat(2, 1.50, 99.99),
+            'precio' => $this->faker->numberBetween(1000, 99990), // Entre $1.000 y $99.990
             'cantidad' => $this->faker->numberBetween(0, 100),
             'imagen' => $this->generateProductImage(),
             'codigo_barras' => $this->faker->unique()->ean13(),
@@ -44,9 +44,9 @@ class ProductoFactory extends Factory
 
             // Asignar 1-3 categorías aleatorias
             $categoriaIds = Categoria::inRandomOrder()
-                            ->take(rand(1, 3))
-                            ->pluck('id')
-                            ->toArray();
+                ->take(rand(1, 3))
+                ->pluck('id')
+                ->toArray();
 
             $producto->categorias()->sync($categoriaIds);
         });
@@ -55,19 +55,107 @@ class ProductoFactory extends Factory
     // Métodos auxiliares para generar datos más realistas
     private function generateProductName(): string
     {
-        $types = ['Planta', 'Árbol', 'Arbusto', 'Cactus', 'Suculenta', 'Flor'];
-        $colors = ['Verde', 'Roja', 'Amarilla', 'Multicolor', 'Blanca', 'Azul'];
-        $features = ['Colgante', 'Decorativa', 'Perenne', 'Exótica', 'Rara'];
+        $types = [
+            'Planta',
+            'Árbol',
+            'Arbusto',
+            'Cactus',
+            'Suculenta',
+            'Flor',
+            'Helecho',
+            'Bonsái',
+            'Palma',
+            'Orquídea',
+            'Hierba',
+            'Enredadera',
+            'Musgo',
+            'Bulbo',
+            'Bambú',
+            'Ciprés',
+            'Pino',
+            'Cedro',
+            'Rosal',
+            'Lavanda',
+            'Aloe',
+            'Hiedra',
+            'Begonia',
+            'Geranio',
+            'Clavel',
+            'Tulipán',
+            'Margarita',
+            'Lirio',
+            'Girasol',
+            'Jazmín',
+            'Azalea'
+        ];
+        $colors = [
+            'Verde',
+            'Roja',
+            'Amarilla',
+            'Multicolor',
+            'Blanca',
+            'Azul',
+            'Morada',
+            'Naranja',
+            'Rosada',
+            'Negra',
+            'Plateada',
+            'Dorada',
+            'Carmesí',
+            'Turquesa',
+            'Esmeralda',
+            'Celeste',
+            'Coral',
+            'Beige',
+            'Gris',
+            'Marrón',
+            'Champán',
+            'Lavanda',
+            'Fucsia',
+            'Violeta'
+        ];
+        $features = [
+            'Colgante',
+            'Decorativa',
+            'Perenne',
+            'Exótica',
+            'Rara',
+            'Fragante',
+            'Medicinal',
+            'Comestible',
+            'Resistente',
+            'Compacta',
+            'De interior',
+            'De exterior',
+            'Trepadora',
+            'Aromática',
+            'De sombra',
+            'De sol',
+            'De bajo mantenimiento',
+            'De rápido crecimiento',
+            'De hojas grandes',
+            'De hojas pequeñas',
+            'De flores grandes',
+            'De flores pequeñas',
+            'De raíces profundas',
+            'De raíces aéreas',
+            'De tallo grueso',
+            'De tallo delgado',
+            'De follaje denso',
+            'De follaje ligero',
+            'De crecimiento lento',
+            'De crecimiento rápido'
+        ];
 
-        return $this->faker->randomElement($types).' '.
-               $this->faker->randomElement($colors).' '.
-               $this->faker->randomElement($features);
+        return $this->faker->randomElement($types) . ' ' .
+            $this->faker->randomElement($colors) . ' ' .
+            $this->faker->randomElement($features);
     }
 
     private function generateProductImage(): string
     {
         $plantTypes = ['suculent', 'cactus', 'fern', 'palm', 'flower', 'bonsai'];
-        return 'https://source.unsplash.com/random/640x480/?plant,'.$this->faker->randomElement($plantTypes);
+        return 'https://source.unsplash.com/random/640x480/?plant,' . $this->faker->randomElement($plantTypes);
     }
 
     private function generateCareInstructions(): string

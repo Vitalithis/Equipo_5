@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('productos', function (Blueprint $table) {
-            $table->dropColumn('categoria');
-        });
+     //   Schema::table('productos', function (Blueprint $table) {
+     //       $table->dropColumn('categoria');
+     //   });
     }
 
     public function down()
     {
-        Schema::table('productos', function (Blueprint $table) {
-            $table->string('categoria')->nullable();
-        });
+     //   Schema::table('productos', function (Blueprint $table) {
+     //       $table->string('categoria')->nullable();
+     //   });
     }
 };

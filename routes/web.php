@@ -145,6 +145,9 @@ Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('che
 
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 
+// Ruta para aplicar un descuento al carrito
+Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
+
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
