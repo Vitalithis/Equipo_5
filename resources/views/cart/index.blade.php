@@ -112,7 +112,7 @@
                     </div>
 
                     <!-- Vaciar el carrito -->
-                    <form action="{{ route('cart.clear') }}" method="POST" class="mb-4 mt-4">
+                    <form action="{{ route('cart.vaciar') }}" method="POST" class="mb-4 mt-4">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded">

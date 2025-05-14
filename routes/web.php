@@ -99,6 +99,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 //Pedidos
 Route::resource('pedidos', PedidoController::class);
 //boleta
+
 // Boletas
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
 Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
@@ -107,25 +108,19 @@ Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarPro
 
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
+// Rutas de Carrito(Actualizar - Eliminar - )
 Route::middleware(['auth'])->group(function () {
     // Mostrar carrito
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-    // Agregar producto al carrito (sesión)
-    Route::post('/cart/agregar', [CartController::class, 'agregarProducto'])->name('cart.agregar');
-
-    // Actualizar producto en el carrito (sesión)
-    Route::post('/cart/actualizar/{id}', [CartController::class, 'actualizarProducto'])->name('cart.actualizar');
-
+    
     // Eliminar producto del carrito (sesión)
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.solo');
 
-    // Vaciar carrito (sesión)
-    //Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.todo');
-
+    //Actualizar producto
+    Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 
     // Agregar producto al carrito (BD)
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/añadirCarrito/{id}', [CartController::class, 'añadirCarrito'])->name('cart.add');
 
     // Guardar carrito en base de datos
     Route::post('/cart/guardar', [CartController::class, 'guardarCarrito'])->name('cart.guardar');
@@ -134,27 +129,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart/obtener', [CartController::class, 'obtenerCarrito'])->name('cart.obtener');
 
     // Vaciar carrito en base de datos
-    Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
-    Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-    //Route::post('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+    Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
 
 });
+
+// Ruta para Wepbay
 Route::middleware('auth')->group(function () {
     Route::get('/pagar',      [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
 });
-// Routes de webpay
-Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
-Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
-Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
-Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
-Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
-Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
-Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
-Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 
-Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
+
+// Rutas de Checkout(pay-cancel-response)
+Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::get('/checkout/clear-cart', [CheckoutController::class, 'clearCart'])->name('checkout.clear-cart');
+
+
 
 // Ruta para aplicar un descuento al carrito
 Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
