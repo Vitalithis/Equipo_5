@@ -21,6 +21,8 @@ use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\RoleController;
 
+use App\Http\Controllers\FertilizanteController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -176,6 +178,17 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 Route::get('/dashboard2', function () {
     return view('dashboard2');
 })->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+
+// Ruta para el Mantenedor de Fertilizante
+
+Route::prefix('dashboard')->middleware(['auth', 'role:admin|superadmin'])->group(function () {
+    Route::get('/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->name('dashboard.fertilizantes');
+    Route::get('/fertilizantes/crear', [FertilizanteController::class, 'create'])->name('dashboard.fertilizantes.create');
+    Route::post('/fertilizantes', [FertilizanteController::class, 'store'])->name('dashboard.fertilizantes.store');
+    Route::get('/fertilizantes/{id}/editar', [FertilizanteController::class, 'edit'])->name('dashboard.fertilizantes.edit');
+    Route::put('/fertilizantes/{id}', [FertilizanteController::class, 'update'])->name('dashboard.fertilizantes.update');
+    Route::delete('/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->name('dashboard.fertilizantes.delete');
+});
 
 
 require __DIR__ . '/auth.php';
