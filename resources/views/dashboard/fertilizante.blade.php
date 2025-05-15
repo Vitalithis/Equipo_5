@@ -1,54 +1,61 @@
 @extends('layouts.dashboard')
-
-@section('title', 'Lista de Fertilizantes')
+@section('title','Listado de fertilizantes')
 
 @section('content')
-<div class="max-w-7xl mx-auto bg-efore" style="background-color:rgb(248,246,244) !important">
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">Fertilizantes</h2>
-            <a href="{{ route('fertilizantes.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md">Añadir Fertilizante</a>
+    <div class="py-8 px-4 md:px-8 max-w-7xl mx-auto">
+        <div class="flex items-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                Fertilizantes
+            </h1>
+            <a href="{{ route('fertilizantes.create') }}" class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+                Agregar Fertilizante
+            </a>
         </div>
 
-        <div class="overflow-x-auto bg-white rounded-xl shadow border border-eaccent2">
-            <table class="min-w-full bg-white border-0">
-                <thead class="bg-eaccent2 text-eprimary uppercase tracking-wide text-xs">
+        <div class="overflow-x-auto bg-white shadow sm:rounded-lg">
+            <table class="min-w-full table-auto text-sm divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-4 text-center">ID</th>
-                        <th class="px-6 py-4 text-left">Imagen</th>
-                        <th class="px-6 py-4 text-left">Nombre</th>
-                        <th class="px-6 py-4 text-left">Tipo</th>
-                        <th class="px-6 py-4 text-left">Precio</th>
-                        <th class="px-6 py-4 text-left">Stock</th>
-                        <th class="px-6 py-4 text-left">Activo</th>
-                        <th class="px-6 py-4 text-left">Acciones</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[200px]">Composición</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[200px]">Descripción</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peso</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unidad</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Presentación</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[200px]">Aplicación</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimiento</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activo</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($fertilizantes as $fertilizante)
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($fertilizantes as $fertilizante)
                         <tr>
-                            <td class="px-4 py-2 text-center">{{ $fertilizante->id }}</td>
-                            <td class="px-4 py-2">
-                                @if($fertilizante->imagen)
-                                    <img src="{{ asset('storage/' . $fertilizante->imagen) }}" alt="{{ $fertilizante->nombre }}"
-                                        class="w-16 h-16 object-cover rounded">
-                                @else
-                                    <span class="text-gray-400">Sin imagen</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-2">{{ $fertilizante->nombre }}</td>
-                            <td class="px-4 py-2">{{ $fertilizante->tipo }}</td>
-                            <td class="px-4 py-2">${{ number_format($fertilizante->precio, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2">{{ $fertilizante->stock }}</td>
-                            <td class="px-4 py-2">
-                                {{ $fertilizante->activo ? 'Sí' : 'No' }}
-                            </td>
-                            <td class="px-4 py-2">
-                                <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}" class="text-blue-500">Editar</a>
-                                <button type="button" class="text-red-500 ml-2"
-                                    onclick="openDeleteModal({{ $fertilizante->id }}, '{{ $fertilizante->nombre }}')">
-                                    Eliminar
-                                </button>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->nombre }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->tipo }}</td>
+                            <td class="px-4 py-2 whitespace-normal break-words max-w-[200px]">{{ Str::limit($fertilizante->composicion, 100) }}</td>
+                            <td class="px-4 py-2 whitespace-normal break-words max-w-[200px]">{{ Str::limit($fertilizante->descripcion, 100) }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->peso }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->unidad_medida }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->presentacion }}</td>
+                            <td class="px-4 py-2 whitespace-normal break-words max-w-[200px]">{{ Str::limit($fertilizante->aplicacion, 100) }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">${{ number_format($fertilizante->precio, 0, ',', '.') }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->stock }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->fecha_vencimiento }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ $fertilizante->activo ? 'Sí' : 'No' }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">
+                                <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                                <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block ml-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -56,42 +63,4 @@
             </table>
         </div>
     </div>
-</div>
-
-<!-- Modal de confirmación -->
-<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-        <h2 class="text-lg font-bold text-gray-800 mb-4">¿Eliminar fertilizante?</h2>
-        <p class="text-gray-700 mb-4">
-            ¿Estás seguro que deseas eliminar el fertilizante <span id="modalFertilizanteName" class="font-semibold"></span>?
-        </p>
-        <form id="deleteForm" method="POST" action="">
-            @csrf
-            @method('DELETE')
-            <div class="flex justify-end space-x-3">
-                <button type="button" onclick="closeDeleteModal()"
-                    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Cancelar
-                </button>
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                    Eliminar
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openDeleteModal(id, nombre) {
-        document.getElementById('modalFertilizanteName').textContent = nombre;
-        document.getElementById('deleteForm').action = `/dashboard/fertilizantes/${id}`;
-        document.getElementById('deleteModal').classList.remove('hidden');
-        document.getElementById('deleteModal').classList.add('flex');
-    }
-
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
-        document.getElementById('deleteModal').classList.remove('flex');
-    }
-</script>
 @endsection
