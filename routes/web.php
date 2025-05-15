@@ -181,14 +181,13 @@ Route::get('/dashboard2', function () {
 
 // Ruta para el Mantenedor de Fertilizante
 
-Route::prefix('dashboard')->middleware(['auth', 'role:admin|superadmin'])->group(function () {
-    Route::get('/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->name('dashboard.fertilizantes');
-    Route::get('/fertilizantes/crear', [FertilizanteController::class, 'create'])->name('dashboard.fertilizantes.create');
-    Route::post('/fertilizantes', [FertilizanteController::class, 'store'])->name('dashboard.fertilizantes.store');
-    Route::get('/fertilizantes/{id}/editar', [FertilizanteController::class, 'edit'])->name('dashboard.fertilizantes.edit');
-    Route::put('/fertilizantes/{id}', [FertilizanteController::class, 'update'])->name('dashboard.fertilizantes.update');
-    Route::delete('/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->name('dashboard.fertilizantes.delete');
-});
+Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'verified'])->name('dashboard.fertilizantes');
+Route::get('/dashboard/fertilizantes/create', [FertilizanteController::class, 'create'])->name('fertilizantes.create');
+Route::post('/dashboard/fertilizantes', [FertilizanteController::class, 'store'])->name('fertilizantes.store');
+Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class, 'edit'])->name('fertilizantes.edit');
+Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->name('fertilizantes.update');
+Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->name('fertilizantes.destroy');
+
 
 
 require __DIR__ . '/auth.php';
