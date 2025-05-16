@@ -62,6 +62,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Actualizar el rol de un usuario
 });
+// Mostrar formulario de edición de roles
+Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+
+// Actualizar un rol
+Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+
+// Eliminar un rol
+Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+// Guardar un nuevo rol
+Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
 
 
 
