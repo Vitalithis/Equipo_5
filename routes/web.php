@@ -24,7 +24,7 @@ use App\Http\Controllers\UserRoleController;
 
 use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
-
+use App\Http\Controllers\ProductCategory;
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 
@@ -61,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
 
     // Actualizar el rol de un usuario
-    Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
 });
 
 
@@ -101,7 +100,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-use App\Http\Controllers\ProductCategory;
+
 
 
 //Pedidos
@@ -182,8 +181,5 @@ Route::get('/contacto', function () {
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
-
-
-
 
 require __DIR__ . '/auth.php';
