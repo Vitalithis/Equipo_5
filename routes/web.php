@@ -22,6 +22,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\RoleController;
 
 use App\Http\Controllers\FertilizanteController;
+use App\Http\Controllers\OrdenProduccionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -187,6 +188,19 @@ Route::post('/dashboard/fertilizantes', [FertilizanteController::class, 'store']
 Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class, 'edit'])->name('fertilizantes.edit');
 Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->name('fertilizantes.update');
 Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->name('fertilizantes.destroy');
+
+
+// Rutas para orden de producción
+
+
+Route::prefix('dashboard/ordenes-produccion')->middleware(['auth'])->group(function () {
+    Route::get('/', [OrdenProduccionController::class, 'index'])->name('dashboard.ordenes');
+    Route::get('/create', [OrdenProduccionController::class, 'create'])->name('ordenes.create');
+    Route::post('/', [OrdenProduccionController::class, 'store'])->name('ordenes.store');
+    Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->name('ordenes.edit');
+    Route::put('/{id}', [OrdenProduccionController::class, 'update'])->name('ordenes.update');
+    Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->name('ordenes.destroy');
+});
 
 
 
