@@ -20,28 +20,50 @@ use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserRoleController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\FertilizanteController;
+use App\Http\Controllers\OrdenProduccionController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
-//rutas de dashboards
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard');
 
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+// Rutas para el Dashboard
+Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/dashboard2', function () {
+        return view('dashboard2');
+    })->name('dashboard2');
+});
+
+// Rutas para la Gestión de Roles
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    // Vista para gestionar roles
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+
+    // Mostrar formulario de creación de roles
+    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+
+    // Asignar rol a un usuario
+    Route::post('/roles/{user}/assign', [RoleController::class, 'assign'])->name('roles.assign');
+
+    // Rutas adicionales para la gestión de roles y usuarios
+    Route::get('/admin/roles', [UserRoleController::class, 'manageRoles'])->name('roles.manage');
+    Route::put('/admin/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
+});
+
+// Rutas API protegidas con Sanctum
+Route::middleware('auth:sanctum')->group(function () {
+    // Obtener todos los usuarios
+    Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
+
+    // Actualizar el rol de un usuario
+    Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
+});
+
 
 
 // Todo lo que es gestión de productos del catalogo
@@ -71,10 +93,6 @@ Route::get('/ingresos', function () {
     return view('ingresos');
 })->name('ingresos');
 
-//ruta para dashboard2
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'verified'])->name('dashboard2');
 
 
 Route::middleware('auth')->group(function () {
@@ -85,16 +103,6 @@ Route::middleware('auth')->group(function () {
 
 use App\Http\Controllers\ProductCategory;
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
-    Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
-});
-
-Route::middleware(['auth', 'superadmin'])->group(function () {
-    // Rutas solo para superadmin
-    Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
-    Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
-});
 
 //Pedidos
 Route::resource('pedidos', PedidoController::class);
@@ -175,14 +183,7 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
-//ruta protediga de los roles
-Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-    Route::post('/roles/{user}/assign', [RoleController::class, 'assign'])->name('roles.assign');
-});
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+
 
 
 require __DIR__ . '/auth.php';

@@ -13,7 +13,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
         "spatie/laravel-permission": "^6.17",
-        "transbank/transbank-sdk": "^4.0"
+        "transbank/transbank-sdk": "^5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -7,16 +7,18 @@ export default {
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
+        "./resources/js/**/*.js",
+        "./node_modules/flowbite/**/*.js", // 👈 Flowbite components
     ],
 
     theme: {
         colors: {
             // Colores base
-            efore: "#F8F6F4", //marfil
-            eprimary: "#3E0345", //purpura
-            esecondary: "#8090BF", //azul grisaseo
-            eaccent: "#F6E867", //amarillo suave
-            eaccent2: "#AEC68D", //verde claro, para notis, burbujas, etc
+            efore: "#F8F6F4", // marfil
+            eprimary: "#3E0345", // púrpura
+            esecondary: "#8090BF", // azul grisáceo
+            eaccent: "#F6E867", // amarillo suave
+            eaccent2: "#AEC68D", // verde claro
 
             // Variaciones de efore
             "efore-100": "#F9F7F5",
@@ -85,5 +87,8 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+        require("flowbite/plugin"), // 👈 Plugin de Flowbite
+    ],
 };

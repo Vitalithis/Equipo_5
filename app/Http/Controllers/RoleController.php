@@ -2,28 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->get();
-        $roles = Role::all();
-        return view('roles.manage', compact('users', 'roles'));
+        $roles = Role::with('permissions')->get();
+        return view('dashboard.roles.roles', compact('roles'));
     }
 
-    public function assign(Request $request, User $user)
+    public function create()
     {
-        $request->validate([
-            'role' => 'required|exists:roles,name',
+        $permissions = Permission::all();
+        return view('dashboard.roles.form', ['role' => null, 'permissions' => $permissions]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|unique:roles,name',
+            'permissions' => 'array',
         ]);
 
-        $user->syncRoles([$request->role]);
+        $role = Role::create(['name' => $data['name']]);
+        $role->syncPermissions($data['permissions']);
 
-        return redirect()->back()->with('success', 'Rol asignado correctamente.');
+        return redirect()->route('roles.index')->with('success', 'Rol creado correctamente');
+    }
+
+    public function edit(Role $role)
+    {
+        $permissions = Permission::all();
+        return view('dashboard.roles.form', compact('role', 'permissions'));
+    }
+
+    public function update(Request $request, Role $role)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|unique:roles,name,' . $role->id,
+            'permissions' => 'array',
+        ]);
+
+        $role->update(['name' => $data['name']]);
+        $role->syncPermissions($data['permissions']);
+
+        return redirect()->route('roles.index')->with('success', 'Rol actualizado');
+    }
+
+    public function destroy(Role $role)
+    {
+        $role->delete();
+        return redirect()->route('roles.index')->with('success', 'Rol eliminado');
     }
 }
-
