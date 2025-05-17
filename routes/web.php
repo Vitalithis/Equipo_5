@@ -86,16 +86,20 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
 
-//Pedidos
-Route::resource('pedidos', PedidoController::class);
-//boleta
-// Boletas
-Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
-Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
-Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
-Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
+Route::middleware(['auth', 'verified'])->group(function () {
+    //Pedidos
+    Route::resource('pedidos', PedidoController::class);
+    Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
-Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    // Boletas
+    Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
+    Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
+    Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
+    Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
+
+    
+});
+
 
 Route::middleware(['auth'])->group(function () {
     // Mostrar carrito
