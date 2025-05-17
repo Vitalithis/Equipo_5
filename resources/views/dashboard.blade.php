@@ -54,7 +54,7 @@
         <li class="mb-1">
         <a href="{{ route('pedidos.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
-            <span>Gestión de pedidos</span>
+            <span>Gestión de Ventas</span>
         </a>
         </li>
         <li class="mb-1">
