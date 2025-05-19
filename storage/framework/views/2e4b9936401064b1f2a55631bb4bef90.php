@@ -19,11 +19,7 @@
                 <div class="w-full flex-shrink-0 flex items-center justify-center">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                     <img src="<?php echo e(asset('/storage/home/slides/slide1.webp')); ?>" alt="Slide 1"
-=======
-                    <img src="<?php echo e(asset('/storage/images/slide1.jpg')); ?>" alt="Slide 1"
->>>>>>> Stashed changes
 =======
                     <img src="<?php echo e(asset('/storage/images/slide1.jpg')); ?>" alt="Slide 1"
 >>>>>>> Stashed changes
@@ -37,11 +33,7 @@
                 <div class="w-full flex-shrink-0 flex items-center justify-center">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                     <img src="<?php echo e(asset('storage/home/slides/slide-2.webp')); ?>" alt="Slide 2"
-=======
-                    <img src="<?php echo e(asset('/storage/images/slide2.jpg')); ?>" alt="Slide 2"
->>>>>>> Stashed changes
 =======
                     <img src="<?php echo e(asset('/storage/images/slide2.jpg')); ?>" alt="Slide 2"
 >>>>>>> Stashed changes
@@ -55,11 +47,7 @@
                 <div class="w-full flex-shrink-0 flex items-center justify-center">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                     <img src="<?php echo e(asset('storage/home/slides/slide-3.webp')); ?>" alt="Slide 3"
-=======
-                    <img src="<?php echo e(asset('/storage/images/slide3.jpg')); ?>" alt="Slide 3"
->>>>>>> Stashed changes
 =======
                     <img src="<?php echo e(asset('/storage/images/slide3.jpg')); ?>" alt="Slide 3"
 >>>>>>> Stashed changes
@@ -84,7 +72,6 @@
             <div class="grid grid-cols-4 gap-4">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                 <?php $__currentLoopData = $productos->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="bg-white p-4 shadow rounded hover:p-2 hover:shadow-lg transition-all duration-300 hover:bg-eaccent"
                         data-height="<?php echo e($producto->tamano); ?>" data-category="<?php echo e($producto->categoria); ?>">
@@ -99,8 +86,6 @@
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 =======
-=======
->>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 <?php $__currentLoopData = $productos->sortByDesc('created_at')->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -124,9 +109,6 @@
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -159,11 +141,7 @@
             <aside class="col-span-1 bg-eaccent2-100 p-4 rounded sticky top-4 self-start">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                 <form  action="<?php echo e(route('products.index')); ?>#product-catalog" method="GET">
-=======
-                <form action="<?php echo e(route('products.index')); ?>#product-catalog" method="GET">
->>>>>>> Stashed changes
 =======
                 <form action="<?php echo e(route('products.index')); ?>#product-catalog" method="GET">
 >>>>>>> Stashed changes
@@ -301,13 +279,8 @@
                                 <!-- Imagen del producto -->
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                                 <img src="<?php echo e($producto->imagen); ?>" alt="<?php echo e($producto->nombre); ?>"
                                     class="w-full h-40 object-cover mb-4 rounded">
-=======
-                                <img src="/storage/images/default-logo.png" alt="<?php echo e($producto->nombre); ?>"
-                                    class="w-full h-40 object-cover mb-4 rounded" crossorigin="anonymous">
->>>>>>> Stashed changes
 =======
                                 <img src="/storage/images/default-logo.png" alt="<?php echo e($producto->nombre); ?>"
                                     class="w-full h-40 object-cover mb-4 rounded" crossorigin="anonymous">
@@ -324,11 +297,7 @@
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                         
-=======
-
->>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -357,7 +326,6 @@
             const minusSVG = `
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
                                                                                             <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
                                                                                         </svg>
@@ -372,8 +340,6 @@
 =======
 =======
 >>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                                                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
                                                                                                             <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
                                                                                                         </svg>
@@ -386,9 +352,6 @@
                                                                                                         </svg>
                                                                                                         `;
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -424,7 +387,6 @@
         const iconActive = `
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-eaccent2-9 w-5 h-5">
                   <rect width="256" height="256" fill="none"/>
                   <path fill='#AEC68D' d="M200,144h-76.7l22.41-22.41a59.55,59.55,0,0,0,26.1,6.36,49.56,49.56,0,0,0,25.89-7.22c23.72-14.36,36.43-47.6,34-88.92a8,8,0,0,0-7.52-7.52c-41.32-2.43-74.56,10.28-88.93,34-9.35,15.45-9.59,34.11-.86,52L120,124.68l-12.21-12.21c6-13.25,5.57-27-1.39-38.48C95.53,56,70.61,46.41,39.73,48.22a8,8,0,0,0-7.51,7.51C30.4,86.6,40,111.52,58,122.4A38.22,38.22,0,0,0,78,128a45,45,0,0,0,18.52-4.19L108.69,136l-8,8H56a8,8,0,0,0,0,16h9.59L78.8,219.47A15.89,15.89,0,0,0,94.42,232h67.17a15.91,15.91,0,0,0,15.62-12.53L190.42,160H200a8,8,0,0,0,0-16Z"/>
@@ -437,8 +399,6 @@
 =======
 =======
 >>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-eaccent2-9 w-5 h-5">
                                   <rect width="256" height="256" fill="none"/>
                                   <path fill='#AEC68D' d="M200,144h-76.7l22.41-22.41a59.55,59.55,0,0,0,26.1,6.36,49.56,49.56,0,0,0,25.89-7.22c23.72-14.36,36.43-47.6,34-88.92a8,8,0,0,0-7.52-7.52c-41.32-2.43-74.56,10.28-88.93,34-9.35,15.45-9.59,34.11-.86,52L120,124.68l-12.21-12.21c6-13.25,5.57-27-1.39-38.48C95.53,56,70.61,46.41,39.73,48.22a8,8,0,0,0-7.51,7.51C30.4,86.6,40,111.52,58,122.4A38.22,38.22,0,0,0,78,128a45,45,0,0,0,18.52-4.19L108.69,136l-8,8H56a8,8,0,0,0,0,16h9.59L78.8,219.47A15.89,15.89,0,0,0,94.42,232h67.17a15.91,15.91,0,0,0,15.62-12.53L190.42,160H200a8,8,0,0,0,0-16Z"/>
@@ -449,9 +409,6 @@
                                   <path  d="M200,144h-76.7l22.41-22.41a59.55,59.55,0,0,0,26.1,6.36,49.56,49.56,0,0,0,25.89-7.22c23.72-14.36,36.43-47.6,34-88.92a8,8,0,0,0-7.52-7.52c-41.32-2.43-74.56,10.28-88.93,34-9.35,15.45-9.59,34.11-.86,52L120,124.68l-12.21-12.21c6-13.25,5.57-27-1.39-38.48C95.53,56,70.61,46.41,39.73,48.22a8,8,0,0,0-7.51,7.51C30.4,86.6,40,111.52,58,122.4A38.22,38.22,0,0,0,78,128a45,45,0,0,0,18.52-4.19L108.69,136l-8,8H56a8,8,0,0,0,0,16h9.59L78.8,219.47A15.89,15.89,0,0,0,94.42,232h67.17a15.91,15.91,0,0,0,15.62-12.53L190.42,160H200a8,8,0,0,0,0-16Z"/>
                                 </svg>`; // Ícono para slide inactivo
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
