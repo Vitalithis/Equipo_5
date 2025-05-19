@@ -39,23 +39,17 @@
         
     </div>
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
     <footer class="bg-gray-100 text-gray-700 mt-12 border-t">
         <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
 
             <!-- Empresa -->
 =======
-=======
->>>>>>> Stashed changes
 <!---------
     <footer class="bg-gray-100 text-gray-700 mt-12 border-t">
         <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
 
             Empresa
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
 >>>>>>> Stashed changes
             <div>
                 <h3 class="text-lg font-semibold text-eprimary mb-3">Nuestra empresa</h3>
@@ -68,11 +62,7 @@
             </div>
 
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
             <!-- Ayuda -->
-=======
-            Ayuda
->>>>>>> Stashed changes
 =======
             Ayuda
 >>>>>>> Stashed changes
@@ -87,11 +77,7 @@
             </div>
 
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
             <!-- Categorías (ejemplo) -->
-=======
-            Categorías
->>>>>>> Stashed changes
 =======
             Categorías
 >>>>>>> Stashed changes
@@ -106,11 +92,7 @@
             </div>
 
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
             <!-- Contacto -->
-=======
-            Contacto -
->>>>>>> Stashed changes
 =======
             Contacto -
 >>>>>>> Stashed changes
@@ -134,11 +116,7 @@
                 </ul>
             </div>
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
         </div>
-=======
-        </div>-->
->>>>>>> Stashed changes
 =======
         </div>-->
 >>>>>>> Stashed changes
