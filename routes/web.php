@@ -24,7 +24,8 @@ use App\Http\Controllers\UserRoleController;
 
 use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
-use App\Http\Controllers\ProductCategory;
+use App\Models\ProductCategory;
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 
@@ -99,7 +100,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 
 
 
