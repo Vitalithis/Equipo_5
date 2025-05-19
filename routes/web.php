@@ -26,6 +26,7 @@ use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
 use App\Models\ProductCategory;
 
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 
@@ -64,6 +65,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // Actualizar el rol de un usuario
 });
 
+// Mostrar formulario de edición de roles
+Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+
+// Actualizar un rol
+Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+
+// Eliminar un rol
+Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+// Guardar un nuevo rol
+Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
+
+
 
 
 // Todo lo que es gestión de productos del catalogo
@@ -100,8 +114,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
 
 //Pedidos
 Route::resource('pedidos', PedidoController::class);
@@ -181,5 +193,28 @@ Route::get('/contacto', function () {
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
+
+
+// Ruta para el Mantenedor de Fertilizante
+
+Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'verified'])->name('dashboard.fertilizantes');
+Route::get('/dashboard/fertilizantes/create', [FertilizanteController::class, 'create'])->name('fertilizantes.create');
+Route::post('/dashboard/fertilizantes', [FertilizanteController::class, 'store'])->name('fertilizantes.store');
+Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class, 'edit'])->name('fertilizantes.edit');
+Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->name('fertilizantes.update');
+Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->name('fertilizantes.destroy');
+
+
+// Rutas para orden de producción
+
+
+Route::prefix('dashboard/ordenes-produccion')->middleware(['auth'])->group(function () {
+    Route::get('/', [OrdenProduccionController::class, 'index'])->name('dashboard.ordenes');
+    Route::get('/create', [OrdenProduccionController::class, 'create'])->name('ordenes.create');
+    Route::post('/', [OrdenProduccionController::class, 'store'])->name('ordenes.store');
+    Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->name('ordenes.edit');
+    Route::put('/{id}', [OrdenProduccionController::class, 'update'])->name('ordenes.update');
+    Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->name('ordenes.destroy');
+});
 
 require __DIR__ . '/auth.php';
