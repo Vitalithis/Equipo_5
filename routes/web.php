@@ -78,6 +78,10 @@ Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
 Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
 
 
+Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
+
+
+
 
 
 // Todo lo que es gestión de productos del catalogo
@@ -193,7 +197,6 @@ Route::get('/contacto', function () {
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
-
 
 // Ruta para el Mantenedor de Fertilizante
 
