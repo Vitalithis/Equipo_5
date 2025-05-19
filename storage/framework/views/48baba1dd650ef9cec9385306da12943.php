@@ -50,11 +50,7 @@
         </li>
         <!-- Más elementos del menú -->
         <li class="mb-1">
-<<<<<<< Updated upstream
           <a href="<?php echo e(route('roles.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
-=======
-          <a href="#" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
->>>>>>> Stashed changes
           <i class="fa-regular fa-circle-user"></i>
           <span>Roles</span>
           </a>
@@ -157,10 +153,6 @@
             <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-<<<<<<< Updated upstream
-=======
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Roles</a>
->>>>>>> Stashed changes
               <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sala Ventas</a>
 
               <form method="POST" action="<?php echo e(route('logout')); ?>">
