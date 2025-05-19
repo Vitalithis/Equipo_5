@@ -52,7 +52,6 @@
 @endsection
 <<<<<<< Updated upstream:resources/views/dashboard/roles/form.blade.php
 <<<<<<< Updated upstream:resources/views/dashboard/roles/form.blade.php
-<<<<<<< Updated upstream:resources/views/dashboard/roles/form.blade.php
 
 @extends('layouts.app')
 
@@ -106,8 +105,6 @@
     </form>
 </div>
 @endsection
-=======
->>>>>>> Stashed changes:resources/views/roles/form.blade.php
 =======
 >>>>>>> Stashed changes:resources/views/roles/form.blade.php
 =======
