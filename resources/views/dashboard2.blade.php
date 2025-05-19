@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,12 +49,6 @@
           </a>
         </li>
         <!-- Más elementos del menú -->
-        <li class="mb-1">
-          <a href="{{ route('roles.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
-          <i class="fa-regular fa-circle-user"></i>
-          <span>Roles</span>
-          </a>
-        </li>
         <li class="mb-1">
           <a href="{{ route('ingresos') }}" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
           <i class="fa-regular fa-circle-user"></i>

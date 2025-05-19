@@ -1,4 +1,5 @@
 @extends($layout)
+
 @section('title', $role ? 'Editar Rol' : 'Crear Rol')
 
 @section('content')
@@ -17,7 +18,11 @@
         </div>
     @endif
 
-    <form action="{{ $role ? route('roles.update', $role->id) : route('roles.store') }}" method="POST">
+    <form action="{{ $role
+        ? route('roles.update', ['role' => $role->id, 'source' => $source])
+        : route('roles.store', ['source' => $source]) }}"
+        method="POST"
+    >
         @csrf
         @if($role)
             @method('PUT')
@@ -25,8 +30,10 @@
 
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-medium">Nombre del Rol:</label>
-            <input type="text" name="name" id="name" value="{{ old('name', $role->name ?? '') }}"
-                   class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-300" required>
+            <input type="text" name="name" id="name"
+                   value="{{ old('name', $role->name ?? '') }}"
+                   class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                   required>
         </div>
 
         <div class="mb-6">
@@ -49,7 +56,8 @@
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
                 {{ $role ? 'Actualizar Rol' : 'Crear Rol' }}
             </button>
-            <a href="{{ route('roles.index') }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+            <a href="{{ route('roles.index', ['source' => $source]) }}"
+               class="ml-4 text-gray-600 hover:underline">Cancelar</a>
         </div>
     </form>
 </div>
