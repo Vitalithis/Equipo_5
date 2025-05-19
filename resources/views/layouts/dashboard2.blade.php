@@ -60,24 +60,12 @@
             </a>
           </li>
             <li class="mb-1">
-                <a href="{{ route('dashboard.descuentos') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+                <a href="{{ route('dashboard.descuentos') }}" class="flex items
+                    center space-x-2 px-3 py-2 bg-green-700 rounded-md">
                     <i class="fa-solid fa-gauge"></i>
                     <span>Descuentos</span>
                 </a>
             </li>
-            <li class="mb-1">
-            <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
-              <i class="fa-solid fa-gauge"></i>
-              <span>Fertilizante</span>
-            </a>
-          </li>
-          <li class="mb-1">
-            <a href="{{ route('dashboard.ordenes') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
-              <i class="fa-solid fa-gauge"></i>
-              <span>Orden de Producción</span>
-            </a>
-          </li>
-            
         </ul>
       </nav>
     </div>

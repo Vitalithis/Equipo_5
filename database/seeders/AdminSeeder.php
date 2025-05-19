@@ -2,28 +2,33 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Crear Super Admin si no existe
-        if (\App\Models\User::where('email', 'superadmin@editha.com')->doesntExist()) {
-            \App\Models\User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@editha.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('editha'), // Cambia esta contraseña
-            'role' => 'superadmin'
-            ]);
+        // Verificar si el usuario ya existe
+        $user = User::firstOrCreate(
+            ['email' => 'superadmin@editha.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('editha'), // cambia esta clave luego en producción
+            ]
+        );
 
-        $this->command->info('¡Super usuario creado exitosamente!');
-        }else {
-            $this->command->info('El super usuario ya existe o error al añadir.');
+        // Crear rol si no existe
+        $role = Role::firstOrCreate(['name' => 'superadmin']);
+
+        // Asignar rol al usuario si aún no lo tiene
+        if (!$user->hasRole('superadmin')) {
+            $user->assignRole('superadmin');
+            $this->command->info('Rol "superadmin" asignado al usuario.');
+        } else {
+            $this->command->info('El usuario ya tiene el rol "superadmin".');
         }
     }
 }

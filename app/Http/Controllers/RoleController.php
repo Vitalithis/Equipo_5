@@ -2,28 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->get();
-        $roles = Role::all();
-        return view('roles.manage', compact('users', 'roles'));
+        $roles = Role::with('permissions')->get();
+        $source = $request->query('source', 'dashboard');
+        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+
+        return view('dashboard.roles.index', compact('roles', 'source', 'layout'));
     }
 
-    public function assign(Request $request, User $user)
+    public function create(Request $request)
     {
-        $request->validate([
-            'role' => 'required|exists:roles,name',
+        $permissions = Permission::all();
+        $source = $request->query('source', 'dashboard');
+        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+
+        return view('dashboard.roles.form', [
+            'role' => null,
+            'permissions' => $permissions,
+            'source' => $source,
+            'layout' => $layout,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|unique:roles,name',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $user->syncRoles([$request->role]);
+        $role = Role::create(['name' => $data['name']]);
+        $role->syncPermissions($data['permissions'] ?? []);
 
-        return redirect()->back()->with('success', 'Rol asignado correctamente.');
+        $source = $request->query('source', 'dashboard');
+
+        return redirect()
+            ->route('roles.index', ['source' => $source])
+            ->with('success', 'Rol creado correctamente.');
+    }
+
+
+    public function edit(Role $role)
+    {
+        $permissions = Permission::all();
+        return view('dashboard.roles.form', compact('role', 'permissions'));
+    }
+
+    public function update(Request $request, Role $role)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|unique:roles,name,' . $role->id,
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        $role->update(['name' => $data['name']]);
+        $role->syncPermissions($data['permissions'] ?? []);
+
+        $source = $request->query('source', 'dashboard');
+
+        return redirect()
+            ->route('roles.index', ['source' => $source])
+            ->with('success', 'Rol actualizado correctamente.');
+    }
+
+
+    public function destroy(Role $role)
+    {
+        $role->delete();
+        return redirect()->route('roles.index')->with('success', 'Rol eliminado');
     }
 }
-

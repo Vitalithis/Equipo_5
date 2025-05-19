@@ -20,31 +20,44 @@ use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserRoleController;
 
 use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
+use App\Models\ProductCategory;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
-//rutas de dashboards
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard');
 
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
+// Rutas para el Dashboard
+Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/dashboard2', function () {
+        return view('dashboard2');
+    })->name('dashboard2');
+});
+
+// Grupo protegido con middleware: solo superadmin puede gestionar roles
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+
+    // Gestión de roles
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+    // Asignar roles a usuarios
+    Route::get('/admin/roles', [UserRoleController::class, 'manageRoles'])->name('roles.manage');
+    Route::put('/admin/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
+});
+
+
 
 
 // Todo lo que es gestión de productos del catalogo
@@ -74,29 +87,12 @@ Route::get('/ingresos', function () {
     return view('ingresos');
 })->name('ingresos');
 
-//ruta para dashboard2
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'verified'])->name('dashboard2');
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-use App\Http\Controllers\ProductCategory;
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', [UserController::class, 'index']); // Obtener usuarios
-    Route::put('/users/{user}/role', [UserController::class, 'updateRole']); // Actualizar rol
-});
-
-Route::middleware(['auth', 'superadmin'])->group(function () {
-    // Rutas solo para superadmin
-    Route::get('/admin/roles', [UserController::class, 'manageRoles'])->name('roles.manage');
-    Route::put('/admin/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
 
 //Pedidos
@@ -171,15 +167,6 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
-//ruta protediga de los roles
-Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-    Route::post('/roles/{user}/assign', [RoleController::class, 'assign'])->name('roles.assign');
-});
-Route::get('/dashboard2', function () {
-    return view('dashboard2');
-})->middleware(['auth', 'role:admin|superadmin'])->name('dashboard2');
-
 // Ruta para el Mantenedor de Fertilizante
 
 Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'verified'])->name('dashboard.fertilizantes');
@@ -201,7 +188,5 @@ Route::prefix('dashboard/ordenes-produccion')->middleware(['auth'])->group(funct
     Route::put('/{id}', [OrdenProduccionController::class, 'update'])->name('ordenes.update');
     Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->name('ordenes.destroy');
 });
-
-
 
 require __DIR__ . '/auth.php';
