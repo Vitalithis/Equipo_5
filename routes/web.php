@@ -88,6 +88,12 @@ Route::get('/ingresos', function () {
 })->name('ingresos');
 
 
+// Ruta Formulario Contacto
+use App\Http\Controllers\ContactController;
+
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -111,7 +117,7 @@ Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index'
 Route::middleware(['auth'])->group(function () {
     // Mostrar carrito
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    
+
     // Eliminar producto del carrito (sesión)
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.solo');
 
