@@ -41,55 +41,21 @@ Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
     })->name('dashboard2');
 });
 
-// Rutas para la Gestión de Roles
+// Grupo protegido con middleware: solo superadmin puede gestionar roles
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    // Vista para gestionar roles
+
+    // Gestión de roles
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-
-    // Mostrar formulario de creación de roles
     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
-    // Asignar rol a un usuario
-    Route::post('/roles/{user}/assign', [RoleController::class, 'assign'])->name('roles.assign');
-
-    // Rutas adicionales para la gestión de roles y usuarios
+    // Asignar roles a usuarios
     Route::get('/admin/roles', [UserRoleController::class, 'manageRoles'])->name('roles.manage');
     Route::put('/admin/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
 });
-
-// Rutas API protegidas con Sanctum
-Route::middleware('auth:sanctum')->group(function () {
-    // Obtener todos los usuarios
-    Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
-
-    // Actualizar el rol de un usuario
-});
-// Mostrar formulario de edición de roles
-Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-
-// Actualizar un rol
-Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
-
-// Eliminar un rol
-Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-// Guardar un nuevo rol
-Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
-
-// Mostrar formulario de edición de roles
-Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-
-// Actualizar un rol
-Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
-
-// Eliminar un rol
-Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-// Guardar un nuevo rol
-Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
-Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
-
-
-Route::put('/users/{user}/role', [UserRoleController::class, 'updateRole'])->name('users.updateRole');
-
 
 
 

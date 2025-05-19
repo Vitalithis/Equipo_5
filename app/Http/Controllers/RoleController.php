@@ -8,31 +8,47 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-    $roles = Role::with('permissions')->get();
-    return view('dashboard.roles.index', compact('roles'));
+        $roles = Role::with('permissions')->get();
+        $source = $request->query('source', 'dashboard');
+        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+
+        return view('dashboard.roles.index', compact('roles', 'source', 'layout'));
     }
 
-
-    public function create()
+    public function create(Request $request)
     {
         $permissions = Permission::all();
-        return view('dashboard.roles.form', ['role' => null, 'permissions' => $permissions]);
+        $source = $request->query('source', 'dashboard');
+        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+
+        return view('dashboard.roles.form', [
+            'role' => null,
+            'permissions' => $permissions,
+            'source' => $source,
+            'layout' => $layout,
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|unique:roles,name',
-            'permissions' => 'array',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role = Role::create(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions']);
+        $role->syncPermissions($data['permissions'] ?? []);
 
-        return redirect()->route('roles.index')->with('success', 'Rol creado correctamente');
+        $source = $request->query('source', 'dashboard');
+
+        return redirect()
+            ->route('roles.index', ['source' => $source])
+            ->with('success', 'Rol creado correctamente.');
     }
+
 
     public function edit(Role $role)
     {
@@ -44,14 +60,20 @@ class RoleController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|unique:roles,name,' . $role->id,
-            'permissions' => 'array',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role->update(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions']);
+        $role->syncPermissions($data['permissions'] ?? []);
 
-        return redirect()->route('roles.index')->with('success', 'Rol actualizado');
+        $source = $request->query('source', 'dashboard');
+
+        return redirect()
+            ->route('roles.index', ['source' => $source])
+            ->with('success', 'Rol actualizado correctamente.');
     }
+
 
     public function destroy(Role $role)
     {
