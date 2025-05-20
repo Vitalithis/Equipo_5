@@ -17,44 +17,52 @@
         </div>
     <?php endif; ?>
 
-    <form action="<?php echo e($role ? route('roles.update', $role->id) : route('roles.store')); ?>" method="POST">
+    <form action="<?php echo e($role
+        ? route('roles.update', ['role' => $role->id, 'source' => $source])
+        : route('roles.store', ['source' => $source])); ?>"
+        method="POST"
+    >
         <?php echo csrf_field(); ?>
         <?php if($role): ?>
             <?php echo method_field('PUT'); ?>
         <?php endif; ?>
 
+        
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-medium">Nombre del Rol:</label>
-            <input type="text" name="name" id="name" value="<?php echo e(old('name', $role->name ?? '')); ?>"
-                   class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-300" required>
+            <input type="text" name="name" id="name"
+                   value="<?php echo e(old('name', $role->name ?? '')); ?>"
+                   class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                   required>
         </div>
 
+        
         <div class="mb-6">
             <label class="block text-gray-700 font-medium mb-2">Permisos:</label>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 <?php $__currentLoopData = $permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $permission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="permissions[]" value="<?php echo e($permission->id); ?>"
-                                <?php echo e((isset($role) && $role->permissions->contains($permission->id)) || (is_array(old('permissions')) && in_array($permission->id, old('permissions'))) ? 'checked' : ''); ?>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="permissions[]" value="<?php echo e($permission->id); ?>"
+                            <?php echo e((isset($role) && $role->permissions->contains($permission->id)) || (is_array(old('permissions')) && in_array($permission->id, old('permissions'))) ? 'checked' : ''); ?>
 
-                                class="form-checkbox text-indigo-600">
-                            <span class="ml-2"><?php echo e($permission->name); ?></span>
-                        </label>
-                    </div>
+                            class="form-checkbox text-indigo-600">
+                        <span class="ml-2 text-gray-700"><?php echo e($permission->name); ?></span>
+                    </label>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
 
+        
         <div class="flex justify-start">
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
                 <?php echo e($role ? 'Actualizar Rol' : 'Crear Rol'); ?>
 
             </button>
-            <a href="<?php echo e(route('roles.index')); ?>" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+            <a href="<?php echo e(route('roles.index', ['source' => $source])); ?>"
+               class="ml-4 text-gray-600 hover:underline">Cancelar</a>
         </div>
     </form>
 </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Vitalithis\Documents\GitHub\Equipo_5\resources\views/dashboard/roles/form.blade.php ENDPATH**/ ?>
+<?php echo $__env->make($layout, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Vitalithis\Documents\GitHub\Equipo_5\resources\views/dashboard/roles/form.blade.php ENDPATH**/ ?>

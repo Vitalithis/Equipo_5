@@ -3,7 +3,7 @@
 @section('title', 'Listado de Roles')
 
 @section('content')
-<div class="py-8 px-4 md:px-8 max-w-3xl mx-auto">
+<div class="py-8 px-4 md:px-8 max-w-7xl mx-auto">
     <div class="flex items-center mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
             Roles del Sistema
@@ -17,30 +17,51 @@
         </a>
     </div>
 
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+    <div class="overflow-x-auto bg-white shadow sm:rounded-lg">
+        <table class="min-w-full table-auto divide-y divide-gray-200 text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 uppercase tracking-wider">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permisos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th class="w-1/6 px-4 py-3">Nombre</th>
+                    <th class="w-3/5 px-4 py-3">Permisos</th>
+                    <th class="w-1/6 px-4 py-3">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white divide-y divide-gray-100">
                 @foreach($roles as $role)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $role->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {{ $role->permissions->pluck('name')->join(', ') }}
+                        {{-- Nombre --}}
+                        <td class="px-4 py-3 font-medium text-gray-800 border-r border-gray-200">
+                            {{ $role->name }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('roles.edit', ['role' => $role->id, 'source' => $source]) }}"
-                               class="text-blue-600 hover:text-blue-900">Editar</a>
-                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline-block ml-2">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
-                            </form>
+
+                        {{-- Permisos en 2 columnas --}}
+                        <td class="px-4 py-3 text-gray-700 border-r border-gray-200">
+                            @if($role->permissions->isEmpty())
+                                <span class="italic text-gray-400">Sin permisos asignados</span>
+                            @else
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
+                                    @foreach($role->permissions->pluck('name') as $perm)
+                                        <span class="text-sm">{{ $perm }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </td>
+
+                        {{-- Acciones --}}
+                        <td class="px-4 py-3 text-gray-700">
+                            @if($role->name !== 'superadmin')
+                                <a href="{{ route('roles.edit', ['role' => $role->id, 'source' => $source]) }}"
+                                   class="text-blue-600 hover:underline">Editar</a>
+                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline-block ml-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            onclick="return confirm('¿Estás seguro de eliminar este rol?')"
+                                            class="text-red-600 hover:underline">Eliminar</button>
+                                </form>
+                            @else
+                                <span class="text-gray-400 italic">Protegido</span>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
