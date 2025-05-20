@@ -31,10 +31,15 @@ export default {
                 ...theme("colors"),
             }),
             backgroundImage: {
-                  'leafs': "url('/public/storage/images/pattern1.png')"
+                leafs: "url('/public/storage/images/pattern1.png')",
             },
             colors: {
-                // Colores base
+                greenPrimary: "#40C239",
+                greenDark: "#70A37F",
+                greenMid: "#79B473",
+                blueLight: "#D4DCFF",
+                blueDark: "#48639C",
+                // Colores base antiguos (Mantener para compatibilidad)
                 efore: "#F8F6F4", // marfil
                 eprimary: "#3E0345", // púrpura
                 esecondary: "#8090BF", // azul grisáceo
@@ -99,8 +104,5 @@ export default {
         },
     },
 
-    plugins: [
-        forms,
-        require("flowbite/plugin"),
-    ],
+    plugins: [forms, require("flowbite/plugin")],
 };

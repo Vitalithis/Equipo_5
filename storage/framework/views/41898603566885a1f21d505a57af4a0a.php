@@ -1,18 +1,18 @@
 <div class="flex flex-col md:flex-row w-full overflow-hidden h-fit">
   <!-- Sección Izquierda -->
   <div class="text-center md:w-1/2 flex items-center justify-center h-full bg-white py-8 md:py-20">
-    <div class="bg-blue-100 px-4 py-16 my-20 w-full flex flex-col items-center">
-      <h2 class="text-3xl font-semibold text-blue-900">¿Quiénes Somos?</h2>
-      <p class="text-blue-800 text-2xl mt-4">
+    <div class="bg-blueLight px-4 py-16 my-20 w-full flex flex-col items-center">
+      <h2 class="text-3xl font-semibold text-blueDark">¿Quiénes Somos?</h2>
+      <p class="text-blueDark text-2xl mt-4">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam luctus
         neque sed neque volutpat luctus. Cras gravida, mi in molestie volutpat,
         ex enim venenatis odio, vel ultricies nunc nisl nec elit.
       </p>
       <div class="flex gap-4 mt-6">
-        <button class="border border-blue-700 text-blue-700 px-4 py-2 rounded-md hover:bg-blue-200 transition">
+        <button class="border border-blueDark text-blueDark px-4 py-2 rounded-md hover:bg-blueLight transition">
           Conócenos más
         </button>
-        <button class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition">
+        <button class="bg-blueDark text-white px-4 py-2 rounded-md hover:bg-blueDark transition">
           Ver productos
         </button>
       </div>

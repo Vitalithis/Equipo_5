@@ -1,141 +1,164 @@
-<?php
-    $niveles = [
-        'fácil' => ['color' => 'text-green-500', 'cantidad' => 1],
-        'intermedio' => ['color' => 'text-yellow-500', 'cantidad' => 2],
-        'experto' => ['color' => 'text-red-500', 'cantidad' => 3],
-    ];
-
-    $nivel = $niveles[strtolower($producto->nivel_dificultad)] ?? ['color' => 'text-gray-400', 'cantidad' => 0];
-?>
-
+<?php $__env->startSection('title', 'Productos || Plantas Editha'); ?>
+<?php $__env->startSection('description', 'Nuestra tienda ofrece una amplia variedad de plantas de interior y exterior, ideales para cualquier espacio. Desde suculentas hasta plantas de sombra, tenemos lo que necesitas para embellecer tu hogar o jardín. Además, contamos con un equipo de expertos listos para asesorarte en el cuidado y mantenimiento de tus plantas.'); ?>
 <?php $__env->startSection('content'); ?>
-<div class="flex flex-col md:flex-row w-full items-start bg-white p-8 rounded-lg shadow-lg">
 
-    
-    <img src="<?php echo e(asset('storage/' . (file_exists(public_path('storage/' . $producto->imagen)) ? $producto->imagen : 'images/default-logo.png'))); ?>"
-        class="w-full md:w-2/5 max-h-80 object-contain rounded-lg mb-4 md:mb-0  self-center">
-
-    
-    <div class="md:ml-8 w-full md:w-3/5">
-
-        
-        <h1 class="font-bold text-4xl text-eprimary"><?php echo e($producto->nombre); ?></h1>
-
-        <?php if($producto->nombre_cientifico): ?>
-            <p class="text-sm text-gray-600 mt-2"><strong>Nombre científico:</strong> <?php echo e($producto->nombre_cientifico); ?></p>
-        <?php endif; ?>
-
-        <?php if($producto->descripcion): ?>
-            <p class="text-md text-gray-700 mt-4"><?php echo e($producto->descripcion); ?></p>
-        <?php endif; ?>
-
-        <p class="text-gray-600 mt-2 text-sm">Planta <?php echo e($producto->categoria); ?>
-
-            <?php if($producto->ubicacion_ideal): ?>
-                de <?php echo e($producto->ubicacion_ideal); ?>
-
-            <?php endif; ?>
-        </p>
-
-        <?php if($producto->nivel_dificultad): ?>
-            <div class="mt-4 flex items-center space-x-2">
-                <span class="text-sm font-semibold text-gray-700">Dificultad:</span>
-                <div class="flex items-center space-x-1">
-                    <?php for($i = 0; $i < $nivel['cantidad']; $i++): ?>
-                        <span class="<?php echo e($nivel['color']); ?> w-5 h-5">
-                            <?php echo str_replace('<svg', '<svg class="fill-eaccent2 w-5 h-5"', file_get_contents(public_path('icons/leaf-fill.svg'))); ?>
-
-                        </span>
-                    <?php endfor; ?>
-                </div>
-                <span class="text-sm text-gray-600 capitalize">(<?php echo e($producto->nivel_dificultad); ?>)</span>
-            </div>
-        <?php endif; ?>
-
-        <?php if($producto->frecuencia_riego): ?>
-            <p class="text-sm text-esecondary mt-4 flex items-center space-x-2">
-                <?php echo str_replace('<svg', '<svg class="fill-esecondary w-5 h-5"', file_get_contents(public_path('icons/drop-fill.svg'))); ?>
-
-                <span><?php echo e($producto->frecuencia_riego); ?></span>
-            </p>
-        <?php endif; ?>
-
-        <p class="text-gray-600 mt-4 text-lg font-semibold">$<?php echo e(number_format($producto->precio, 3)); ?></p>
-
-        
-        <form action="<?php echo e(route('cart.add', $producto->id)); ?>" method="POST" class="mt-2">
-    <?php echo csrf_field(); ?>
-    <input type="hidden" name="cantidad" value="1">
-    <button class="add-to-cart mt-4 bg-eaccent hover:bg-eaccent2 text-white px-6 py-3 rounded-lg font-bold transition duration-300 ease-in-out transform hover:scale-105">
-        Agregar al carrito
-    </button>
-</form>
-
-
-
-        <p class="text-gray-600 mt-4"><strong>Cantidad disponible:</strong> <?php echo e($producto->cantidad); ?></p>
-
-        
-        <div class="mt-6 border-t pt-6">
-
-            <?php if($producto->descripcion): ?>
-                <div>
-                    <h2 class="text-xl font-semibold text-eprimary mb-2">Descripción detallada</h2>
-                    <p class="text-gray-700"><?php echo e($producto->descripcion); ?></p>
-                </div>
-            <?php endif; ?>
-
-            <?php if($producto->beneficios): ?>
-                <div class="mt-6">
-                    <h3 class="text-md font-semibold text-eprimary">Beneficios</h3>
-                    <p class="text-gray-700"><?php echo e($producto->beneficios); ?></p>
-                </div>
-            <?php endif; ?>
-
-            <div class="mt-6 space-y-1">
-                <p class="text-sm text-eprimary"><strong>Tóxica para mascotas:</strong> <?php echo e($producto->toxica ? 'Sí' : 'No'); ?></p>
-                <?php if($producto->origen): ?>
-                    <p class="text-sm text-eprimary"><strong>Origen:</strong> <?php echo e($producto->origen); ?></p>
-                <?php endif; ?>
-                <?php if($producto->tamano): ?>
-                    <p class="text-sm text-eprimary"><strong>Tamaño:</strong> <?php echo e($producto->tamano); ?> cm</p>
-                <?php endif; ?>
-                <!-----<p class="text-sm text-eprimary"><strong>Código de barras:</strong> <?php echo e($producto->codigo_barras); ?></p>--->
-            </div>
-
+<!-- Banner principal -->
+<div class="relative w-full h-64 md:h-96 bg-greenPrimary overflow-hidden">
+    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+        <div class="text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Nuestros Productos</h1>
+            <p class="text-xl md:text-2xl text-white max-w-2xl mx-auto">Descubre nuestra selección de plantas para todos los espacios y niveles de cuidado</p>
         </div>
+    </div>
+    <img src="<?php echo e(asset('/storage/images/banner-productos.jpg')); ?>" alt="Variedad de plantas" class="w-full h-full object-cover">
+</div>
 
+<!-- Contenedor principal -->
+<div class="container mx-auto px-4 py-12">
+    <div class="flex flex-col md:flex-row gap-8">
+
+        <!-- Aside de filtros -->
+        <aside class="w-full md:w-1/4 lg:w-1/5">
+            <div class="bg-white p-6 rounded-lg shadow-md sticky top-4">
+                <h2 class="text-xl font-bold text-blueDark mb-6 border-b pb-2">Filtrar Productos</h2>
+
+                <!-- Filtro por categoría -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-greenDark mb-2">Categorías</h3>
+                    <ul class="space-y-2">
+                        <?php $__currentLoopData = $categorias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categoria): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li>
+                            <a href="<?php echo e(route('producto.filterByCategory', ['category' => $categoria->nombre])); ?>"
+                               class="flex items-center text-blueDark hover:text-greenPrimary transition-colors">
+                                <span class="mr-2">•</span>
+                                <?php echo e($categoria->nombre); ?>
+
+                            </a>
+                        </li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+
+                <!-- Filtro por tamaño -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-greenDark mb-2">Tamaño máximo (cm)</h3>
+                    <input type="range" id="tamano" name="tamano" min="10" max="200"
+                           value="<?php echo e($tamano ?? 200); ?>"
+                           class="w-full h-2 bg-greenMid rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-sm text-blueDark mt-1">
+                        <span>10cm</span>
+                        <span id="tamanoValue"><?php echo e($tamano ?? 200); ?>cm</span>
+                        <span>200cm</span>
+                    </div>
+                </div>
+
+                <!-- Filtro por dificultad -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-greenDark mb-2">Nivel de dificultad</h3>
+                    <select name="dificultad" id="dificultad" class="w-full p-2 border border-greenMid rounded-lg text-blueDark">
+                        <option value="">Todos los niveles</option>
+                        <option value="baja" <?php echo e($dificultad == 'baja' ? 'selected' : ''); ?>>Baja</option>
+                        <option value="media" <?php echo e($dificultad == 'media' ? 'selected' : ''); ?>>Media</option>
+                        <option value="alta" <?php echo e($dificultad == 'alta' ? 'selected' : ''); ?>>Alta</option>
+                    </select>
+                </div>
+
+                <!-- Filtro de orden -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-greenDark mb-2">Ordenar por</h3>
+                    <select name="filter2" id="filter2" class="w-full p-2 border border-greenMid rounded-lg text-blueDark">
+                        <option value="relevancia" <?php echo e($ordenar_por == 'relevancia' ? 'selected' : ''); ?>>Relevancia</option>
+                        <option value="precio" <?php echo e($ordenar_por == 'precio' ? 'selected' : ''); ?>>Precio</option>
+                        <option value="popularidad" <?php echo e($ordenar_por == 'popularidad' ? 'selected' : ''); ?>>Popularidad</option>
+                    </select>
+                    <div class="mt-2 flex items-center">
+                        <input type="radio" id="ascendente" name="filter3" value="ascendente"
+                               <?php echo e($ordenar_ascendente ? 'checked' : ''); ?> class="mr-2">
+                        <label for="ascendente" class="text-sm text-blueDark">Ascendente</label>
+                        <input type="radio" id="descendente" name="filter3" value="descendente"
+                               <?php echo e(!$ordenar_ascendente ? 'checked' : ''); ?> class="ml-4 mr-2">
+                        <label for="descendente" class="text-sm text-blueDark">Descendente</label>
+                    </div>
+                </div>
+
+                <button id="aplicarFiltros" class="w-full py-2 bg-greenPrimary text-white rounded-lg hover:bg-greenDark transition-colors">
+                    Aplicar Filtros
+                </button>
+            </div>
+        </aside>
+
+        <!-- Sección de productos -->
+        <div class="w-full md:w-3/4 lg:w-4/5">
+            <?php if($productos->count() > 0): ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php $__currentLoopData = $productos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                        <a href="<?php echo e(route('products.show', $producto->slug)); ?>" class="block">
+                            <div class="h-48 overflow-hidden">
+                                <img src="<?php echo e(asset('storage/' . $producto->imagen_principal)); ?>"
+                                     alt="<?php echo e($producto->nombre); ?>"
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-lg font-semibold text-blueDark"><?php echo e($producto->nombre); ?></h3>
+                                    <span class="text-greenPrimary font-bold"><?php echo e(number_format($producto->precio, 0, ',', '.')); ?> CLP</span>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded mr-2">
+                                        <?php echo e($producto->nivel_dificultad); ?>
+
+                                    </span>
+                                    <span class="text-sm text-blueDark"><?php echo e($producto->tamano); ?>cm</span>
+                                </div>
+                                <p class="text-blueDark mt-2 line-clamp-2"><?php echo e($producto->descripcion_corta); ?></p>
+                                <button class="mt-4 w-full py-2 bg-greenPrimary text-white rounded-lg hover:bg-greenDark transition-colors">
+                                    Ver detalles
+                                </button>
+                            </div>
+                        </a>
+                    </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+
+                <!-- Paginación -->
+                <div class="mt-8">
+                    <?php echo e($productos->links()); ?>
+
+                </div>
+            <?php else: ?>
+                <div class="text-center py-12">
+                    <h3 class="text-xl font-semibold text-blueDark">No se encontraron productos</h3>
+                    <p class="text-blueDark mt-2">Intenta ajustar tus filtros de búsqueda</p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
 
-<?php if(isset($relacionados) && count($relacionados)): ?>
-    <div class="mt-12">
-        <h2 class="text-2xl font-bold text-eprimary mb-6">Productos relacionados</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php $__currentLoopData = $relacionados; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="bg-white rounded-lg shadow-md p-4 flex flex-col">
-                    <img src="<?php echo e(asset('storage/' . (file_exists(public_path('storage/' . $rel->imagen)) ? $rel->imagen : 'images/default-logo.png'))); ?>"
-                        alt="<?php echo e($rel->nombre); ?>"
-                        class="w-full h-48 object-contain rounded-md mb-4">
+<script>
+    // Actualizar valor del rango de tamaño
+    document.getElementById('tamano').addEventListener('input', function() {
+        document.getElementById('tamanoValue').textContent = this.value + 'cm';
+    });
 
-                    <h3 class="text-lg font-semibold text-eprimary"><?php echo e($rel->nombre); ?></h3>
+    // Aplicar filtros
+    document.getElementById('aplicarFiltros').addEventListener('click', function() {
+        const tamano = document.getElementById('tamano').value;
+        const dificultad = document.getElementById('dificultad').value;
+        const ordenarPor = document.getElementById('filter2').value;
+        const ordenDireccion = document.querySelector('input[name="filter3"]:checked').value;
 
-                    <?php if($rel->precio): ?>
-                        <p class="text-sm text-gray-700 mt-1">$<?php echo e(number_format($rel->precio, 3)); ?></p>
-                    <?php endif; ?>
+        let url = '<?php echo e(route("products.index")); ?>?';
+        if(tamano) url += `&tamano=${tamano}`;
+        if(dificultad) url += `&dificultad=${dificultad}`;
+        if(ordenarPor) url += `&filter2=${ordenarPor}`;
+        if(ordenDireccion) url += `&filter3=${ordenDireccion}`;
 
-                    <a href="<?php echo e(route('products.show', $rel->id)); ?>"
-                        class="mt-auto inline-block bg-eaccent hover:bg-eaccent2 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
-                        Ver producto
-                    </a>
-                </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </div>
-    </div>
-<?php endif; ?>
+        window.location.href = url;
+    });
+</script>
+
 <?php $__env->stopSection(); ?>
 
-
-
-
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Code\Equipo_5\resources\views/products/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Code\Equipo_5\resources\views/products/index.blade.php ENDPATH**/ ?>

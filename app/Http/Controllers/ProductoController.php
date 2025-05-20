@@ -50,7 +50,7 @@ class ProductoController extends Controller
         $productos = $productos->paginate(12); // Número de productos por página
 
         // Pasar los filtros a la vista para que se mantengan seleccionados
-        return view('home', [
+        return view('products.index', [
             'productos' => $productos,
             'tamano' => $tamano,
             'categoria' => $categoria,
@@ -81,7 +81,7 @@ class ProductoController extends Controller
     {
         $productos = Producto::where('categoria', $category)->get(); // Filtra productos por categoría
 
-        return view('home', compact('productos'));
+        return view('products.index', compact('productos'));
     }
     public function dashboard_show()
     {

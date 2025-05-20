@@ -17,7 +17,6 @@
 
     {{-- Navbar --}}
     @include('components.navbar')
-
     {{-- Contenido principal --}}
     <main >
         @yield('content')
