@@ -39,8 +39,16 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
+        // Bloquear intento de crear "superadmin"
+        if (strtolower($data['name']) === 'superadmin') {
+            return redirect()->back()->withErrors(['name' => 'No puedes crear un rol llamado "superadmin".'])->withInput();
+        }
+
         $role = Role::create(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+
+        // ✅ Corrección: usar objetos Permission en lugar de IDs
+        $permissions = Permission::whereIn('id', $data['permissions'] ?? [])->get();
+        $role->syncPermissions($permissions);
 
         $source = $request->query('source', 'dashboard');
 
@@ -49,15 +57,25 @@ class RoleController extends Controller
             ->with('success', 'Rol creado correctamente.');
     }
 
-
-    public function edit(Role $role)
+    public function edit(Request $request, Role $role)
     {
+        if ($role->name === 'superadmin') {
+            abort(403, 'El rol superadmin no puede ser editado.');
+        }
+
         $permissions = Permission::all();
-        return view('dashboard.roles.form', compact('role', 'permissions'));
+        $source = $request->query('source', 'dashboard');
+        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+
+        return view('dashboard.roles.form', compact('role', 'permissions', 'source', 'layout'));
     }
 
     public function update(Request $request, Role $role)
     {
+        if ($role->name === 'superadmin') {
+            abort(403, 'El rol superadmin no puede ser modificado.');
+        }
+
         $data = $request->validate([
             'name' => 'required|string|unique:roles,name,' . $role->id,
             'permissions' => 'nullable|array',
@@ -65,7 +83,10 @@ class RoleController extends Controller
         ]);
 
         $role->update(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+
+        // ✅ Corrección: usar objetos Permission en lugar de IDs
+        $permissions = Permission::whereIn('id', $data['permissions'] ?? [])->get();
+        $role->syncPermissions($permissions);
 
         $source = $request->query('source', 'dashboard');
 
@@ -74,10 +95,18 @@ class RoleController extends Controller
             ->with('success', 'Rol actualizado correctamente.');
     }
 
-
-    public function destroy(Role $role)
+    public function destroy(Request $request, Role $role)
     {
+        if ($role->name === 'superadmin') {
+            return redirect()
+                ->route('roles.index', ['source' => $request->query('source', 'dashboard')])
+                ->with('error', 'No se puede eliminar el rol superadmin.');
+        }
+
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Rol eliminado');
+
+        return redirect()
+            ->route('roles.index', ['source' => $request->query('source', 'dashboard')])
+            ->with('success', 'Rol eliminado correctamente.');
     }
 }

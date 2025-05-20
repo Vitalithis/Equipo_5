@@ -28,6 +28,7 @@
             @method('PUT')
         @endif
 
+        {{-- Nombre del Rol --}}
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-medium">Nombre del Rol:</label>
             <input type="text" name="name" id="name"
@@ -36,22 +37,22 @@
                    required>
         </div>
 
+        {{-- Permisos --}}
         <div class="mb-6">
             <label class="block text-gray-700 font-medium mb-2">Permisos:</label>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 @foreach($permissions as $permission)
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
-                                {{ (isset($role) && $role->permissions->contains($permission->id)) || (is_array(old('permissions')) && in_array($permission->id, old('permissions'))) ? 'checked' : '' }}
-                                class="form-checkbox text-indigo-600">
-                            <span class="ml-2">{{ $permission->name }}</span>
-                        </label>
-                    </div>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
+                            {{ (isset($role) && $role->permissions->contains($permission->id)) || (is_array(old('permissions')) && in_array($permission->id, old('permissions'))) ? 'checked' : '' }}
+                            class="form-checkbox text-indigo-600">
+                        <span class="ml-2 text-gray-700">{{ $permission->name }}</span>
+                    </label>
                 @endforeach
             </div>
         </div>
 
+        {{-- Botones --}}
         <div class="flex justify-start">
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
                 {{ $role ? 'Actualizar Rol' : 'Crear Rol' }}

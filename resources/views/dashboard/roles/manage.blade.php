@@ -35,19 +35,25 @@
                                 {{ $user->roles->pluck('name')->join(', ') ?: 'Sin rol' }}
                             </td>
                             <td class="px-6 py-4">
-                                <form action="{{ route('users.updateRole', $user) }}" method="POST" class="flex items-center">
-                                    @csrf
-                                    @method('PUT')
-                                    <select name="role" class="border border-gray-300 rounded px-2 py-1 mr-2" required>
-                                        <option value="" disabled selected>Selecciona un rol</option>
-                                        @foreach ($roles as $role)
-                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
-                                        Asignar
-                                    </button>
-                                </form>
+                                @if($user->hasRole('superadmin'))
+                                    <span class="text-gray-400 italic">Protegido</span>
+                                @else
+                                    <form action="{{ route('users.updateRole', $user) }}" method="POST" class="flex items-center">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="role" class="border border-gray-300 rounded px-2 py-1 mr-2" required>
+                                            <option value="" disabled selected>Selecciona un rol</option>
+                                            @foreach ($roles as $role)
+                                                @if($role->name !== 'superadmin')
+                                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
+                                            Asignar
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

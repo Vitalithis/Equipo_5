@@ -10,25 +10,19 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear los permisos
+        // 1. Crear todos los permisos necesarios
         $permisos = [
-            // Sistema
             'ver dashboard',
             'gestionar usuarios',
             'gestionar roles',
-
-            // Producción / Operaciones
+            'gestionar permisos', // 👈 clave para el CRUD de permisos
             'ver ordenes',
             'crear ordenes',
             'editar ordenes',
             'eliminar ordenes',
-
-            // Finanzas
             'ver reportes',
             'gestionar ingresos',
             'gestionar egresos',
-
-            // Productos
             'gestionar productos',
         ];
 
@@ -36,49 +30,10 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permiso]);
         }
 
-        // 2. Crear los roles
-        $roles = [
-            'superadmin',
-            'admin',
-            'contable',
-            'operario',
-            'usuario',
-        ];
+        // 2. Crear solo el rol "superadmin"
+        $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
+        $superadmin->syncPermissions(Permission::all());
 
-        foreach ($roles as $nombreRol) {
-            Role::firstOrCreate(['name' => $nombreRol]);
-        }
-
-        // 3. Asignar permisos a roles
-        Role::findByName('superadmin')->syncPermissions(Permission::all());
-
-        Role::findByName('admin')->syncPermissions([
-            'ver dashboard',
-            'gestionar usuarios',
-            'gestionar roles',
-            'gestionar productos',
-            'ver ordenes',
-            'crear ordenes',
-            'editar ordenes',
-        ]);
-
-        Role::findByName('contable')->syncPermissions([
-            'ver dashboard',
-            'ver reportes',
-            'gestionar ingresos',
-            'gestionar egresos',
-        ]);
-
-        Role::findByName('operario')->syncPermissions([
-            'ver ordenes',
-            'crear ordenes',
-            'editar ordenes',
-        ]);
-
-        Role::findByName('usuario')->syncPermissions([
-            'ver dashboard',
-        ]);
-
-        $this->command->info('Permisos y roles asignados correctamente.');
+        $this->command->info('Permisos creados. Rol superadmin con todos los permisos.');
     }
 }
