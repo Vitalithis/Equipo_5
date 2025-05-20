@@ -24,6 +24,7 @@ use App\Http\Controllers\UserRoleController;
 
 use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
+use App\Http\Controllers\CuidadoController;
 use App\Models\ProductCategory;
 
 
@@ -188,5 +189,21 @@ Route::prefix('dashboard/ordenes-produccion')->middleware(['auth'])->group(funct
     Route::put('/{id}', [OrdenProduccionController::class, 'update'])->name('ordenes.update');
     Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->name('ordenes.destroy');
 });
+
+
+//Rutas para cuidados de cada Planta
+
+
+Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+    Route::get('/cuidados', [CuidadoController::class, 'index'])->name('dashboard.cuidados');
+    Route::get('/cuidados/create', [CuidadoController::class, 'create'])->name('dashboard.cuidados.create');
+    Route::post('/cuidados', [CuidadoController::class, 'store'])->name('dashboard.cuidados.store');
+    Route::get('/cuidados/{id}/edit', [CuidadoController::class, 'edit'])->name('dashboard.cuidados.edit');
+    Route::put('/cuidados/{id}', [CuidadoController::class, 'update'])->name('dashboard.cuidados.update');
+    Route::delete('/cuidados/{id}', [CuidadoController::class, 'destroy'])->name('dashboard.cuidados.destroy');
+    Route::get('/dashboard/cuidados/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
+
+});
+
 
 require __DIR__ . '/auth.php';

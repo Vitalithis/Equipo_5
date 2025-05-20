@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.dashboard2')
 
 @section('title', isset($orden) ? 'Editar Orden de Producción' : 'Nueva Orden de Producción')
 

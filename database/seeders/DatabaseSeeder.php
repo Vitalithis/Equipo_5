@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             ProductoCategoriaSeeder::class,
             PedidoSeeder::class,
             FertilizanteSeeder::class,
-            OrdenProduccionSeeder::class
+            OrdenProduccionSeeder::class,
+            CuidadoSeeder::class
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)

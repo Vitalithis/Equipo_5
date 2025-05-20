@@ -56,11 +56,12 @@
           </a>
         </li>
         <li class="mb-1">
-          <a href="{{ route('ingresos') }}" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
-          <i class="fa-regular fa-circle-user"></i>
-          <span>Ingresos</span>
+          <a href="{{ route('dashboard.ordenes') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+            <i class="fa-solid fa-gauge"></i>
+            <span>Orden de Producción</span>
           </a>
         </li>
+        
       </ul>
     </nav>
   </div>

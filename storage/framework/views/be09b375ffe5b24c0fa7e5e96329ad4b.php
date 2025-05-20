@@ -7,8 +7,6 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
-
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Alpine JS -->
@@ -18,20 +16,20 @@
 <div class="flex h-screen">
 
   <!-- Sidebar -->
-  <div class="bg-green-800 text-white w-64 flex-shrink-0" :class="{'-ml-64': !sidebarOpen}" class="lg:-ml-0">
-    <div class="p-4 border-b border-green-700">
+  <div class="bg-blue-800 text-white w-64 flex-shrink-0" :class="{'-ml-64': !sidebarOpen}" class="lg:-ml-0">
+    <div class="p-4 border-b border-blue-700">
       <div class="flex items-center space-x-2">
-        <img src="<?php echo e(asset('dist/img/logoeditha.png')); ?>" alt="Logo" class="h-8 w-8 rounded-full">
-        <span class="text-lg font-semibold">Sala Venta</span>
+        <img src="dist/img/logoeditha.png" alt="Logo" class="h-8 w-8 rounded-full">
+        <span class="text-lg font-semibold">Planta de Producción</span>
       </div>
     </div>
 
-    <div class="p-4 border-b border-green-700">
+    <div class="p-4 border-b border-blue-700">
       <div class="flex items-center space-x-3">
-        <img src="<?php echo e(asset('dist/img/user2-160x160.jpg')); ?>" alt="User" class="h-10 w-10 rounded-full">
+        <img src="dist/img/user2-160x160.jpg" alt="User" class="h-10 w-10 rounded-full">
         <div>
           <div class="font-medium"><?php echo e(Auth::user()->name); ?></div>
-          <div class="text-green-200 text-sm">Administrador</div>
+          <div class="text-blue-200 text-sm">Administrador</div>
         </div>
       </div>
     </div>
@@ -39,48 +37,31 @@
     <nav class="p-4">
       <ul>
                 <li class="mb-1">
-          <a href="<?php echo e(route('home')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="<?php echo e(route('home')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
             <span>Home</span>
           </a>
         </li>
         <li class="mb-1">
-          <a href="<?php echo e(route('dashboard.catalogo')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="<?php echo e(route('home')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
             <span>Catalogo</span>
           </a>
         </li>
         <!-- Más elementos del menú -->
         <li class="mb-1">
-          <a href="<?php echo e(route('roles.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="<?php echo e(route('roles.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-blue-700 rounded-md">
           <i class="fa-regular fa-circle-user"></i>
           <span>Roles</span>
           </a>
         </li>
         <li class="mb-1">
-        <a href="<?php echo e(route('pedidos.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
+          <a href="<?php echo e(route('dashboard.ordenes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
             <i class="fa-solid fa-gauge"></i>
-            <span>Gestión de pedidos</span>
-        </a>
-        </li>
-        <li class="mb-1">
-          <a href="<?php echo e(route('dashboard.descuentos')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
-            <i class="fa-solid fa-gauge"></i>
-            <span>Descuentos y promociones</span>
-          </a>
-          </li>
-        <li class="mb-1">
-          <a href="<?php echo e(route('dashboard.fertilizantes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
-            <i class="fa-solid fa-gauge"></i>
-            <span>Fertilizante</span>
+            <span>Orden de Producción</span>
           </a>
         </li>
-        <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.cuidados')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md">
-              <i class="fa-solid fa-gauge"></i>
-              <span>Cuidados</span>
-            </a>
-          </li>
+        
       </ul>
     </nav>
   </div>
@@ -147,8 +128,8 @@
                 <!-- Ejemplo de mensaje -->
                 <a href="#" class="block px-4 py-3 hover:bg-gray-50">
                   <div class="flex items-start">
-                  <img src="<?php echo e(asset('dist/img/user2-160x160.jpg')); ?>" alt="User" class="h-10 w-10 rounded-full">
-                  <div class="ml-3">
+                    <img src="dist/img/user2-160x160.jpg" alt="User" class="h-10 w-10 rounded-full">
+                    <div class="ml-3">
                       <p class="text-sm font-medium text-gray-900">Juan Pérez</p>
                       <p class="text-sm text-gray-500">¿Tenemos stock de rosas?</p>
                       <p class="text-xs text-gray-400">Hace 30 minutos</p>
@@ -166,14 +147,14 @@
           <!-- User Profile Dropdown -->
           <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-              <img src="<?php echo e(asset('dist/img/user2-160x160.jpg')); ?>" alt="User" class="h-8 w-8 rounded-full">
+              <img src="dist/img/user2-160x160.jpg" alt="User" class="h-8 w-8 rounded-full">
               <span class="hidden md:inline"><?php echo e(Auth::user()->name); ?></span>
             </button>
 
             <div x-show="open" @click.away="open = false"
                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-              <a href="<?php echo e(route('dashboard2')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Planta Producción</a>
+              <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sala Ventas</a>
 
               <form method="POST" action="<?php echo e(route('logout')); ?>">
                 <?php echo csrf_field(); ?>
@@ -189,11 +170,10 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto p-6">
-    <?php echo $__env->yieldContent('content'); ?>
-      <?php $__env->startSection('default-content'); ?>
-
       <div class="max-w-7xl mx-auto">
         <div class="bg-white rounded-lg shadow-sm p-6">
+
+
           <!-- Contenido del dashboard -->
           <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Tarjeta de Ventas -->
@@ -206,10 +186,10 @@
             </div>
 
             <!-- Tarjeta de Productos -->
-            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-green-500 hover:shadow-md transition-shadow">
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-blue-500 hover:shadow-md transition-shadow">
               <h3 class="text-gray-500 uppercase text-sm font-semibold">Productos</h3>
               <p class="text-2xl font-bold mt-2">142</p>
-              <a href="#" class="mt-3 inline-flex items-center text-green-500 hover:text-green-700">
+              <a href="#" class="mt-3 inline-flex items-center text-blue-500 hover:text-blue-700">
                 Ver lista <i class="fas fa-arrow-right ml-1"></i>
               </a>
             </div>
@@ -233,14 +213,13 @@
           </div>
         </div>
       </div>
-      <?php echo $__env->yieldSection(); ?>
     </main>
 
     <!-- Footer -->
     <footer class="bg-white border-t py-4 px-6">
       <div class="flex justify-between items-center">
         <div>
-          <strong>Copyright &copy; <?php echo e(date('Y')); ?> <a href="/" class="text-green-600">Plantas Editha</a>.</strong> Todos los derechos reservados.
+          <strong>Copyright &copy; <?php echo e(date('Y')); ?> <a href="/" class="text-blue-600">Plantas Editha</a>.</strong> Todos los derechos reservados.
         </div>
       </div>
     </footer>
@@ -272,4 +251,4 @@
 </script>
 </body>
 </html>
-<?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/dashboard.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/dashboard2.blade.php ENDPATH**/ ?>
