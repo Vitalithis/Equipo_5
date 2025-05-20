@@ -15,7 +15,7 @@
     <!-- Logo -->
     <div class="flex-shrink-0">
         <img
-            src="<?php echo e(asset('images/logo.png')); ?>"
+            src="<?php echo e(asset('/storage/images/logo.png')); ?>"
             alt="Logo"
             width="130"
             height="80"
@@ -42,7 +42,7 @@
     <div class="relative hidden md:block" x-data="{ open: false }">
         <button @click="open = !open" class="focus:outline-none">
             <img
-                src="<?php echo e(asset('images/login.png')); ?>"
+                src="<?php echo e(asset('/storage/images/navlogin.svg')); ?>"
                 alt="Login"
                 width="50"
                 height="50"
@@ -65,7 +65,7 @@
     <!-- Ícono Burger (sólo en móvil) -->
     <button @click="menuOpen = !menuOpen" class="md:hidden">
         <img
-            src="<?php echo e(asset('images/burger.png')); ?>"
+            src="<?php echo e(asset('/storage/images/list.svg')); ?>"
             alt="Menú"
             class="w-8 h-8"
         />

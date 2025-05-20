@@ -1,10 +1,10 @@
-<section class="bg-green-200 bg-[url('/images/pattern1.png')] bg-cover py-40 px-4 my-40">
-  <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-8 flex flex-col md:flex-row justify-around items-center gap-8 text-center py-44">
+<section  class="bg-leafs bg-cover py-40 px-4 my-40">
+   <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-8 flex flex-col md:flex-row justify-around items-center gap-8 text-center py-44">
 
     <!-- Misión -->
     <div class="flex-1">
-      <img src="<?php echo e(asset('images/target.svg')); ?>" alt="Target Icon" class="mx-auto mb-4 w-12 h-12" />
-      <h3 class="text-xl font-semibold text-3xl">Misión</h3>
+      <img src=<?php echo e(asset('/storage/images/target.svg')); ?> alt="Target Icon" class="mx-auto mb-4 w-12 h-12" />
+      <h3 class="font-semibold text-3xl">Misión</h3>
       <p class="mt-2 text-gray-700 italic text-2xl">
         Frase de nuestra misión<br />
         Breve, precisa, memorable
@@ -13,8 +13,8 @@
 
     <!-- Visión -->
     <div class="flex-1">
-      <img src="<?php echo e(asset('images/binnoculars.svg')); ?>" alt="Binoculars Icon" class="mx-auto mb-4 w-12 h-12" />
-      <h3 class="text-xl font-semibold text-3xl">Visión</h3>
+      <img src=<?php echo e(asset('/storage/images/binnoculars.svg')); ?> alt="Binoculars Icon" class="mx-auto mb-4 w-12 h-12" />
+      <h3 class=" font-semibold text-3xl">Visión</h3>
       <p class="mt-2 text-gray-700 italic text-2xl">
         Frase de nuestra visión<br />
         Breve, precisa, memorable

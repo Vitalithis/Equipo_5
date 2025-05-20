@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@yield('title', 'Plantas Editha')</title>
 
-    <!-- Aquí puedes cargar tus estilos generales -->
-    @vite('resources/css/app.css')
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Sección para agregar estilos personalizados -->
-    @stack('styles')
+    <!-- Tailwind + Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
-<body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
+<body class="0 flex flex-col min-h-screen">
 
     {{-- Navbar --}}
     @include('components.navbar')
 
     {{-- Contenido principal --}}
-    <main class="flex-grow">
+    <main >
         @yield('content')
     </main>
 
     {{-- Footer --}}
     @include('components.footer')
 
-    <!-- Scripts generales -->
-    @vite('resources/js/app.js')
 
     <!-- Sección para agregar scripts personalizados -->
     @stack('scripts')
