@@ -59,8 +59,8 @@ class RoleController extends Controller
 
     public function edit(Request $request, Role $role)
     {
-        if ($role->name === 'superadmin') {
-            abort(403, 'El rol superadmin no puede ser editado.');
+        if (in_array($role->name, ['superadmin', 'user'])) {
+            abort(403, 'Este rol no puede ser editado.');
         }
 
         $permissions = Permission::all();
@@ -69,11 +69,10 @@ class RoleController extends Controller
 
         return view('dashboard.roles.form', compact('role', 'permissions', 'source', 'layout'));
     }
-
     public function update(Request $request, Role $role)
     {
-        if ($role->name === 'superadmin') {
-            abort(403, 'El rol superadmin no puede ser modificado.');
+        if (in_array($role->name, ['superadmin', 'user'])) {
+            abort(403, 'Este rol no puede ser modificado.');
         }
 
         $data = $request->validate([
@@ -84,7 +83,6 @@ class RoleController extends Controller
 
         $role->update(['name' => $data['name']]);
 
-        // ✅ Corrección: usar objetos Permission en lugar de IDs
         $permissions = Permission::whereIn('id', $data['permissions'] ?? [])->get();
         $role->syncPermissions($permissions);
 
@@ -94,13 +92,12 @@ class RoleController extends Controller
             ->route('roles.index', ['source' => $source])
             ->with('success', 'Rol actualizado correctamente.');
     }
-
     public function destroy(Request $request, Role $role)
     {
-        if ($role->name === 'superadmin') {
+        if (in_array($role->name, ['superadmin', 'user'])) {
             return redirect()
                 ->route('roles.index', ['source' => $request->query('source', 'dashboard')])
-                ->with('error', 'No se puede eliminar el rol superadmin.');
+                ->with('error', 'No se puede eliminar el rol "' . $role->name . '".');
         }
 
         $role->delete();

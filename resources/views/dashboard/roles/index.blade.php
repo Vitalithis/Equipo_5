@@ -8,6 +8,8 @@
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
             Roles del Sistema
         </h1>
+
+        @can('crear roles')
         <a href="{{ route('roles.create', ['source' => $source]) }}"
            class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -15,6 +17,7 @@
             </svg>
             Agregar Rol
         </a>
+        @endcan
     </div>
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg">
@@ -34,7 +37,7 @@
                             {{ $role->name }}
                         </td>
 
-                        {{-- Permisos en 2 columnas --}}
+                        {{-- Permisos --}}
                         <td class="px-4 py-3 text-gray-700 border-r border-gray-200">
                             @if($role->permissions->isEmpty())
                                 <span class="italic text-gray-400">Sin permisos asignados</span>
@@ -49,9 +52,13 @@
 
                         {{-- Acciones --}}
                         <td class="px-4 py-3 text-gray-700">
-                            @if($role->name !== 'superadmin')
+                            @if(!in_array($role->name, ['superadmin', 'user']))
+                                @can('editar roles')
                                 <a href="{{ route('roles.edit', ['role' => $role->id, 'source' => $source]) }}"
-                                   class="text-blue-600 hover:underline">Editar</a>
+                                class="text-blue-600 hover:underline">Editar</a>
+                                @endcan
+
+                                @can('eliminar roles')
                                 <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline-block ml-2">
                                     @csrf
                                     @method('DELETE')
@@ -59,6 +66,7 @@
                                             onclick="return confirm('¿Estás seguro de eliminar este rol?')"
                                             class="text-red-600 hover:underline">Eliminar</button>
                                 </form>
+                                @endcan
                             @else
                                 <span class="text-gray-400 italic">Protegido</span>
                             @endif

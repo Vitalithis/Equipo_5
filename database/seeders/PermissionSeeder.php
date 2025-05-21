@@ -10,12 +10,10 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear todos los permisos necesarios
         $permisos = [
             'ver dashboard',
             'gestionar usuarios',
-            'gestionar roles',
-            'gestionar permisos', // 👈 clave para el CRUD de permisos
+            'gestionar permisos',
             'ver ordenes',
             'crear ordenes',
             'editar ordenes',
@@ -24,13 +22,18 @@ class PermissionSeeder extends Seeder
             'gestionar ingresos',
             'gestionar egresos',
             'gestionar productos',
+
+            // Permisos detallados para roles
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
         ];
 
         foreach ($permisos as $permiso) {
             Permission::firstOrCreate(['name' => $permiso]);
         }
 
-        // 2. Crear solo el rol "superadmin"
         $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
         $superadmin->syncPermissions(Permission::all());
 
