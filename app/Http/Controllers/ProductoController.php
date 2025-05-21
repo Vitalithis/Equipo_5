@@ -76,12 +76,96 @@ class ProductoController extends Controller
         return view('products.index', compact('producto', 'relacionados'));
     }
 
-    // Función para filtrar productos por categoría desde el servidor
-    public function filterByCategory($category)
+    public function filterByCategory(Request $request, $category)
     {
-        $productos = Producto::where('categoria', $category)->get(); // Filtra productos por categoría
+        // Obtener filtros desde la solicitud (igual que en home())
+        $tamano = $request->input('tamano');
+        $dificultad = $request->input('dificultad');
+        $ordenar_por = $request->input('filter2');
+        $ordenar_ascendente = $request->input('filter3') === 'ascendente';
 
-        return view('products.index', compact('productos'));
+        $productos = Producto::whereHas('categorias', function ($query) use ($category) {
+            $query->where('nombre', $category);
+        });
+
+        if ($tamano) {
+            $productos->where('tamano', '<=', $tamano);
+        }
+        if ($dificultad) {
+            $productos->where('nivel_dificultad', $dificultad);
+        }
+
+        if ($ordenar_por) {
+            if ($ordenar_por == 'precio') {
+                $productos->orderBy('precio', $ordenar_ascendente ? 'asc' : 'desc');
+            } elseif ($ordenar_por == 'popularidad') {
+                $productos->orderBy('popularidad', $ordenar_ascendente ? 'asc' : 'desc');
+            } else {
+                $productos->orderBy('created_at', $ordenar_ascendente ? 'asc' : 'desc');
+            }
+        }
+        $productos = $productos->paginate(12);
+        // Retornar la misma vista con los datos necesarios
+        return view('products.index', [
+            'productos' => $productos,
+            'tamano' => $tamano,
+            'categoria' => $category, // La categoría fija de la ruta
+            'dificultad' => $dificultad,
+            'ordenar_por' => $ordenar_por,
+            'ordenar_ascendente' => $ordenar_ascendente,
+            'categorias' => Categoria::all(),
+        ]);
+    }
+
+    public function filter(Request $request, ?string $category = null, ?int $tamano = null, ?string $dificultad = null, ?string $ordenar_por = null, ?bool $ordenar_ascendente = false)
+    {
+        // Validación básica de parámetros
+        if ($category && !Categoria::where('nombre', $category)->exists()) {
+            abort(404, 'Categoría no encontrada');
+        }
+
+        // Construcción de la consulta
+        $productos = Producto::query()
+            ->when($category, function ($query) use ($category) {
+                $query->whereHas('categorias', function ($q) use ($category) {
+                    $q->where('nombre', $category);
+                });
+            })
+            ->when($tamano, function ($query) use ($tamano) {
+                $query->where('tamano', '<=', $tamano);
+            })
+            ->when($dificultad, function ($query) use ($dificultad) {
+                $query->where('nivel_dificultad', $dificultad);
+            });
+
+        $ordenar_por = $ordenar_por ?: 'created_at'; // Valor por defecto
+        $direccion = $ordenar_ascendente ? 'asc' : 'desc';
+
+        $productos->orderBy(
+            match ($ordenar_por) {
+                'precio' => 'precio',
+                'popularidad' => 'popularidad',
+                default => 'created_at'
+            },
+            $direccion
+        );
+
+        // Preparación de datos para la vista
+        $categorias = Categoria::all()
+            ->each(function ($cat) use ($category) {
+                $cat->selected = $cat->nombre === $category;
+            });
+
+        return view('products.index', [
+            'productos' => $productos->paginate(12),
+            'tamano' => $tamano,
+            'categoria' => $category,
+            'dificultad' => $dificultad,
+            'ordenar_por' => $ordenar_por,
+            'ordenar_ascendente' => $ordenar_ascendente,
+            'categorias' => $categorias,
+            'dificultades' => Producto::distinct()->pluck('nivel_dificultad'),
+        ]);
     }
     public function dashboard_show()
     {

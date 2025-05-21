@@ -1,7 +1,6 @@
-@extends('layouts.home')
-@section('title', 'Productos || Plantas Editha')
-@section('description', 'Nuestra tienda ofrece una amplia variedad de plantas de interior y exterior, ideales para cualquier espacio. Desde suculentas hasta plantas de sombra, tenemos lo que necesitas para embellecer tu hogar o jardín. Además, contamos con un equipo de expertos listos para asesorarte en el cuidado y mantenimiento de tus plantas.')
-@section('content')
+<?php $__env->startSection('title', 'Productos || Plantas Editha'); ?>
+<?php $__env->startSection('description', 'Nuestra tienda ofrece una amplia variedad de plantas de interior y exterior, ideales para cualquier espacio. Desde suculentas hasta plantas de sombra, tenemos lo que necesitas para embellecer tu hogar o jardín. Además, contamos con un equipo de expertos listos para asesorarte en el cuidado y mantenimiento de tus plantas.'); ?>
+<?php $__env->startSection('content'); ?>
 
 <!-- Banner principal -->
 <div class="relative w-full h-64 md:h-96 bg-greenPrimary overflow-hidden">
@@ -11,7 +10,7 @@
             <p class="text-xl md:text-2xl text-white max-w-2xl mx-auto">Descubre nuestra selección de plantas para todos los espacios y niveles de cuidado</p>
         </div>
     </div>
-    <img src="{{ asset('/storage/images/banner-productos.jpg') }}" alt="Variedad de plantas" class="w-full h-full object-cover">
+    <img src="<?php echo e(asset('/storage/images/banner-productos.jpg')); ?>" alt="Variedad de plantas" class="w-full h-full object-cover">
 </div>
 
 <!-- Contenedor principal -->
@@ -28,24 +27,26 @@
                 <div class="mb-6">
                     <h3 class="font-semibold text-greenDark mb-2">Categorías</h3>
                     <ul class="space-y-2" id="categorias-container">
-                        @foreach($categorias as $categoria)
+                        <?php $__currentLoopData = $categorias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categoria): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li>
                             <label class="flex items-center cursor-pointer group">
                                 <input type="checkbox"
                                     name="categorias[]"
-                                    id="categoria_{{ $categoria->id }}"
-                                    value="{{ $categoria->nombre }}"
+                                    id="categoria_<?php echo e($categoria->id); ?>"
+                                    value="<?php echo e($categoria->nombre); ?>"
                                     class="mr-2 h-4 w-4 text-greenPrimary rounded border-gray-300 focus:ring-greenPrimary transition"
-                                    {{ $categoria->selected ? 'checked' : '' }}
-                                    data-category-id="{{ $categoria->id }}">
+                                    <?php echo e($categoria->selected ? 'checked' : ''); ?>
+
+                                    data-category-id="<?php echo e($categoria->id); ?>">
                                 <span class="flex items-center text-blueDark group-hover:text-greenPrimary transition-colors">
                                     <span class="mr-2">•</span>
-                                    {{ $categoria->nombre }}
+                                    <?php echo e($categoria->nombre); ?>
+
                                     
                                 </span>
                             </label>
                         </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
 
@@ -53,11 +54,11 @@
                 <div class="mb-6">
                     <h3 class="font-semibold text-greenDark mb-2">Tamaño máximo (cm)</h3>
                     <input type="range" id="tamano" name="tamano" min="10" max="200"
-                        value="{{ $tamano ?? 200 }}"
+                        value="<?php echo e($tamano ?? 200); ?>"
                         class="w-full h-2 bg-greenMid rounded-lg appearance-none cursor-pointer">
                     <div class="flex justify-between text-sm text-blueDark mt-1">
                         <span>10cm</span>
-                        <span id="tamanoValue">{{ $tamano ?? 200 }}cm</span>
+                        <span id="tamanoValue"><?php echo e($tamano ?? 200); ?>cm</span>
                         <span>200cm</span>
                     </div>
                 </div>
@@ -67,9 +68,9 @@
                     <h3 class="font-semibold text-greenDark mb-2">Nivel de dificultad</h3>
                     <select name="dificultad" id="dificultad" class="w-full p-2 border border-greenMid rounded-lg text-blueDark">
                         <option value="">Todos los niveles</option>
-                        <option value="facil" {{ $dificultad == 'baja' ? 'selected' : '' }}>Fácil</option>
-                        <option value="intermedia" {{ $dificultad == 'media' ? 'selected' : '' }}>Intermedia</option>
-                        <option value="experto" {{ $dificultad == 'alta' ? 'selected' : '' }}>Experto</option>
+                        <option value="facil" <?php echo e($dificultad == 'baja' ? 'selected' : ''); ?>>Fácil</option>
+                        <option value="intermedia" <?php echo e($dificultad == 'media' ? 'selected' : ''); ?>>Intermedia</option>
+                        <option value="experto" <?php echo e($dificultad == 'alta' ? 'selected' : ''); ?>>Experto</option>
                     </select>
                 </div>
 
@@ -77,16 +78,16 @@
                 <div class="mb-6">
                     <h3 class="font-semibold text-greenDark mb-2">Ordenar por</h3>
                     <select name="filter2" id="filter2" class="w-full p-2 border border-greenMid rounded-lg text-blueDark">
-                        <option value="relevancia" {{ $ordenar_por == 'relevancia' ? 'selected' : '' }}>Relevancia</option>
-                        <option value="precio" {{ $ordenar_por == 'precio' ? 'selected' : '' }}>Precio</option>
-                        <option value="popularidad" {{ $ordenar_por == 'popularidad' ? 'selected' : '' }}>Popularidad</option>
+                        <option value="relevancia" <?php echo e($ordenar_por == 'relevancia' ? 'selected' : ''); ?>>Relevancia</option>
+                        <option value="precio" <?php echo e($ordenar_por == 'precio' ? 'selected' : ''); ?>>Precio</option>
+                        <option value="popularidad" <?php echo e($ordenar_por == 'popularidad' ? 'selected' : ''); ?>>Popularidad</option>
                     </select>
                     <div class="mt-2 flex items-center">
                         <input type="radio" id="ascendente" name="filter3" value="ascendente"
-                            {{ $ordenar_ascendente ? 'checked' : '' }} class="mr-2">
+                            <?php echo e($ordenar_ascendente ? 'checked' : ''); ?> class="mr-2">
                         <label for="ascendente" class="text-sm text-blueDark">Ascendente</label>
                         <input type="radio" id="descendente" name="filter3" value="descendente"
-                            {{ !$ordenar_ascendente ? 'checked' : '' }} class="ml-4 mr-2">
+                            <?php echo e(!$ordenar_ascendente ? 'checked' : ''); ?> class="ml-4 mr-2">
                         <label for="descendente" class="text-sm text-blueDark">Descendente</label>
                     </div>
                 </div>
@@ -101,47 +102,49 @@
 
         <!-- Sección de productos -->
         <div class="w-full md:w-3/4 lg:w-4/5">
-            @if($productos->count() > 0)
+            <?php if($productos->count() > 0): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($productos as $producto)
+                <?php $__currentLoopData = $productos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <a href="{{ route('products.show', $producto->slug) }}" class="block">
+                    <a href="<?php echo e(route('products.show', $producto->slug)); ?>" class="block">
                         <div class="h-48 overflow-hidden">
-                            <img src="{{ asset('storage/' . $producto->imagen_principal) }}"
-                                alt="{{ $producto->nombre }}"
+                            <img src="<?php echo e(asset('storage/' . $producto->imagen_principal)); ?>"
+                                alt="<?php echo e($producto->nombre); ?>"
                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                         </div>
                         <div class="p-4">
                             <div class="flex justify-between items-start">
-                                <h3 class="text-lg font-semibold text-blueDark">{{ $producto->nombre }}</h3>
-                                <span class="text-greenPrimary font-bold">{{ number_format($producto->precio, 0, ',', '.') }} CLP</span>
+                                <h3 class="text-lg font-semibold text-blueDark"><?php echo e($producto->nombre); ?></h3>
+                                <span class="text-greenPrimary font-bold"><?php echo e(number_format($producto->precio, 0, ',', '.')); ?> CLP</span>
                             </div>
                             <div class="flex items-center mt-2">
                                 <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded mr-2">
-                                    {{ $producto->nivel_dificultad }}
+                                    <?php echo e($producto->nivel_dificultad); ?>
+
                                 </span>
-                                <span class="text-sm text-blueDark">{{ $producto->tamano }}cm</span>
+                                <span class="text-sm text-blueDark"><?php echo e($producto->tamano); ?>cm</span>
                             </div>
-                            <p class="text-blueDark mt-2 line-clamp-2">{{ $producto->descripcion_corta }}</p>
+                            <p class="text-blueDark mt-2 line-clamp-2"><?php echo e($producto->descripcion_corta); ?></p>
                             <button class="mt-4 w-full py-2 bg-greenPrimary text-white rounded-lg hover:bg-greenDark transition-colors">
                                 Ver detalles
                             </button>
                         </div>
                     </a>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
             <!-- Paginación -->
             <div class="mt-8">
-                {{ $productos->links() }}
+                <?php echo e($productos->links()); ?>
+
             </div>
-            @else
+            <?php else: ?>
             <div class="text-center py-12">
                 <h3 class="text-xl font-semibold text-blueDark">No se encontraron productos</h3>
                 <p class="text-blueDark mt-2">Intenta ajustar tus filtros de búsqueda</p>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -195,7 +198,7 @@
                 });
                 
                 // Redireccionar con los filtros aplicados
-                const baseUrl = '{{ route("products.index") }}';
+                const baseUrl = '<?php echo e(route("products.index")); ?>';
                 window.location.href = `${baseUrl}?${params.toString()}`;
             });
         }
@@ -237,4 +240,5 @@
     });
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Dev\Personal\Equipo_5\resources\views/products/index.blade.php ENDPATH**/ ?>

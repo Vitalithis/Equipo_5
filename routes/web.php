@@ -135,7 +135,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Vaciar carrito en base de datos
     Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
-
 });
 
 // Ruta para Wepbay
@@ -160,9 +159,17 @@ Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
-Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
-
-
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
+    ->name('producto.filterByCategory');
+Route::get(
+    '/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}',
+    [ProductoController::class, 'filter']
+)
+    ->where([
+        'tamano' => '\d+',
+        'ordenar_ascendente' => 'true|false'
+    ])
+    ->name('productos.filter');
 Route::get('/sobre-nosotros', function () {
     return view('about');
 })->name('about');
