@@ -50,7 +50,7 @@ class CuidadoController extends Controller
         $cuidado = Cuidado::findOrFail($id);
         $productos = Producto::all();
 
-        return view('dashboard.cuidados.edit', compact('cuidado', 'productos'));
+        return view('dashboard.cuidados_edit', compact('cuidado', 'productos'));
     }
 
     public function update(Request $request, $id)

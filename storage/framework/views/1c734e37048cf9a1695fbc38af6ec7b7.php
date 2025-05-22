@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', isset($orden) ? 'Editar Orden de Producción' : 'Nueva Orden de Producción'); ?>
 
 <?php $__env->startSection('content'); ?>

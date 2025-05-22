@@ -1,4 +1,4 @@
-@extends('layouts.dashboard2')
+@extends('layouts.dashboard')
 
 @section('title', 'Órdenes de Producción')
 

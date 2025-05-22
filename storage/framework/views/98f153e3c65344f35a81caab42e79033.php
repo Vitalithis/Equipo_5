@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Editar cuidado'); ?>
 
 <?php $__env->startSection('content'); ?>

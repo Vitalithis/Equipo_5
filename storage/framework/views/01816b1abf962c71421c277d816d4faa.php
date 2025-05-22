@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Cuidados de Plantas'); ?>
 
 <?php $__env->startSection('content'); ?>
