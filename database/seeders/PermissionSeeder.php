@@ -10,30 +10,54 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear todos los permisos necesarios
         $permisos = [
+            // Dashboard
             'ver dashboard',
+
+            // Usuarios y roles
             'gestionar usuarios',
-            'gestionar roles',
-            'gestionar permisos', // 👈 clave para el CRUD de permisos
+            'ver usuarios',
+            'gestionar permisos',
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
+
+            // Ordenes
             'ver ordenes',
             'crear ordenes',
             'editar ordenes',
             'eliminar ordenes',
-            'ver reportes',
+
+            // Finanzas
             'gestionar ingresos',
             'gestionar egresos',
+
+            // Productos
             'gestionar productos',
+            'gestionar catálogo',     // <-- Usado en el layout
+
+            // Pedidos y descuentos
+            'gestionar pedidos',       // <-- Usado para pedidos
+            'gestionar descuentos',    // <-- Usado para sección descuentos
+
+            // Reportes
+            'ver reportes',
         ];
 
         foreach ($permisos as $permiso) {
-            Permission::firstOrCreate(['name' => $permiso]);
+            Permission::firstOrCreate([
+                'name' => $permiso,
+                'guard_name' => 'web',
+            ]);
         }
 
-        // 2. Crear solo el rol "superadmin"
-        $superadmin = Role::firstOrCreate(['name' => 'superadmin']);
-        $superadmin->syncPermissions(Permission::all());
+        // Crear rol admin si no existe
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        
+        // Asignar todos los permisos al rol admin
+        $admin->syncPermissions(Permission::all());
 
-        $this->command->info('Permisos creados. Rol superadmin con todos los permisos.');
+        $this->command->info('✅ Permisos creados y asignados al rol admin.');
     }
 }

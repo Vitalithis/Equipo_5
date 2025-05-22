@@ -2,30 +2,21 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
+    public function register(): void
+    {
         //
-    ];
+    }
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
-      $this->registerPolicies();
-
-    Gate::before(function ($user, $ability) {
-        return $user->hasRole('superadmin') ? true : null;
-    });
+        if (Auth::check()) {
+            // Esto asegura que los permisos estén disponibles incluso al usar middleware de permisos
+            Auth::user()->loadMissing('roles.permissions', 'permissions');
+        }
     }
 }

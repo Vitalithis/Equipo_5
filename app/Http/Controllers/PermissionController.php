@@ -10,37 +10,40 @@ class PermissionController extends Controller
     public function index()
     {
         $permissions = Permission::all();
-        return view('dashboard.permissions.index', compact('permissions'));
+        return view('permissions.index', compact('permissions'));
     }
 
     public function create()
     {
-        return view('dashboard.permissions.form', ['permission' => null]);
+        return view('permissions.create');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:permissions,name',
+        $request->validate([
+            'name' => 'required|unique:permissions,name',
         ]);
 
-        Permission::create($data);
+        Permission::create([
+            'name' => $request->name,
+            'guard_name' => 'web',
+        ]);
 
         return redirect()->route('permissions.index')->with('success', 'Permiso creado correctamente.');
     }
 
     public function edit(Permission $permission)
     {
-        return view('dashboard.permissions.form', compact('permission'));
+        return view('permissions.edit', compact('permission'));
     }
 
     public function update(Request $request, Permission $permission)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:permissions,name,' . $permission->id,
+        $request->validate([
+            'name' => 'required|unique:permissions,name,' . $permission->id,
         ]);
 
-        $permission->update($data);
+        $permission->update(['name' => $request->name]);
 
         return redirect()->route('permissions.index')->with('success', 'Permiso actualizado correctamente.');
     }
@@ -48,7 +51,6 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $permission->delete();
-
         return redirect()->route('permissions.index')->with('success', 'Permiso eliminado correctamente.');
     }
 }
