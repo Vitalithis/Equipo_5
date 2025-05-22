@@ -25,10 +25,11 @@ class PedidoController extends Controller
             'producto_id' => 'required|array',
             'cantidad' => 'required|array',
             'precio_unitario' => 'required|array',
+            'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $subtotal = 0;
-        $descuento_porcentaje = floatval($request->codigo_descuento) ?: 0;
+        $descuento_porcentaje = floatval($request->descuento_porcentaje) ?: 0;
         $impuesto_rate = 0.19;
 
         // Crear pedido 
@@ -44,9 +45,20 @@ class PedidoController extends Controller
             'observaciones' => $request->observaciones,
             'documento_generado' => false,
             'fecha_pedido' => now(),
-        ]); 
+        ]);
+
 
         foreach ($request->producto_id as $i => $producto_id) {
+            if (
+                empty($producto_id) ||
+                !isset($request->cantidad[$i]) ||
+                !isset($request->precio_unitario[$i]) ||
+                $request->cantidad[$i] <= 0 ||
+                $request->precio_unitario[$i] <= 0
+            ) {
+                continue; // omitir fila incompleta o inválida
+            }
+
             $cantidad = $request->cantidad[$i];
             $precio = $request->precio_unitario[$i];
             $subtotal_producto = $cantidad * $precio;
@@ -55,26 +67,17 @@ class PedidoController extends Controller
             $producto = Producto::findOrFail($producto_id);
 
             DetallePedido::create([
-            'pedido_id' => $pedido->id,
-            'producto_id' => $producto_id,
-            'cantidad' => $cantidad,
-            'precio_unitario' => $precio,
-            'subtotal' => $subtotal_producto,
-            'nombre_producto_snapshot' => $producto->nombre,
-            'codigo_barras_snapshot' => $producto->codigo_barras,
-            'imagen_snapshot' => $producto->imagen,
-        ]);
-
-        // Guarda en la tabla intermedia con snapshots
-        $pedido->productos()->attach($producto_id, [
+                'pedido_id' => $pedido->id,
+                'producto_id' => $producto_id,
                 'cantidad' => $cantidad,
                 'precio_unitario' => $precio,
-                'subtotal' => $subtotal,
+                'subtotal' => $subtotal_producto,
                 'nombre_producto_snapshot' => $producto->nombre,
                 'codigo_barras_snapshot' => $producto->codigo_barras,
                 'imagen_snapshot' => $producto->imagen,
             ]);
         }
+
 
         $descuento_aplicado = $subtotal * ($descuento_porcentaje / 100);
         $subtotal_desc = $subtotal - $descuento_aplicado;
@@ -123,4 +126,3 @@ class PedidoController extends Controller
 
     
 }
-

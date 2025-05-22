@@ -12,8 +12,21 @@ class Pedido extends Model
 
     protected $fillable = [
         'usuario_id',
-        'total',
+        'fecha_pedido',
+        'metodo_entrega',
+        'direccion_entrega',
         'estado_pedido',
+        'subtotal',
+        'descuento',
+        'impuesto',
+        'total',
+        'forma_pago',
+        'estado_pago',
+        'monto_pagado',
+        'tipo_documento',
+        'documento_generado',
+        'observaciones',
+        'boleta_final_path',
     ];
 
     public function usuario()

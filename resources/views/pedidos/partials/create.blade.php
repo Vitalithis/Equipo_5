@@ -81,12 +81,14 @@
             </button>
         </div>
         
-        <!-- Código de descuento -->
+        <!-- Descuento porcentual -->
         <div class="mt-6">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Código de Descuento</label>
-            <input type="text" name="codigo_descuento" class="w-full rounded-lg border border-gray-300 py-2 px-4 shadow-sm focus:border-eprimary focus:ring focus:ring-eprimary/50" placeholder="Ej: VERANO2023">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Descuento (%)</label>
+            <input type="number" name="descuento_porcentaje" min="0" max="100" step="0.01"
+                class="w-full rounded-lg border border-gray-300 py-2 px-4 shadow-sm focus:border-eprimary focus:ring focus:ring-eprimary/50"
+                placeholder="Ej: 10">
+            <small class="text-gray-500">Ingresa un número entre 0 y 100. Ej: 10 para 10% de descuento.</small>
         </div>
-
         <!-- Forma de pago -->
         <div class="mt-6">
             <label class="block text-sm font-semibold text-gray-700 mb-1">Forma de Pago</label>
@@ -235,5 +237,22 @@
             configurarBuscadores();
         });
     });
+    // aaaaaaaaaaaaaaa
+document.getElementById('pedido-form').addEventListener('submit', function(e) {
+    const productosIds = document.querySelectorAll('.producto-id');
+    let valido = true;
+
+    productosIds.forEach(id => {
+        if (!id.value) {
+            valido = false;
+        }
+    });
+
+    if (!valido) {
+        alert('Debes seleccionar los productos desde la lista desplegable. No escribas el nombre manualmente.');
+        e.preventDefault();
+    }
+});
+
 </script>
 @endsection
