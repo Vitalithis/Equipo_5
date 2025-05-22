@@ -96,6 +96,27 @@
             </a>
           </li>
           @endcan
+
+          <li class="mb-1">
+            <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+            <i class="fa-solid fa-person-digging"></i>
+              <span>Fertilizante</span>
+            </a>
+          </li>
+
+          <li class="mb-1">
+            <a href="{{ route('dashboard.ordenes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-tags"></i>
+              <span>Orden de Producción</span>
+            </a>
+          </li>
+
+          <li class="mb-1">
+            <a href="{{ route('dashboard.cuidados') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-tags"></i>
+              <span>Cuidados</span>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

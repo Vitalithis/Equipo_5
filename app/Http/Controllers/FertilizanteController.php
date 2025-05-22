@@ -9,7 +9,7 @@ class FertilizanteController extends Controller
     public function mostrarTodos()
     {
         $fertilizantes = Fertilizante::all();
-        return view('dashboard.fertilizante', compact('fertilizantes'));
+        return view('dashboard.fertilizantes', compact('fertilizantes'));
     }
 
     public function create()
