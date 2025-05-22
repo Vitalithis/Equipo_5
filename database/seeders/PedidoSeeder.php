@@ -4,25 +4,15 @@ namespace Database\Seeders;
 
 use App\Models\Pedido;
 use App\Models\DetallePedido;
-use App\Models\Cliente;
 use Illuminate\Database\Seeder;
 
 class PedidoSeeder extends Seeder
 {
     public function run(): void
     {
-        $cliente = Cliente::where('slug', 'plantaseditha')->first();
-
-        if (!$cliente) {
-            $this->command->warn('Cliente plantaseditha no encontrado. Ejecuta ClienteSeeder primero.');
-            return;
-        }
-
         Pedido::factory()
             ->count(10)
-            ->create([
-                'cliente_id' => $cliente->id,
-            ])
+            ->create()
             ->each(function ($pedido) use (&$totalSubtotal) {
                 $totalSubtotal = 0;
 

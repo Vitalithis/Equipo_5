@@ -4,31 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Scopes\ClienteScope;
 
 class Pedido extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'usuario_id', 'total', 'estado_pedido', 'cliente_id'
+        'usuario_id', 'total', 'estado_pedido'
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new ClienteScope);
-
-        static::creating(function ($pedido) {
-            if (app()->has('currentClienteId')) {
-                $pedido->cliente_id = app('currentClienteId');
-            }
-        });
-    }
-
-    public function cliente()
-    {
-        return $this->belongsTo(Cliente::class);
-    }
 
     public function usuario()
     {

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Scopes\ClienteScope;
 
 class Descuento extends Model
 {
@@ -24,8 +23,7 @@ class Descuento extends Model
         'valido_hasta',
         'activo',
         'usos_maximos',
-        'usos_actuales',
-        'cliente_id'
+        'usos_actuales'
     ];
 
     protected $casts = [
@@ -36,26 +34,9 @@ class Descuento extends Model
         'monto_fijo' => 'decimal:2'
     ];
 
-    // Tipos de descuento disponibles
     const TIPO_PORCENTAJE = 'porcentaje';
     const TIPO_MONTO_FIJO = 'monto_fijo';
     const TIPO_ENVIO_GRATIS = 'envio_gratis';
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new ClienteScope);
-
-        static::creating(function ($descuento) {
-            if (app()->has('currentClienteId')) {
-                $descuento->cliente_id = app('currentClienteId');
-            }
-        });
-    }
-
-    public function cliente()
-    {
-        return $this->belongsTo(Cliente::class);
-    }
 
     public function productos()
     {

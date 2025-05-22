@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Descuento;
-use App\Models\Cliente;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -11,13 +10,6 @@ class DescuentoSeeder extends Seeder
 {
     public function run(): void
     {
-        $cliente = Cliente::where('slug', 'plantaseditha')->first();
-
-        if (!$cliente) {
-            $this->command->warn(' Cliente plantaseditha no encontrado. Ejecuta ClienteSeeder primero.');
-            return;
-        }
-
         $descuentos = [
             [
                 'nombre' => 'Verano 20% OFF',
@@ -76,14 +68,11 @@ class DescuentoSeeder extends Seeder
 
         foreach ($descuentos as $descuento) {
             Descuento::updateOrCreate(
-                [
-                    'codigo' => $descuento['codigo'],
-                    'cliente_id' => $cliente->id
-                ],
-                array_merge($descuento, ['cliente_id' => $cliente->id])
+                ['codigo' => $descuento['codigo']],
+                $descuento
             );
         }
 
-        $this->command->info('5 descuentos creados o actualizados exitosamente para el cliente: ' . $cliente->nombre);
+        $this->command->info('5 descuentos creados o actualizados exitosamente.');
     }
 }
