@@ -10,10 +10,10 @@
     <h1 class="text-4xl font-extrabold text-eprimary mb-8 text-center">Gestión de Ventas</h1>
 
     <div class="flex justify-end mb-6">
-        <a href="{{ route('pedidos.create') }}"
-        class="inline-block bg-eprimary text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-eprimary-dark transition">
-            + Agregar Venta
-        </a>
+
+            <a href="{{ route('pedidos.create') }}" class="text-blue-600 hover:text-blue-900">
+        + Agregar Venta
+    </a>
     </div>
 
 
