@@ -78,6 +78,12 @@ Route::post('/dashboard/descuentos', [DescuentoController::class, 'store'])->mid
 Route::get('/dashboard/descuentos/{id}/edit', [DescuentoController::class, 'edit'])->middleware('permission:gestionar descuentos')->name('descuentos_edit');
 Route::put('/dashboard/descuentos/{id}', [DescuentoController::class, 'update'])->middleware('permission:gestionar descuentos')->name('descuentos.update');
 Route::delete('/dashboard/descuentos/{id}', [DescuentoController::class, 'destroy'])->middleware('permission:gestionar descuentos')->name('descuentos.destroy');
+// Ruta Formulario Contacto
+use App\Http\Controllers\ContactController;
+
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -96,12 +102,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/agregar', [CartController::class, 'agregarProducto'])->name('cart.agregar');
     Route::post('/cart/actualizar/{id}', [CartController::class, 'actualizarProducto'])->name('cart.actualizar');
+
+    // Eliminar producto del carrito (sesión)
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.solo');
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/guardar', [CartController::class, 'guardarCarrito'])->name('cart.guardar');
     Route::get('/cart/obtener', [CartController::class, 'obtenerCarrito'])->name('cart.obtener');
     Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    // Vaciar carrito en base de datos
+    Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -118,8 +129,17 @@ Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento
 
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
-Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
-
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
+    ->name('producto.filterByCategory');
+Route::get(
+    '/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}',
+    [ProductoController::class, 'filter']
+)
+    ->where([
+        'tamano' => '\d+',
+        'ordenar_ascendente' => 'true|false'
+    ])
+    ->name('productos.filter');
 Route::get('/sobre-nosotros', function () {
     return view('about');
 })->name('about');
