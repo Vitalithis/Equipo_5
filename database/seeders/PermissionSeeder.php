@@ -3,18 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use App\Models\Cliente;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        // Lista de permisos base para todos los clientes
         $permisos = [
-            // Dashboard
             'ver dashboard',
-
-            // Usuarios y roles
             'gestionar usuarios',
             'ver usuarios',
             'gestionar permisos',
@@ -22,42 +21,58 @@ class PermissionSeeder extends Seeder
             'crear roles',
             'editar roles',
             'eliminar roles',
-
-            // Ordenes
             'ver ordenes',
             'crear ordenes',
             'editar ordenes',
             'eliminar ordenes',
-
-            // Finanzas
             'gestionar ingresos',
             'gestionar egresos',
-
-            // Productos
             'gestionar productos',
-            'gestionar catálogo',     // <-- Usado en el layout
-
-            // Pedidos y descuentos
-            'gestionar pedidos',       // <-- Usado para pedidos
-            'gestionar descuentos',    // <-- Usado para sección descuentos
-
-            // Reportes
+            'gestionar catálogo',
+            'gestionar pedidos',
+            'gestionar descuentos',
             'ver reportes',
+            'ver panel soporte',
         ];
 
-        foreach ($permisos as $permiso) {
+        // Crear los permisos globales (cliente_id = null)
+        foreach ($permisos as $nombre) {
             Permission::firstOrCreate([
-                'name' => $permiso,
+                'name' => $nombre,
                 'guard_name' => 'web',
+                'cliente_id' => null,
             ]);
         }
 
-        // Crear rol admin si no existe
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        
-        // Asignar todos los permisos al rol admin
-        $admin->syncPermissions(Permission::all());
+        // Obtener el cliente base (plantaseditha) si existe
+        $cliente = Cliente::where('slug', 'plantaseditha')->first();
 
-        $this->command->info('✅ Permisos creados y asignados al rol admin.');
+        if ($cliente) {
+            // Clonar estos permisos solo si no están creados para este cliente
+            $existen = Permission::where('cliente_id', $cliente->id)->exists();
+
+            if (!$existen) {
+                foreach ($permisos as $nombre) {
+                    Permission::firstOrCreate([
+                        'name' => $nombre,
+                        'guard_name' => 'web',
+                        'cliente_id' => $cliente->id,
+                    ]);
+                }
+            }
+
+            // Asignar los permisos al rol admin del cliente
+            $admin = Role::where('name', 'admin')
+                ->where('cliente_id', $cliente->id)
+                ->first();
+
+            if ($admin) {
+                $permisosAsignables = Permission::where('cliente_id', $cliente->id)->get();
+                $admin->syncPermissions($permisosAsignables);
+                $this->command->info("✅ Permisos asignados al rol admin del cliente: {$cliente->nombre}");
+            }
+        }
+
+        $this->command->info("✅ Permisos globales creados correctamente.");
     }
 }

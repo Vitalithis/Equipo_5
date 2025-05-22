@@ -25,8 +25,24 @@ use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
 use App\Models\ProductCategory;
 
+use App\Http\Controllers\AdminClienteController;
+use App\Http\Controllers\ClienteController;
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+
+Route::middleware(['auth', 'role:soporte'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/clientes', [AdminClienteController::class, 'index'])->name('clientes.index');
+    Route::get('/clientes/crear', [AdminClienteController::class, 'create'])->name('clientes.create');
+    Route::post('/clientes', [AdminClienteController::class, 'store'])->name('clientes.store');
+    Route::get('/clientes/{cliente}/usuarios', [AdminClienteController::class, 'usuarios'])->name('clientes.usuarios');
+    Route::get('/clientes/{cliente}/productos', [AdminClienteController::class, 'productos'])->name('clientes.productos');
+    Route::delete('/clientes/{cliente}', [AdminClienteController::class, 'destroy'])->name('clientes.destroy');
+    Route::get('/admin/cliente/{cliente}/asignar-permisos', [AdminClienteController::class, 'asignarPermisosExistente'])->name('admin.clientes.asignarPermisos');
+
+});
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['permission:ver dashboard'])->group(function () {

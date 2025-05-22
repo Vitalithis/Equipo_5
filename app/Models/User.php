@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Scopes\ClienteScope;
 
 class User extends Authenticatable
 {
@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cliente_id',
     ];
 
     /**
@@ -44,5 +45,25 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // ...
+    /**
+     * Scope and auto-assign cliente_id
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ClienteScope);
+
+        static::creating(function ($user) {
+            if (app()->has('currentClienteId')) {
+                $user->cliente_id = app('currentClienteId');
+            }
+        });
+    }
+
+    /**
+     * Relación con Cliente
+     */
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
 }

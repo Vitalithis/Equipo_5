@@ -3,17 +3,21 @@
 namespace Database\Seeders;
 
 use App\Models\Descuento;
+use App\Models\Cliente;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DescuentoSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        $cliente = Cliente::where('slug', 'plantaseditha')->first();
+
+        if (!$cliente) {
+            $this->command->warn(' Cliente plantaseditha no encontrado. Ejecuta ClienteSeeder primero.');
+            return;
+        }
+
         $descuentos = [
             [
                 'nombre' => 'Verano 20% OFF',
@@ -55,7 +59,7 @@ class DescuentoSeeder extends Seeder
                 'valido_desde' => Carbon::now()->addDays(10),
                 'valido_hasta' => Carbon::now()->addDays(12),
                 'usos_maximos' => 50,
-                'activo' => false // No activo hasta la fecha
+                'activo' => false
             ],
             [
                 'nombre' => 'Primera Compra $15 OFF',
@@ -64,16 +68,22 @@ class DescuentoSeeder extends Seeder
                 'monto_fijo' => 15.00,
                 'tipo' => Descuento::TIPO_MONTO_FIJO,
                 'valido_desde' => Carbon::now()->subMonth(),
-                'valido_hasta' => null, // Sin fecha de expiración
-                'usos_maximos' => null, // Sin límite de usos
+                'valido_hasta' => null,
+                'usos_maximos' => null,
                 'activo' => true
             ]
         ];
 
         foreach ($descuentos as $descuento) {
-            Descuento::create($descuento);
+            Descuento::updateOrCreate(
+                [
+                    'codigo' => $descuento['codigo'],
+                    'cliente_id' => $cliente->id
+                ],
+                array_merge($descuento, ['cliente_id' => $cliente->id])
+            );
         }
 
-        $this->command->info('¡5 descuentos creados exitosamente!');
+        $this->command->info('5 descuentos creados o actualizados exitosamente para el cliente: ' . $cliente->nombre);
     }
 }

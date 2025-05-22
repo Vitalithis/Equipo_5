@@ -44,6 +44,14 @@
 
       <nav class="p-4">
         <ul>
+          <?php if (\Illuminate\Support\Facades\Blade::check('role', 'soporte')): ?>
+          <li class="mb-1">
+            <a href="<?php echo e(route('admin.clientes.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          <?php endif; ?>
           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
           <li class="mb-1">
             <a href="<?php echo e(route('home')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">

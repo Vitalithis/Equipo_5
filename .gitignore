@@ -1,20 +1,35 @@
-/.phpunit.cache
+# Laravel/Composer
+/vendor
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
-/vendor
+/.phpunit.cache
+/.phpunit.result.cache
+/.fleet
+/.idea
+/.vscode
+
+# Laravel environment
 .env
 env
 .env.backup
 .env.production
-.phpunit.result.cache
+
+# Laravel Homestead
 Homestead.json
 Homestead.yaml
+
+# NPM/Yarn
 auth.json
 npm-debug.log
 yarn-error.log
-/.fleet
-/.idea
-/.vscode
+
+# Laravel storage/framework views, cache, and compiled files
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/framework/*.php
+/storage/logs/*.log

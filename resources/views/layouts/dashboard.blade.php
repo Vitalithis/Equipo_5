@@ -43,6 +43,14 @@
 
       <nav class="p-4">
         <ul>
+          @role('soporte')
+          <li class="mb-1">
+            <a href="{{ route('admin.clientes.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          @endrole
           @can('ver dashboard')
           <li class="mb-1">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
