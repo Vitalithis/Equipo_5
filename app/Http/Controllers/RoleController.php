@@ -8,76 +8,75 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $roles = Role::with('permissions')->get();
-        $source = $request->query('source', 'dashboard');
-        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
+        $source = 'default';
 
-        return view('dashboard.roles.index', compact('roles', 'source', 'layout'));
+        return view('dashboard.roles.index', compact('roles', 'source'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        $permissions = Permission::all();
-        $source = $request->query('source', 'dashboard');
-        $layout = $source === 'dashboard2' ? 'layouts.dashboard2' : 'layouts.dashboard';
-
-        return view('dashboard.roles.form', [
-            'role' => null,
-            'permissions' => $permissions,
-            'source' => $source,
-            'layout' => $layout,
-        ]);
+        $permissions = \Spatie\Permission\Models\Permission::all();
+        return view('dashboard.roles.create', compact('permissions'));
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:roles,name',
+        $request->validate([
+            'name' => 'required|unique:roles,name',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role = Role::create(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+        $role = \Spatie\Permission\Models\Role::create(['name' => $request->name]);
 
-        $source = $request->query('source', 'dashboard');
+        if ($request->has('permissions')) {
+        $permissions = Permission::whereIn('id', $request->permissions ?? [])->pluck('name');
+        $role->syncPermissions($permissions);
+        }
 
-        return redirect()
-            ->route('roles.index', ['source' => $source])
-            ->with('success', 'Rol creado correctamente.');
+        return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
     }
-
 
     public function edit(Role $role)
     {
+        if (in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser modificado.');
+        }
+
         $permissions = Permission::all();
-        return view('dashboard.roles.form', compact('role', 'permissions'));
+        $source = request()->get('source', 'default');
+
+        return view('dashboard.roles.edit', compact('role', 'permissions', 'source'));
     }
 
     public function update(Request $request, Role $role)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:roles,name,' . $role->id,
-            'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,id',
+        if (in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser modificado.');
+        }
+
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+            'permissions' => 'array',
         ]);
 
-        $role->update(['name' => $data['name']]);
-        $role->syncPermissions($data['permissions'] ?? []);
+        $role->update(['name' => $request->name]);
+        $permissions = Permission::whereIn('id', $request->permissions ?? [])->pluck('name');
+        $role->syncPermissions($permissions);
 
-        $source = $request->query('source', 'dashboard');
-
-        return redirect()
-            ->route('roles.index', ['source' => $source])
-            ->with('success', 'Rol actualizado correctamente.');
+        return redirect()->route('roles.index')->with('success', 'Rol actualizado exitosamente.');
     }
-
 
     public function destroy(Role $role)
     {
+        if (in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser eliminado.');
+        }
+
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Rol eliminado');
+        return redirect()->route('roles.index')->with('success', 'Rol eliminado exitosamente.');
     }
 }
