@@ -2,17 +2,13 @@
     @csrf
     @method('PUT')
 
-    @php
-        $estados = $pedido->estadosPermitidos();
-    @endphp
+    @php $estados = $pedido->estadosPermitidos(); @endphp
 
     @if (!empty($estados))
         <select name="estado_pedido"
                 class="rounded border border-efore-400 px-2 py-1 text-sm bg-white text-eprimary focus:ring-2 focus:ring-eaccent2-500">
             @foreach ($estados as $valor => $texto)
-                <option value="{{ $valor }}" @selected($pedido->estado_pedido === $valor)>
-                    {{ $texto }}
-                </option>
+                <option value="{{ $valor }}" @selected($pedido->estado_pedido === $valor)>{{ $texto }}</option>
             @endforeach
         </select>
     @else
@@ -24,4 +20,3 @@
         Guardar
     </button>
 </form>
- 

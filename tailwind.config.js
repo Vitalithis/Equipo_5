@@ -78,7 +78,8 @@ export default {
 
         extend: {
             fontFamily: {
-                sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+                sans: ["Roboto", ...defaultTheme.fontFamily.sans], // Fuente general
+                condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans], // Para títulos
             },
 
             fill: theme => ({

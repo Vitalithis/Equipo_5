@@ -42,12 +42,11 @@
 
                         <x-slot name="content">
                     <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
-
-                    @role('admin|superadmin')
-                        <x-dropdown-link :href="route('dashboard')">Sala Venta</x-dropdown-link>
-                        <x-dropdown-link :href="route('dashboard2')">Planta Producción</x-dropdown-link>
-                    @endrole
-
+                    @can('ver dashboard')
+                        <x-dropdown-link :href="route('dashboard')">
+                            Panel Admin
+                        </x-dropdown-link>
+                    @endcan
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">

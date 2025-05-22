@@ -1,4 +1,4 @@
-@extends($layout)
+@extends('layouts.dashboard')
 
 @section('title', $role ? 'Editar Rol' : 'Crear Rol')
 
