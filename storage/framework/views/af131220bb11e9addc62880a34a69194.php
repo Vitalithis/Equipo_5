@@ -9,7 +9,7 @@
 ?>
 
 <nav
-    class="bg-white px-6 md:px-20 py-2 flex items-center justify-between font-['Roboto_Condensed']  sticky top-0 z-50"
+    class="bg-white px-6 md:px-20 py-2 flex items-center justify-between font-roboto_condensed  sticky top-0 z-50"
     x-data="{ menuOpen: false, userMenuOpen: false }"
 >
     <!-- Logo -->
@@ -93,7 +93,7 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </ul>
     <div class="border-t border-gray-300 pt-4 space-y-2">
-        <a href="/registro" class="block text-black hover:text-gray-500 text-lg">Registrarse</a>
+        <a href="/register" class="block text-black hover:text-gray-500 text-lg">Registrarse</a>
         <a href="/login" class="block text-black hover:text-gray-500 text-lg">Iniciar Sesión</a>
     </div>
 </div>
