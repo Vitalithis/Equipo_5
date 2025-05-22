@@ -13,7 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
-        "spatie/laravel-permission": "^6.17",
+        "spatie/laravel-permission": "6.18",
         "transbank/transbank-sdk": "^5.0"
     },
     "require-dev": {
