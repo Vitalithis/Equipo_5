@@ -1,22 +1,23 @@
 <?php $__env->startSection('title','Listado de fertilizantes'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <div class="py-8 px-4 md:px-8 max-w-7xl mx-auto">
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+<div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
         <div class="flex items-center mb-6">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
-                Fertilizantes
-            </h1>
-            <a href="<?php echo e(route('fertilizantes.create')); ?>" class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <a href="<?php echo e(route('fertilizantes.create')); ?>"
+               class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 4v16m8-8H4"/>
                 </svg>
                 Agregar Fertilizante
             </a>
         </div>
 
-        <div class="overflow-x-auto bg-white shadow sm:rounded-lg">
-            <table class="min-w-full table-auto text-sm divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
+            <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
+                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
