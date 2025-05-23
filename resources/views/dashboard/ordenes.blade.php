@@ -28,6 +28,7 @@
                     <th class="px-6 py-3 whitespace-nowrap">Fecha Inicio</th>
                     <th class="px-6 py-3 whitespace-nowrap">Fecha Estimada</th>
                     <th class="px-6 py-3 whitespace-nowrap">Estado</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Trabajador</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
@@ -42,6 +43,7 @@
                             {{ $orden->fecha_fin_estimada ? \Carbon\Carbon::parse($orden->fecha_fin_estimada)->format('d/m/Y') : '-' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $orden->estado }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $orden->trabajador->name ?? '—' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('ordenes.edit', $orden->id) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
                             <form action="{{ route('ordenes.destroy', $orden->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('¿Estás seguro de eliminar esta orden?')">
@@ -53,7 +55,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-6 text-center text-gray-500">No hay órdenes registradas.</td>
+                        <td colspan="8" class="px-6 py-6 text-center text-gray-500">No hay órdenes registradas.</td>
                     </tr>
                 @endforelse
             </tbody>

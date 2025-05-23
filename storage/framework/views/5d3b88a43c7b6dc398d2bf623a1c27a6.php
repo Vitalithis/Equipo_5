@@ -118,6 +118,13 @@
               <span>Cuidados</span>
             </a>
           </li>
+
+          <li class="mb-1">
+            <a href="<?php echo e(route('dashboard.finanzas')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+            <i class="fa-solid fa-coins"></i>
+              <span>Finanzas</span>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

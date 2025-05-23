@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             FertilizanteSeeder::class,
             OrdenProduccionSeeder::class,
             CuidadoSeeder::class,
-            RolUserSeeder::class
+            RolUserSeeder::class,
+            FinanzaSeeder::class
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)

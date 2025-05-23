@@ -26,6 +26,7 @@
                     <th class="px-6 py-3 whitespace-nowrap">Fecha Inicio</th>
                     <th class="px-6 py-3 whitespace-nowrap">Fecha Estimada</th>
                     <th class="px-6 py-3 whitespace-nowrap">Estado</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Trabajador</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
@@ -41,6 +42,7 @@
 
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap capitalize"><?php echo e($orden->estado); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($orden->trabajador->name ?? '—'); ?></td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="<?php echo e(route('ordenes.edit', $orden->id)); ?>" class="text-blue-600 hover:text-blue-900">Editar</a>
                             <form action="<?php echo e(route('ordenes.destroy', $orden->id)); ?>" method="POST" class="inline-block ml-2" onsubmit="return confirm('¿Estás seguro de eliminar esta orden?')">
@@ -52,7 +54,7 @@
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
-                        <td colspan="7" class="px-6 py-6 text-center text-gray-500">No hay órdenes registradas.</td>
+                        <td colspan="8" class="px-6 py-6 text-center text-gray-500">No hay órdenes registradas.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

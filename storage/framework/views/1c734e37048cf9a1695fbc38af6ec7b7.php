@@ -78,6 +78,21 @@
             </select>
         </div>
 
+        
+        <div>
+            <label for="user_id" class="block text-sm font-medium text-gray-700">Trabajador asignado</label>
+            <select name="user_id" id="user_id" class="form-select mt-1 w-full">
+                <option value="">Selecciona un trabajador</option>
+                <?php $__currentLoopData = $usuarios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $usuario): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($usuario->id); ?>"
+                        <?php echo e(old('user_id', $orden->user_id ?? '') == $usuario->id ? 'selected' : ''); ?>>
+                        <?php echo e($usuario->name); ?>
+
+                    </option>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+        </div>
+
         <div>
             <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones</label>
             <textarea name="observaciones" id="observaciones" rows="3"

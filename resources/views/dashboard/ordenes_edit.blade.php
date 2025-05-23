@@ -78,6 +78,20 @@
             </select>
         </div>
 
+        {{-- ✅ Trabajador asignado --}}
+        <div>
+            <label for="user_id" class="block text-sm font-medium text-gray-700">Trabajador asignado</label>
+            <select name="user_id" id="user_id" class="form-select mt-1 w-full">
+                <option value="">Selecciona un trabajador</option>
+                @foreach ($usuarios as $usuario)
+                    <option value="{{ $usuario->id }}"
+                        {{ old('user_id', $orden->user_id ?? '') == $usuario->id ? 'selected' : '' }}>
+                        {{ $usuario->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <div>
             <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones</label>
             <textarea name="observaciones" id="observaciones" rows="3"
