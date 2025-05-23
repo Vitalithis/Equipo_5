@@ -17,15 +17,21 @@ class CheckSuperAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Si el usuario no está autenticado o no es superadmin, denegar acceso
-        if (!auth()->check() || auth()->user()->role !== 'superadmin') {
-            // Opción 1: Redirigir al dashboard con error
-            return redirect()->route('dashboard')->with('error', 'Acceso no autorizado');
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Debes iniciar sesión.');
+        }
 
-            // Opción 2: Retornar 403 (Forbidden)
-            // abort(403, 'Acceso solo para superadministradores');
+        $user = auth()->user();
+
+        // Acceder directamente a los nombres de los roles asignados
+        $roles = $user->roles->pluck('name')->toArray();
+
+        if (!in_array('admin', $roles) && !in_array('superadmin', $roles)) {
+            return redirect()->route('home')->with('error', 'Acceso no autorizado.');
         }
 
         return $next($request);
     }
+
+
 }

@@ -15,11 +15,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
+            PermissionSeeder::class,
             CategoriaSeeder::class,
             DescuentoSeeder::class,
             ProductoSeeder::class,
             ProductoCategoriaSeeder::class,
             PedidoSeeder::class,
+            RolUserSeeder::class,
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)

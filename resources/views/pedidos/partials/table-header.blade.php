@@ -1,4 +1,4 @@
-<thead class="bg-eaccent2 text-eprimary uppercase tracking-wide text-xs">
+<thead class="bg-eaccent2 text-eprimary uppercase tracking-wide text-xs font-['Roboto_Condensed']">
     <tr>
         <th class="px-6 py-4 text-center">ID</th>
         <th class="px-6 py-4 text-center">Usuario</th>

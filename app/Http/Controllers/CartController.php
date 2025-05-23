@@ -22,11 +22,11 @@ class CartController extends Controller
         $user = auth()->user(); // Obtener el usuario autenticado
 
         // Borrar el carrito previo (si existe)
-        CartItem::where('user_id', $user->id)->delete();
+        ventas::where('user_id', $user->id)->delete();
 
         // Guardar cada item del carrito
         foreach ($request->items as $item) {
-            CartItem::create([
+            ventas::create([
                 'user_id' => $user->id,
                 'producto_id' => $item['id'],
                 'cantidad' => $item['cantidad'],
@@ -48,17 +48,9 @@ class CartController extends Controller
         ]);
     }
 
-    // Vaciar el carrito del usuario
-    public function vaciarCarrito()
-    {
-        $user = auth()->user(); // Obtener el usuario autenticado
-        CartItem::where('user_id', $user->id)->delete();
-
-        return response()->json(['message' => 'Carrito vacío.']);
-    }
 
     // Añadir al carrito
-    public function add(Request $request, $id)
+    public function añadirCarrito(Request $request, $id)
     {
         $producto = Producto::findOrFail($id); // Buscar producto
         $cantidad = $request->input('cantidad', 1);
@@ -83,29 +75,7 @@ class CartController extends Controller
     }
 
 
-    public function agregarProducto(Request $request)
-    {
-        $productoId = $request->input('id');
-        $producto = Producto::find($productoId);
-
-        if (!$producto) {
-            return redirect()->back()->with('error', 'Producto no encontrado.');
-        }
-
-        $cart = session()->get('cart', []);
-
-        $cart[$productoId] = [
-            'nombre'   => $producto->nombre,
-            'precio'   => $producto->precio,
-            'cantidad' => 1,
-            'imagen'   => $producto->imagen ?? '/images/default.png', // Ajusta según sea necesario
-        ];
-
-        session()->put('cart', $cart);
-
-        return redirect()->route('cart.index')->with('success', 'Producto agregado al carrito correctamente.');
-    }
-
+    
 
     public function actualizarProducto(Request $request, $id)
     {
@@ -135,7 +105,8 @@ class CartController extends Controller
         // Retornar una respuesta
         return redirect()->route('cart.index')->with('success', 'Producto eliminado del carrito.');
     }
-    public function clear()
+    
+    public function vaciarCarrito()
     {
         // Vaciar el carrito en la sesión
         session()->forget('cart');
