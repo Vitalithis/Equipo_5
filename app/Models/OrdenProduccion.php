@@ -21,7 +21,7 @@ class OrdenProduccion extends Model
         'observaciones',
     ];
 
-    const ESTADOS = ['pendiente', 'en_proceso', 'completada'];
+    const ESTADOS = ['pendiente', 'en proceso', 'completada'];
 
     // Relación con producto
     public function producto()
