@@ -49,7 +49,7 @@ class FinanzaController extends Controller
     public function edit($id)
     {
         $finanza = Finanza::findOrFail($id);
-        return view('dashboard.finanza_edit', compact('finanza'));
+        return view('dashboard.finanzas_edit', compact('finanza'));
     }
 
     public function update(Request $request, $id)
