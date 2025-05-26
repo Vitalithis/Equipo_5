@@ -116,3 +116,4 @@
 </style>
 
 <script src="//unpkg.com/alpinejs" defer></script>
+<?php /**PATH C:\TRABAJO\Equipo_5\resources\views/components/hero.blade.php ENDPATH**/ ?>
