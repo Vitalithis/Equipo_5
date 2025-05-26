@@ -23,6 +23,9 @@ use App\Http\Controllers\PermissionController;
 
 use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
+use App\Http\Controllers\CuidadoController;
+use App\Http\Controllers\FinanzaController;
+
 use App\Models\ProductCategory;
 
 use App\Http\Controllers\AdminClienteController;
@@ -180,6 +183,33 @@ Route::prefix('dashboard/ordenes-produccion')->middleware(['auth', 'permission:v
     Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->middleware('permission:editar ordenes')->name('ordenes.edit');
     Route::put('/{id}', [OrdenProduccionController::class, 'update'])->middleware('permission:editar ordenes')->name('ordenes.update');
     Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->middleware('permission:eliminar ordenes')->name('ordenes.destroy');
+    Route::get('/ordenes/export/pdf', [OrdenProduccionController::class, 'exportarPDF'])->name('ordenes.export.pdf');
+
 });
+
+
+//Rutas para cuidados de cada Planta
+
+Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+    Route::get('/cuidados', [CuidadoController::class, 'index'])->name('dashboard.cuidados');
+    Route::get('/cuidados/create', [CuidadoController::class, 'create'])->name('dashboard.cuidados.create');
+    Route::post('/cuidados', [CuidadoController::class, 'store'])->name('dashboard.cuidados.store');
+    Route::get('/cuidados/{id}/edit', [CuidadoController::class, 'edit'])->name('dashboard.cuidados.edit');
+    Route::put('/cuidados/{id}', [CuidadoController::class, 'update'])->name('dashboard.cuidados.update');
+    Route::delete('/cuidados/{id}', [CuidadoController::class, 'destroy'])->name('dashboard.cuidados.destroy');
+    Route::get('/dashboard/cuidados/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
+
+});
+
+Route::prefix('finanzas')->middleware(['auth'])->group(function () {
+    Route::get('/', [FinanzaController::class, 'index'])->name('dashboard.finanzas');
+    Route::get('/crear', [FinanzaController::class, 'create'])->name('finanzas.create');
+    Route::post('/', [FinanzaController::class, 'store'])->name('finanzas.store');
+    Route::get('/{id}/editar', [FinanzaController::class, 'edit'])->name('finanzas.edit');
+    Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
+    Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
+});
+
+
 
 require __DIR__ . '/auth.php';

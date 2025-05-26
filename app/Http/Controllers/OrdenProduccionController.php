@@ -4,22 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\OrdenProduccion;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrdenProduccionController extends Controller
 {
     public function index()
     {
-        $ordenes = OrdenProduccion::with('producto')->orderBy('created_at', 'desc')->get();
+        $ordenes = OrdenProduccion::with('producto', 'trabajador')->orderBy('created_at', 'desc')->get();
         return view('dashboard.ordenes', compact('ordenes'));
     }
 
     public function create()
     {
         $productos = Producto::all();
+        $usuarios = User::role('admin')->get(); // o User::all() si no usas Spatie
+
         return view('dashboard.ordenes_edit', [
             'orden' => null,
             'productos' => $productos,
+            'usuarios' => $usuarios,
         ]);
     }
 
@@ -33,6 +37,7 @@ class OrdenProduccionController extends Controller
             'fecha_fin_estimada' => 'nullable|date|after_or_equal:fecha_inicio',
             'estado' => 'required|string',
             'observaciones' => 'nullable|string',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         OrdenProduccion::create($request->all());
@@ -44,8 +49,9 @@ class OrdenProduccionController extends Controller
     {
         $orden = OrdenProduccion::findOrFail($id);
         $productos = Producto::all();
+        $usuarios = User::role('admin')->get(); // o User::all()
 
-        return view('dashboard.ordenes_edit', compact('orden', 'productos'));
+        return view('dashboard.ordenes_edit', compact('orden', 'productos', 'usuarios'));
     }
 
     public function update(Request $request, $id)
@@ -60,6 +66,7 @@ class OrdenProduccionController extends Controller
             'fecha_fin_estimada' => 'nullable|date|after_or_equal:fecha_inicio',
             'estado' => 'required|string',
             'observaciones' => 'nullable|string',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         $orden->update($request->all());

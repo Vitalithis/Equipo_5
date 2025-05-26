@@ -19,6 +19,11 @@ class DatabaseSeeder extends Seeder
             ProductoSeeder::class,
             ProductoCategoriaSeeder::class,
             PedidoSeeder::class,
+            FertilizanteSeeder::class,
+            OrdenProduccionSeeder::class,
+            CuidadoSeeder::class,
+            RolUserSeeder::class,
+            FinanzaSeeder::class
         ]);
 
         // \App\Models\User::factory(10)->create();
