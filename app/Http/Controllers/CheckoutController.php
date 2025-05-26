@@ -13,7 +13,7 @@ class CheckoutController extends Controller
         $amount = $request->input('amount');
         $sessionId = uniqid();
         $buyOrder = uniqid('ORDER_');
-        $returnUrl = route('checkout.response');
+        $returnUrl = route('checkout');
 
         $response = (new Transaction)->create(
             $buyOrder,
@@ -31,7 +31,7 @@ class CheckoutController extends Controller
         $token = $request->input('token_ws');
 
         if (!$token) {
-            return redirect()->route('checkout.cancel');
+            return redirect()->route('checkouts.cancel');
         }
 
         $response = (new Transaction)->commit($token);
@@ -39,9 +39,9 @@ class CheckoutController extends Controller
         if ($response->isApproved()) {
             // Aquí podrías guardar la orden, limpiar el carrito, etc.
             session()->forget('cart');
-            return view('checkouts.success', ['response' => $response]);
+            return view('checkout.success', ['response' => $response]);
         } else {
-            return redirect()->route('checkout.cancel');
+            return redirect()->route('checkouts.cancel');
         }
     }
 
@@ -49,4 +49,17 @@ class CheckoutController extends Controller
     {
         return view('checkout.cancel');
     }
+
+    public function index()
+{
+    return view('checkout.index');
+}
+
+    public function clearCart()
+{
+    session()->forget('cart');
+    return redirect()->route('home');
+}
+
+
 }

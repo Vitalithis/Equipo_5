@@ -43,11 +43,11 @@
         </footer>
         --}}
     </div>
-
+<!---------
     <footer class="bg-gray-100 text-gray-700 mt-12 border-t">
         <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
 
-            <!-- Empresa -->
+            Empresa
             <div>
                 <h3 class="text-lg font-semibold text-eprimary mb-3">Nuestra empresa</h3>
                 <ul class="space-y-2">
@@ -58,7 +58,7 @@
                 </ul>
             </div>
 
-            <!-- Ayuda -->
+            Ayuda
             <div>
                 <h3 class="text-lg font-semibold text-eprimary mb-3">Atención al cliente</h3>
                 <ul class="space-y-2">
@@ -69,7 +69,7 @@
                 </ul>
             </div>
 
-            <!-- Categorías (ejemplo) -->
+            Categorías
             <div>
                 <h3 class="text-lg font-semibold text-eprimary mb-3">Categorías</h3>
                 <ul class="space-y-2">
@@ -80,7 +80,7 @@
                 </ul>
             </div>
 
-            <!-- Contacto -->
+            Contacto -
             <div>
                 <h3 class="text-lg font-semibold text-eprimary mb-3">Contáctanos</h3>
                 <ul class="space-y-2">
@@ -100,7 +100,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div>-->
 
         <div class="text-center text-xs text-gray-500 py-4 border-t">
             © {{ date('Y') }} Plantas Editha. Todos los derechos reservados.

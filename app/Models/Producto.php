@@ -37,4 +37,13 @@ class Producto extends Model
     {
         return $this->belongsToMany(Descuento::class, 'descuento_producto')->withTimestamps();
     }
+
+    // En App\Models\Producto.php
+    public static function toma4ultimos()
+    {
+        return self::withoutGlobalScopes()
+            ->latest()
+            ->take(4)
+            ->get();
+    }
 }
