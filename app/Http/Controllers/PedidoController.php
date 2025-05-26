@@ -109,8 +109,10 @@ class PedidoController extends Controller
         $pedido = Pedido::with('detalles.producto')->findOrFail($id);
         $productos = Producto::all();
 
-        return view('pedidos.partials.edit', compact('pedido', 'productos'));
+        return view('pedidos.partials.create', compact('pedido', 'productos'));
     }
+
+
 
     public function destroy($id){
         $pedido = Pedido::findOrFail($id);
