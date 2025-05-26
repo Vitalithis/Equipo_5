@@ -9,7 +9,7 @@ class ProveedorController extends Controller
 {
     public function index()
     {
-        $proveedores = Proveedor::orderBy('created_at', 'desc')->get();
+        $proveedores = Proveedor::latest()->get();
         return view('proveedores.index', compact('proveedores'));
     }
 
@@ -23,49 +23,47 @@ class ProveedorController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'telefono' => 'nullable|string|max:50',
+            'telefono' => 'nullable|string|max:30',
             'direccion' => 'nullable|string',
             'empresa' => 'nullable|string|max:255',
-            'tipo_proveedor' => 'nullable|in:Insumos médicos,Farmacia,Servicios externos',
+            'tipo_proveedor' => 'nullable|string|max:100',
             'estado' => 'required|in:Activo,Inactivo',
             'notas' => 'nullable|string',
         ]);
 
         Proveedor::create($request->all());
 
-        return redirect()->route('proveedores.index')
-            ->with('success', 'Proveedor creado correctamente.');
+        return redirect()->route('proveedores.index')->with('success', 'Proveedor creado correctamente.');
     }
 
-    public function edit(Proveedor $proveedor)
-    {
-        return view('proveedores.edit', compact('proveedor'));
-    }
+public function edit(Proveedor $proveedor)
+{
+    return view('proveedores.edit', compact('proveedor'));
+}
+
 
     public function update(Request $request, Proveedor $proveedor)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'telefono' => 'nullable|string|max:50',
+            'telefono' => 'nullable|string|max:30',
             'direccion' => 'nullable|string',
             'empresa' => 'nullable|string|max:255',
-            'tipo_proveedor' => 'nullable|in:Insumos médicos,Farmacia,Servicios externos',
+            'tipo_proveedor' => 'nullable|string|max:100',
             'estado' => 'required|in:Activo,Inactivo',
             'notas' => 'nullable|string',
         ]);
 
         $proveedor->update($request->all());
 
-        return redirect()->route('proveedores.index')
-            ->with('success', 'Proveedor actualizado correctamente.');
+        return redirect()->route('proveedores.index')->with('success', 'Proveedor actualizado correctamente.');
     }
 
     public function destroy(Proveedor $proveedor)
     {
         $proveedor->delete();
 
-        return redirect()->route('proveedores.index')
-            ->with('success', 'Proveedor eliminado correctamente.');
+        return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado correctamente.');
     }
 }

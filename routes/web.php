@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\ProveedorController;
+    
 
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
@@ -91,7 +93,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('proveedores', ProveedorController::class)->middleware('permission:gestionar proveedores');
+Route::resource('proveedores', ProveedorController::class)
+    ->parameters(['proveedores' => 'proveedor'])
+    ->middleware('permission:gestionar proveedores');
+
+
 
 
 Route::resource('pedidos', PedidoController::class)->middleware('permission:gestionar pedidos');

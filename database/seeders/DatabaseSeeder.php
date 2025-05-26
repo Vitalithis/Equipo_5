@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             ProductoCategoriaSeeder::class,
             PedidoSeeder::class,
             RolUserSeeder::class,
+            ProveedorSeeder::class
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)
