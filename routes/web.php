@@ -91,6 +91,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resource('proveedores', ProveedorController::class)->middleware('permission:gestionar proveedores');
+
+
 Route::resource('pedidos', PedidoController::class)->middleware('permission:gestionar pedidos');
 
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');

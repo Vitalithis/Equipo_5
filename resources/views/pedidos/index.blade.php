@@ -166,6 +166,26 @@
         document.getElementById('deleteModal').classList.add('hidden');
         document.getElementById('deleteModal').classList.remove('flex');
     }
+
+    // Función para abrir el modal de eliminación con la acción adecuada
+    function openDeleteModal(id, nombre) {
+        document.getElementById('modalProductName').textContent = nombre; // Mostrar nombre en el modal
+        // Cambiar la acción del formulario al ID del pedido
+        document.getElementById('deleteForm').action = `/pedidos/${id}`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    // Función para cerrar el modal de eliminación
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
+
+    // Cerrar modal al hacer clic en el botón de cerrar
+    document.getElementById('delete-modal-close').addEventListener('click', closeDeleteModal);
+
+
 </script>
 
 @endsection
