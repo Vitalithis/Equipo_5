@@ -63,17 +63,14 @@ class ProductoController extends Controller
 
     public function show($slug)
     {
-        // Obtener el producto específico por su slug
         $producto = Producto::where('slug', $slug)->firstOrFail();
 
-        // Obtener productos relacionados por categoría, excluyendo el producto actual
         $relacionados = Producto::where('categoria', $producto->categoria)
             ->where('id', '!=', $producto->id)
             ->take(3)
             ->get();
 
-        // Pasar los datos a la vista
-        return view('products.index', compact('producto', 'relacionados'));
+        return view('products.show', compact('producto', 'relacionados'));
     }
 
     public function filterByCategory(Request $request, $category)
