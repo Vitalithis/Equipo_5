@@ -1,10 +1,9 @@
 <?php $__env->startSection('title','Listado de fertilizantes'); ?>
 
 <?php $__env->startSection('content'); ?>
-
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
-<div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
+<div x-data="{ modalFert: null }" class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
     <div class="flex items-center mb-6">
         <a href="<?php echo e(route('fertilizantes.create')); ?>"
            class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
@@ -22,16 +21,8 @@
                 <tr>
                     <th class="px-6 py-3 whitespace-nowrap">Nombre</th>
                     <th class="px-6 py-3 whitespace-nowrap">Tipo</th>
-                    <th class="px-6 py-3 whitespace-nowrap max-w-[200px]">Composición</th>
-                    <th class="px-6 py-3 whitespace-nowrap max-w-[200px]">Descripción</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Peso</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Unidad</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Presentación</th>
-                    <th class="px-6 py-3 whitespace-nowrap max-w-[200px]">Aplicación</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Precio</th>
                     <th class="px-6 py-3 whitespace-nowrap">Stock</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Vencimiento</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Activo</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Información</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
@@ -40,25 +31,52 @@
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->nombre); ?></td>
                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->tipo); ?></td>
-                        <td class="px-6 py-4 whitespace-normal break-words max-w-[200px]"><?php echo e(Str::limit($fertilizante->composicion, 100)); ?></td>
-                        <td class="px-6 py-4 whitespace-normal break-words max-w-[200px]"><?php echo e(Str::limit($fertilizante->descripcion, 100)); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->peso); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->unidad_medida); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->presentacion); ?></td>
-                        <td class="px-6 py-4 whitespace-normal break-words max-w-[200px]"><?php echo e(Str::limit($fertilizante->aplicacion, 100)); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap">$<?php echo e(number_format($fertilizante->precio, 0, ',', '.')); ?></td>
                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->stock); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->fecha_vencimiento); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($fertilizante->activo ? 'Sí' : 'No'); ?></td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="<?php echo e(route('fertilizantes.edit', $fertilizante->id)); ?>" class="text-blue-600 hover:text-blue-900">Editar</a>
-                            <form action="<?php echo e(route('fertilizantes.destroy', $fertilizante->id)); ?>" method="POST" class="inline-block ml-2">
+                            <button @click="modalFert = <?php echo e($fertilizante->id); ?>"
+                                    class="text-green-600 hover:text-green-800 transition font-medium">
+                                Ver detalles
+                            </button>
+                        </td>
+
+                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
+                            <a href="<?php echo e(route('fertilizantes.edit', $fertilizante->id)); ?>"
+                               class="text-blue-600 hover:text-blue-800 font-medium transition">Editar</a>
+                            <form action="<?php echo e(route('fertilizantes.destroy', $fertilizante->id)); ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                <button type="submit" class="text-red-600 hover:text-red-700 font-medium transition">Eliminar</button>
                             </form>
                         </td>
                     </tr>
+
+                    <!-- Modal -->
+                    <div x-cloak x-show="modalFert === <?php echo e($fertilizante->id); ?>" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div @click.away="modalFert = null" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl font-['Roboto'] text-gray-800">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold"><?php echo e($fertilizante->nombre); ?></h2>
+                                <button @click="modalFert = null" class="text-gray-600 hover:text-gray-800">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-3 text-sm leading-relaxed">
+                                <div><span class="font-semibold">Tipo:</span> <?php echo e($fertilizante->tipo); ?></div>
+                                <div><span class="font-semibold">Peso:</span> <?php echo e($fertilizante->peso); ?> <?php echo e($fertilizante->unidad_medida); ?></div>
+                                <div><span class="font-semibold">Presentación:</span> <?php echo e($fertilizante->presentacion); ?></div>
+                                <div><span class="font-semibold">Precio:</span> $<?php echo e(number_format($fertilizante->precio, 0, ',', '.')); ?></div>
+                                <div><span class="font-semibold">Fecha de vencimiento:</span> <?php echo e($fertilizante->fecha_vencimiento ? \Carbon\Carbon::parse($fertilizante->fecha_vencimiento)->format('d/m/Y') : '-'); ?></div>
+                                <div><span class="font-semibold">Composición:</span><br><p class="whitespace-pre-line"><?php echo e($fertilizante->composicion); ?></p></div>
+                                <div><span class="font-semibold">Descripción:</span><br><p class="whitespace-pre-line"><?php echo e($fertilizante->descripcion); ?></p></div>
+                                <div><span class="font-semibold">Aplicación:</span><br><p class="whitespace-pre-line"><?php echo e($fertilizante->aplicacion); ?></p></div>
+                                <div><span class="font-semibold">Activo:</span> <?php echo e($fertilizante->activo ? 'Sí' : 'No'); ?></div>
+                            </div>
+                            <div class="mt-6 text-right">
+                                <button @click="modalFert = null" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
