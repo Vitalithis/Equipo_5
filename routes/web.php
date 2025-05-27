@@ -31,6 +31,8 @@ use App\Models\ProductCategory;
 use App\Http\Controllers\AdminClienteController;
 use App\Http\Controllers\ClienteController;
 
+use App\Http\Controllers\WorkController;
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 
@@ -209,6 +211,8 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
 });
+//ruta tareas
+Route::resource('works', WorkController::class);
 
 
 

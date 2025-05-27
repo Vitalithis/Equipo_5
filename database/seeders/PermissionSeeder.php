@@ -34,6 +34,8 @@ class PermissionSeeder extends Seeder
             'gestionar pedidos',
             'gestionar descuentos',
             'ver reportes',
+            'gestionar tareas',
+
         ];
 
         foreach ($permisos as $nombre) {

@@ -27,20 +27,6 @@
           <span class="text-lg font-semibold">{{ $seccion }}</span>
         </div>
       </div>
-
-      <div class="p-4 border-b border-{{ $color }}-700">
-        <div class="flex items-center space-x-3">
-          <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-10 w-10 rounded-full">
-          <div>
-            <div class="font-medium">{{ Auth::user()->name }}</div>
-            @php $rol = Auth::user()->getRoleNames()->first(); @endphp
-            <div class="text-sm text-white bg-{{ $color }}-600 rounded-full px-2 py-0.5 inline-block mt-1">
-              {{ $rol ?? 'Sin rol' }}
-            </div>
-          </div>
-        </div>
-      </div>
-
       <nav class="p-4">
         <ul>
           @role('soporte')
@@ -104,7 +90,14 @@
             </a>
           </li>
           @endcan
-
+          @can('gestionar tareas')
+          <li class="mb-1">
+            <a href="{{ route('works.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-list-check"></i>
+              <span>Tareas del Vivero</span>
+            </a>
+          </li>
+          @endcan
           <li class="mb-1">
             <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-person-digging"></i>
