@@ -13,7 +13,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
-<body class="0 flex flex-col min-h-screen">
+<body class="0 flex flex-col min-h-screen font-roboto_sans">
 
     {{-- Navbar --}}
     @include('components.navbar')
