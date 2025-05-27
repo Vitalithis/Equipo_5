@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title','Resumen Financiero'); ?>
 
 <?php $__env->startSection('content'); ?>
