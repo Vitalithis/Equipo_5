@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', isset($insumo->id) ? 'Editar insumo' : 'Nuevo insumo'); ?>
 
 <?php $__env->startSection('content'); ?>
