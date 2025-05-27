@@ -30,4 +30,4 @@
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
-<?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/layouts/home.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\TRABAJO\Equipo_5\resources\views/layouts/home.blade.php ENDPATH**/ ?>
