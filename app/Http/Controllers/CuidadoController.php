@@ -13,13 +13,13 @@ class CuidadoController extends Controller
     public function index()
     {
         $cuidados = Cuidado::with('producto')->orderBy('created_at', 'desc')->get();
-        return view('dashboard.cuidados', compact('cuidados'));
+        return view('dashboard.care.cuidados', compact('cuidados'));
     }
 
     public function create()
     {
         $productos = Producto::all();
-        return view('dashboard.cuidados_edit', [
+        return view('dashboard.care.cuidados_edit', [
             'cuidado' => null,
             'productos' => $productos,
         ]);
@@ -50,7 +50,7 @@ class CuidadoController extends Controller
         $cuidado = Cuidado::findOrFail($id);
         $productos = Producto::all();
 
-        return view('dashboard.cuidados_edit', compact('cuidado', 'productos'));
+        return view('dashboard.care.cuidados_edit', compact('cuidado', 'productos'));
     }
 
     public function update(Request $request, $id)

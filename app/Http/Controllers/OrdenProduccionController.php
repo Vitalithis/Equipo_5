@@ -12,7 +12,7 @@ class OrdenProduccionController extends Controller
     public function index()
     {
         $ordenes = OrdenProduccion::with('producto', 'trabajador')->orderBy('created_at', 'desc')->get();
-        return view('dashboard.ordenes', compact('ordenes'));
+        return view('dashboard.orden.ordenes', compact('ordenes'));
     }
 
     public function create()
@@ -20,7 +20,7 @@ class OrdenProduccionController extends Controller
         $productos = Producto::all();
         $usuarios = User::role('admin')->get(); // o User::all() si no usas Spatie
 
-        return view('dashboard.ordenes_edit', [
+        return view('dashboard.orden.ordenes_edit', [
             'orden' => null,
             'productos' => $productos,
             'usuarios' => $usuarios,
@@ -51,7 +51,7 @@ class OrdenProduccionController extends Controller
         $productos = Producto::all();
         $usuarios = User::role('admin')->get(); // o User::all()
 
-        return view('dashboard.ordenes_edit', compact('orden', 'productos', 'usuarios'));
+        return view('dashboard.orden.ordenes_edit', compact('orden', 'productos', 'usuarios'));
     }
 
     public function update(Request $request, $id)

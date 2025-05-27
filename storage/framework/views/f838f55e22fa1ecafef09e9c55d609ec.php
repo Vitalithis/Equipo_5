@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title','Listado de insumos'); ?>
 
 <?php $__env->startSection('content'); ?>

@@ -23,18 +23,42 @@
             <p class="text-xl font-semibold">${{ number_format($balance, 0, ',', '.') }}</p>
         </div>
     </div>
+            {{-- Filtro y botón Agregar Movimiento --}}
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            {{-- Filtro por fecha --}}
+            <form method="GET" action="{{ route('dashboard.finanzas') }}" class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label for="desde" class="text-sm font-medium text-gray-700">Desde:</label>
+                    <input type="date" name="desde" id="desde" value="{{ request('desde') }}"
+                        class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="hasta" class="text-sm font-medium text-gray-700">Hasta:</label>
+                    <input type="date" name="hasta" id="hasta" value="{{ request('hasta') }}"
+                        class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                    Filtrar
+                </button>
+                @if(request()->filled('desde') || request()->filled('hasta'))
+                    <a href="{{ route('dashboard.finanzas') }}"
+                    class="px-4 py-2 border border-gray-300 rounded text-sm text-gray-700 bg-white hover:bg-gray-100 transition">
+                    Limpiar
+                    </a>
+                @endif
+            </form>
 
-    {{-- Botón agregar --}}
-    <div class="flex items-center mb-6">
-        <a href="{{ route('finanzas.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Agregar Movimiento
-        </a>
-    </div>
+            {{-- Botón agregar --}}
+            <a href="{{ route('finanzas.create') }}"
+            class="flex items-center text-green-700 hover:text-green-800 transition-colors text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+                Agregar Movimiento
+            </a>
+        </div>
+
 
 
     {{-- Tabla de finanzas --}}
