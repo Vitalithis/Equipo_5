@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
 
 class ProveedorController extends Controller
 {
+
     public function index()
     {
         $proveedores = Proveedor::latest()->get();
@@ -20,13 +23,15 @@ class ProveedorController extends Controller
 
     public function store(Request $request)
     {
+            $valores_permitidos = ['Insumos médicos', 'Farmacia', 'Servicios externos', 'Servicios Vivero', 'Otros'];
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'telefono' => 'nullable|string|max:30',
             'direccion' => 'nullable|string',
             'empresa' => 'nullable|string|max:255',
-            'tipo_proveedor' => 'nullable|string|max:100',
+            'tipo_proveedor' => ['nullable', 'string', Rule::in($valores_permitidos)],
             'estado' => 'required|in:Activo,Inactivo',
             'notas' => 'nullable|string',
         ]);

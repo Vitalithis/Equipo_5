@@ -32,7 +32,7 @@
             <label class="block text-sm font-medium text-gray-700">Tipo de Proveedor</label>
             <select name="tipo_proveedor" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
                 <option value="">Seleccionar</option>
-                <?php $__currentLoopData = ['Insumos médicos', 'Farmacia', 'Servicios externos']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tipo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $__currentLoopData = ['Tierra', 'Insumos (Fertilizante/Fungicida)', 'Plantas', 'Plantines', 'Plasticos/ceramicas', 'Sustratos', 'Servicios Vivero', 'Construccion']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tipo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <option value="<?php echo e($tipo); ?>" <?php echo e(old('tipo_proveedor', $proveedor->tipo_proveedor) == $tipo ? 'selected' : ''); ?>>
                         <?php echo e($tipo); ?>
 

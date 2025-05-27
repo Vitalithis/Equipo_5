@@ -32,7 +32,7 @@
             <label class="block text-sm font-medium text-gray-700">Tipo de Proveedor</label>
             <select name="tipo_proveedor" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
                 <option value="">Seleccionar</option>
-                @foreach(['Insumos médicos', 'Farmacia', 'Servicios externos'] as $tipo)
+                @foreach(['Tierra', 'Insumos (Fertilizante/Fungicida)', 'Plantas', 'Plantines', 'Plasticos/ceramicas', 'Sustratos', 'Servicios Vivero', 'Construccion'] as $tipo)
                     <option value="{{ $tipo }}" {{ old('tipo_proveedor', $proveedor->tipo_proveedor) == $tipo ? 'selected' : '' }}>
                         {{ $tipo }}
                     </option>
