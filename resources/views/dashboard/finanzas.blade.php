@@ -36,10 +36,11 @@
         </a>
     </div>
 
+
     {{-- Tabla de finanzas --}}
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
-            <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+            <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider" style="font-family: 'Roboto Condensed', sans-serif;">
                 <tr>
                     <th class="px-6 py-3 whitespace-nowrap">Fecha</th>
                     <th class="px-6 py-3 whitespace-nowrap">Tipo</th>

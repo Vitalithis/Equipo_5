@@ -132,6 +132,15 @@
             </a>
           </li>
           @endcan
+
+          @can('ver dashboard')
+          <li class="mb-1">
+            <a href="{{ route('dashboard.insumos') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+            <i class="fa-solid fa-coins"></i>
+              <span>Insumos</span>
+            </a>
+          </li>
+          @endcan
         </ul>
       </nav>
     </div>

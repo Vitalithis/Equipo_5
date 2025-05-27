@@ -80,4 +80,6 @@ class FertilizanteController extends Controller
 
         return redirect()->route('dashboard.fertilizantes')->with('success', 'Fertilizante eliminado exitosamente.');
     }
+
+    
 }

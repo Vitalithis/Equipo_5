@@ -8,16 +8,42 @@ use Illuminate\Support\Facades\Auth;
 
 class FinanzaController extends Controller
 {
-    public function index()
-    {
-        $finanzas = Finanza::orderBy('fecha', 'desc')->get();
+    public function index(Request $request)
+{
+    // Obtener filtros desde el request
+    $tipo = $request->input('tipo');
+    $categoria = $request->input('categoria');
 
-        $totalIngresos = Finanza::where('tipo', 'ingreso')->sum('monto');
-        $totalEgresos = Finanza::where('tipo', 'egreso')->sum('monto');
-        $balance = $totalIngresos - $totalEgresos;
+    // Consulta base
+    $query = Finanza::query();
 
-        return view('dashboard.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
+    if ($tipo) {
+        $query->where('tipo', $tipo);
     }
+
+    if ($categoria) {
+        $query->where('categoria', $categoria);
+    }
+
+    // Obtener registros filtrados y ordenados
+    $finanzas = $query->orderBy('fecha', 'desc')->get();
+
+    // Calcular métricas en base a la misma consulta
+    $totalIngresos = (clone $query)->where('tipo', 'ingreso')->sum('monto');
+    $totalEgresos = (clone $query)->where('tipo', 'egreso')->sum('monto');
+    $balance = $totalIngresos - $totalEgresos;
+
+    // Obtener todas las categorías disponibles (únicas)
+    $categorias = Finanza::select('categoria')->distinct()->pluck('categoria');
+
+    return view('dashboard.finanzas', compact(
+        'finanzas',
+        'totalIngresos',
+        'totalEgresos',
+        'balance',
+        'categorias'
+    ));
+}
 
     public function create()
     {
