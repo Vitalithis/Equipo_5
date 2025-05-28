@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
             CuidadoSeeder::class,
             RolUserSeeder::class,
             FinanzaSeeder::class,
-            InsumoSeeder::class,
-            ProveedorSeeder::class
+            InsumoSeeder::class
+            
         ]);
 
         // Opcional: Crear usuarios de prueba (si necesitas)

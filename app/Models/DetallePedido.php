@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 class DetallePedido extends Model
 {
@@ -31,4 +29,3 @@ class DetallePedido extends Model
         return $this->belongsTo(Producto::class);
     }
 }
-
