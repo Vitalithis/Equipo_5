@@ -13,9 +13,7 @@
             </svg>
             Volver a la lista
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($pedido->id) ? 'Editar' : 'Nueva' }} Venta
-        </h1>
+
     </div>
     <form action="{{ isset($pedido->id) ? route('pedidos.update', $pedido->id) : route('pedidos.store') }}"
         method="POST" id="pedido-form" class="space-y-6">
@@ -65,12 +63,29 @@
             </div>
 
             <div id="direccion-contenedor" class="mt-6 {{ (old('metodo_entrega', $pedido->metodo_entrega ?? '') == 'domicilio') ? '' : 'hidden' }}">
-                <label for="direccion_entrega" class="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
-                <textarea name="direccion_entrega" rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                    placeholder="Ej: Calle 123, Depto 4B, Comuna...">{{ old('direccion_entrega', $pedido->direccion_entrega ?? '') }}</textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
+
+                <input type="text" name="calle" placeholder="Calle" required
+                    value="{{ old('calle', $calle ?? '') }}"
+                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+
+                <input type="number" name="numero" placeholder="Número" required min="1"
+                    value="{{ old('numero', $numero ?? '') }}"
+                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+
+                <input type="text" name="depto" placeholder="Depto / Oficina (opcional)"
+                    value="{{ old('depto', $depto ?? '') }}"
+                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+
+                <input type="text" name="comuna" placeholder="Comuna" required
+                    value="{{ old('comuna', $comuna ?? '') }}"
+                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+
+                <input type="text" name="ciudad" placeholder="Ciudad" required
+                    value="{{ old('ciudad', $ciudad ?? '') }}"
+                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
             </div>
-        </div>
+
 
 
         <div class="bg-white rounded-lg shadow-md p-6">

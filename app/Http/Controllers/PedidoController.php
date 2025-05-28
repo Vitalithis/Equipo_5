@@ -26,7 +26,27 @@ class PedidoController extends Controller
             'cantidad' => 'required|array',
             'precio_unitario' => 'required|array',
             'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
+
+            // Validación adicional para los campos de dirección cuando método es domicilio
+            'calle' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:100' : 'nullable',
+            'numero' => $request->metodo_entrega === 'domicilio' ? 'required|integer|min:1' : 'nullable',
+            'depto' => 'nullable|string|max:20',
+            'comuna' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
+            'ciudad' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
+
         ]);
+
+        $direccionCompleta = null;
+        if ($request->metodo_entrega === 'domicilio') {
+            $direccionCompleta = trim(
+                ($request->calle ?? '') . ' ' .
+                ($request->numero ?? '') .
+                ($request->depto ? ' Depto ' . $request->depto : '') .
+                ($request->comuna ? ', ' . $request->comuna : '') .
+                ($request->ciudad ? ', ' . $request->ciudad : '')
+            );
+        }
+
 
         $subtotal = 0;
         $descuento_porcentaje = floatval($request->descuento_porcentaje) ?: 0;
@@ -36,7 +56,7 @@ class PedidoController extends Controller
         $pedido = Pedido::create([
             'usuario_id' => Auth::id(),
             'metodo_entrega' => $request->metodo_entrega,
-            'direccion_entrega' => $request->metodo_entrega === 'domicilio' ? $request->direccion_entrega : null,
+            'direccion_entrega' => $direccionCompleta,
             'estado_pedido' => $request->estado_pedido,
             'forma_pago' => $request->forma_pago,
             'estado_pago' => $request->estado_pago,
@@ -109,7 +129,41 @@ class PedidoController extends Controller
         $pedido = Pedido::with('detalles.producto')->findOrFail($id);
         $productos = Producto::all();
 
-        return view('pedidos.partials.create', compact('pedido', 'productos'));
+         // Variables para llenar inputs separados
+        $calle = $numero = $depto = $comuna = $ciudad = '';
+
+        if ($pedido->direccion_entrega) {
+            // Supongamos formato: "Calle Numero Depto X, Comuna, Ciudad"
+            // Puedes usar regex o explode para separar
+
+            // Separar por coma
+            $partes = explode(',', $pedido->direccion_entrega);
+
+            // Primera parte: Calle Numero Depto X
+            $primeraParte = trim($partes[0] ?? '');
+
+            // Buscar "Depto " si existe
+            if (stripos($primeraParte, 'Depto') !== false) {
+                preg_match('/^(.*) (\d+)( Depto (.*))?$/i', $primeraParte, $matches);
+                // matches[1]: Calle
+                // matches[2]: Numero
+                // matches[4]: Depto (opcional)
+                $calle = $matches[1] ?? '';
+                $numero = $matches[2] ?? '';
+                $depto = $matches[4] ?? '';
+            } else {
+                // Sin depto
+                preg_match('/^(.*) (\d+)$/i', $primeraParte, $matches);
+                $calle = $matches[1] ?? '';
+                $numero = $matches[2] ?? '';
+            }
+
+            // Comuna y Ciudad
+            $comuna = trim($partes[1] ?? '');
+            $ciudad = trim($partes[2] ?? '');
+        }
+
+        return view('pedidos.partials.create', compact('pedido', 'productos', 'calle', 'numero', 'depto', 'comuna', 'ciudad'));
     }
 
     public function destroy($id){
@@ -134,7 +188,23 @@ class PedidoController extends Controller
             'cantidad' => 'required|array',
             'precio_unitario' => 'required|array',
             'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
+            'calle' => 'nullable|string',
+            'numero' => 'nullable|integer',
+            'depto' => 'nullable|string',
+            'comuna' => 'nullable|string',
+            
         ]);
+        $direccionCompleta = null;
+        if ($request->metodo_entrega === 'domicilio') {
+            $direccionCompleta = trim(
+                ($request->calle ?? '') . ' ' .
+                ($request->numero ?? '') .
+                ($request->depto ? ' Depto ' . $request->depto : '') .  // <-- Aquí está el detalle
+                ($request->comuna ? ', ' . $request->comuna : '') .
+                ($request->ciudad ? ', ' . $request->ciudad : '')
+            );
+        }
+
         $pedido = Pedido::findOrFail($id);
 
          $subtotal = 0;
@@ -143,7 +213,7 @@ class PedidoController extends Controller
 
         $pedido->update([
             'metodo_entrega' => $request->metodo_entrega,
-            'direccion_entrega' => $request->metodo_entrega === 'domicilio' ? $request->direccion_entrega : null,
+            'direccion_entrega' => $direccionCompleta,
             'estado_pedido' => $request->estado_pedido,
             'forma_pago' => $request->forma_pago,
             'estado_pago' => $request->estado_pago,
