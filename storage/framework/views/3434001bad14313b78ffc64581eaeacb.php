@@ -84,7 +84,7 @@ unset($__errorArgs, $__bag); ?>
                             required>
                             <option value="">Seleccionar categoría</option>
                             <?php $__currentLoopData = $categorias ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($category->id); ?>" <?php echo e(old('categoria', $producto->categoria ?? '') == $category->nombre ? 'selected' : ''); ?>>
+                                <option value="<?php echo e($category->nombre); ?>" <?php echo e(old('categoria', $producto->categoria ?? '') == $category->nombre ? 'selected' : ''); ?>>
                                     <?php echo e($category->nombre); ?>
 
                                 </option>
@@ -126,10 +126,10 @@ unset($__errorArgs, $__bag); ?>
                         <label for="codigo_barras" class="block text-sm font-medium text-gray-700 mb-1">
                             Código de Barras
                         </label>
-                        <input type="text" id="codigo_barras" name="codigo_barras"
-                            value="<?php echo e(old('codigo_barras', $producto->codigo_barras ?? mt_rand(100000000000, 999999999999))); ?>"
-                            class="bg-gray-300 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all font-mono"
-                            disabled required>
+                        <?php echo e($barras = mt_rand(100000000000, 999999999999)); ?>
+
+
+                        <input class="hidden" type="hidden" id="codigo_barras_hidden" name="codigo_barras" value="<?php echo e(old('codigo_barras', $producto->codigo_barras ?? $barras)); ?>">
                         <?php $__errorArgs = ['codigo_barras'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -478,7 +478,7 @@ unset($__errorArgs, $__bag); ?>
 
             
             <div class="flex justify-end space-x-4">
-                <a href="<?php echo e(route('home')); ?>"
+                <a href="<?php echo e(route('dashboard.catalogo')); ?>"
                     class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
                     Cancelar
                 </a>

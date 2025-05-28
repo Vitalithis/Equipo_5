@@ -149,6 +149,17 @@
             </a>
           </li>
           <?php endif; ?>
+
+          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
+            <li class="mb-1">
+                <a href="<?php echo e(route('maintenance.index')); ?>" class="flex items
+                    -center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+                    <i class="fa-solid fa-tools"></i>
+                    <span>Mantenimiento</span>
+                </a>
+            </li>
+          <?php endif; ?>
+
         </ul>
       </nav>
     </div>
@@ -196,7 +207,7 @@
         <?php echo $__env->yieldContent('content'); ?>
       </main>
 
-      <footer class="bg-white border-t py-4 px-6">
+      <footer class="bg-white border-t py-4 px-6 hidden">
         <div class="flex justify-between items-center">
           <div>
             <strong>Copyright © <?php echo e(date('Y')); ?>

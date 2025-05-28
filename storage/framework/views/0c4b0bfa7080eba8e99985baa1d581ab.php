@@ -4,7 +4,7 @@
 <div class="w-full md:w-3/4 lg:w-4/5 mx-auto bg-white rounded-lg shadow-md p-6">
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Imagen principal -->
-        <img src="<?php echo e(asset('storage/images/product' . $producto->imagen_principal)); ?>"
+        <img src="<?php echo e('../'.$producto->imagen); ?>"
             onerror="this.onerror=null;this.src='storage/images/default-logo.png';"
             alt="<?php echo e($producto->nombre); ?>"
             class="w-full md:w-1/2 h-auto object-cover rounded-lg">

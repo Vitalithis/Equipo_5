@@ -90,6 +90,16 @@ use App\Http\Controllers\ContactController;
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
+// Ruta para el mantenedor de mantenimientos de infraestructura
+use App\Http\Controllers\MaintenanceReportController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('maintenance', MaintenanceReportController::class);
+});
+
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

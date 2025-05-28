@@ -44,6 +44,9 @@ class PermissionSeeder extends Seeder
             // Proveedores ✅ AÑADIDO
             'gestionar proveedores',
 
+            // Mantenimiento Infrastructura
+            'ver reportes infraestructura', // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
+            'gestionar infraestructura',
             // Reportes
             'ver reportes',
         ];
@@ -57,7 +60,7 @@ class PermissionSeeder extends Seeder
 
         // Crear rol admin si no existe
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        
+
         // Asignar todos los permisos al rol admin
         $admin->syncPermissions(Permission::all());
 

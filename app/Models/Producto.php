@@ -27,6 +27,8 @@ class Producto extends Model
         'origen',
         'tamano',
         'activo',
+        'categoria',
+        'codigo_barras'
     ];
 
     // Relación muchos a muchos con Categoria (CORRECTA)

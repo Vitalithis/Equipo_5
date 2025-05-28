@@ -4,17 +4,34 @@
 
 @section('content')
     {{-- Google Fonts --}}
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap"
+        rel="stylesheet">
 
     <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
         <div class="rounded-lg shadow-sm p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Productos</h2>
+
+            <div class="mb-4 flex items-center justify-between">
+                <form method="GET" action="{{ route('dashboard.catalogo') }}" class="flex space-x-4 items-center">
+                    <input type="text" name="busqueda" value="{{ request('busqueda') }}" placeholder="Buscar por nombre"
+                        class="px-3 py-2 border rounded text-sm" />
+
+                    <select name="categoria" class="px-3 py-2 border rounded text-sm">
+                        <option value="">Todas las categorías</option>
+                        @foreach ($categorias as $cat)
+                            <option value="{{ $cat->id }}" {{ request('categoria') == $cat->nombre ? 'selected' : '' }}>{{ $cat->nombre }}</option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
+                        Filtrar
+                    </button>
+                </form>
+
                 <a href="{{ route('catalogo.create') }}"
-                   class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4v16m8-8H4"/>
+                    class="flex items-center text-green-700 hover:text-green-800 transition-colors text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v16m8-8H4" />
                     </svg>
                     Añadir Producto
                 </a>
@@ -40,7 +57,7 @@
                                 <td class="px-4 py-2 text-center">{{ $product->id }}</td>
                                 <td class="px-4 py-2">
                                     <img src="{{ asset($product->imagen) }}" alt="{{ $product->nombre }}"
-                                         class="w-16 h-16 object-cover rounded">
+                                        class="w-16 h-16 object-cover rounded">
                                 </td>
                                 <td class="px-4 py-2">{{ $product->nombre }}</td>
                                 <td class="px-4 py-2">{{ $product->precio }}</td>
@@ -48,9 +65,10 @@
                                 <td class="px-4 py-2">{{ $product->activo ? 'Sí' : 'No' }}</td>
                                 <td class="px-4 py-2">{{ $product->stock }}</td>
                                 <td class="px-4 py-2">
-                                    <a href="{{ route('catalogo_edit', ['id' => $product->id]) }}" class="text-blue-600 hover:underline">Editar</a>
+                                    <a href="{{ route('catalogo_edit', ['id' => $product->id]) }}"
+                                        class="text-blue-600 hover:underline">Editar</a>
                                     <button type="button" class="text-red-600 hover:underline ml-2"
-                                            onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria }}')">
+                                        onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria }}')">
                                         Eliminar
                                     </button>
                                 </td>
@@ -58,6 +76,10 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="mt-6">
+                    {{ $productos->withQueryString()->links() }}
+                </div>
+
             </div>
         </div>
     </div>
@@ -75,7 +97,7 @@
                 @method('DELETE')
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeDeleteModal()"
-                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                         Cancelar
                     </button>
                     <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
