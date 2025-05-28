@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
             FertilizanteSeeder::class,
             OrdenProduccionSeeder::class,
             CuidadoSeeder::class,
-            RolUserSeeder::class,
             FinanzaSeeder::class,
             InsumoSeeder::class,
             WorkSeeder::class,
