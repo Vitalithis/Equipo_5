@@ -8,12 +8,14 @@
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
+        "laravel-lang/actions": "^1.10",
         "laravel-lang/common": "^6.7",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
-        "spatie/laravel-permission": "^6.17",
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-permission": "^6.18",
         "transbank/transbank-sdk": "^5.0"
     },
     "require-dev": {
