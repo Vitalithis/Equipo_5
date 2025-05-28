@@ -33,10 +33,12 @@ class WebpayController extends Controller
     $transaction = new Transaction();
     $response = $transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
 
-    // Guarda carrito y orden temporal en sesión
+    // Guarda carrito y datos temporales en sesión
     session()->put('carrito_pago', $cart);
     session()->put('buy_order', $buyOrder);
     session()->put('monto_total', $amount);
+    session()->put('metodo_entrega', $request->input('metodo_entrega', 'retiro'));
+    session()->put('direccion_entrega', $request->input('metodo_entrega') === 'domicilio' ? $request->input('direccion_entrega') : null);
 
     return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
 }

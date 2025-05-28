@@ -14,38 +14,48 @@ class CartController extends Controller
         return view('cart.index');
     }
 
-    public function guardarCarrito(Request $request)
-    {
-        $user = auth()->user();
+   public function guardarCarrito(Request $request)
+{
+    $user = auth()->user();
 
-        // Crear nuevo pedido
-        $pedido = Pedido::create([
-            'usuario_id' => $user->id,
-            'total' => 0, // Se actualizará al final
-            'estado_pedido' => 'pendiente',
-            'metodo_entrega' => $request->input('metodo_entrega', 'retiro'),
+    $request->validate([
+        'metodo_entrega' => 'required|in:retiro,domicilio',
+        'direccion_entrega' => 'required_if:metodo_entrega,domicilio|string|nullable',
+        'items' => 'required|array|min:1',
+    ]);
+
+    // Crear nuevo pedido
+    $pedido = Pedido::create([
+        'usuario_id' => $user->id,
+        'total' => 0, // Se actualizará al final
+        'estado_pedido' => 'pendiente',
+        'metodo_entrega' => $request->input('metodo_entrega'),
+        'direccion_entrega' => $request->input('metodo_entrega') === 'domicilio'
+            ? $request->input('direccion_entrega')
+            : null,
+    ]);
+
+    $total = 0;
+
+    foreach ($request->items as $item) {
+        $subtotal = $item['precio'] * $item['cantidad'];
+        $total += $subtotal;
+
+        $pedido->productos()->attach($item['id'], [
+            'cantidad' => $item['cantidad'],
+            'precio_unitario' => $item['precio'],
+            'subtotal' => $subtotal,
+            'nombre_producto_snapshot' => $item['nombre'],
+            'codigo_barras_snapshot' => $item['codigo_barras'] ?? null,
+            'imagen_snapshot' => $item['imagen'] ?? null,
         ]);
-
-        $total = 0;
-
-        foreach ($request->items as $item) {
-            $subtotal = $item['precio'] * $item['cantidad'];
-            $total += $subtotal;
-
-            $pedido->productos()->attach($item['id'], [
-                'cantidad' => $item['cantidad'],
-                'precio_unitario' => $item['precio'],
-                'subtotal' => $subtotal,
-                'nombre_producto_snapshot' => $item['nombre'],
-                'codigo_barras_snapshot' => $item['codigo_barras'] ?? null,
-                'imagen_snapshot' => $item['imagen'] ?? null,
-            ]);
-        }
-
-        $pedido->update(['total' => $total]);
-
-        return response()->json(['message' => 'Pedido guardado con éxito.']);
     }
+
+    $pedido->update(['total' => $total]);
+
+    return response()->json(['message' => 'Pedido guardado con éxito.']);
+}
+
 
     public function obtenerCarrito()
     {
