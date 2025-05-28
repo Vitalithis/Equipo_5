@@ -19,13 +19,19 @@ class OrdenProduccion extends Model
         'fecha_fin_estimada',
         'estado',
         'observaciones',
+        'user_id',
     ];
 
-    const ESTADOS = ['pendiente', 'en_proceso', 'completada'];
+    const ESTADOS = ['pendiente', 'en proceso', 'completada'];
 
     // Relación con producto
     public function producto()
     {
         return $this->belongsTo(Producto::class);
     }
+
+    public function trabajador()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
 }

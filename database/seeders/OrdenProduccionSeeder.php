@@ -27,7 +27,7 @@ class OrdenProduccionSeeder extends Seeder
                 'cantidad' => rand(20, 100),
                 'fecha_inicio' => Carbon::now()->subDays(rand(0, 10)),
                 'fecha_fin_estimada' => Carbon::now()->addDays(rand(5, 15)),
-                'estado' => collect(['pendiente', 'en_proceso', 'completada'])->random(),
+                'estado' => collect(['pendiente', 'en proceso', 'completada'])->random(),
                 'observaciones' => fake()->sentence(),
             ]);
         }

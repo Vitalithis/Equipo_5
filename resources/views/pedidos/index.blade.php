@@ -13,9 +13,23 @@
         </div>
     @endif
 
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Ventas</h2>
+        <a href="{{ route('pedidos.create') }}"
+           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v16m8-8H4"/>
+            </svg>
+            Añadir Venta
+        </a>
+    </div>
+
     @if ($pedidos->count())
         <div class="overflow-x-auto bg-white rounded-xl shadow border border-eaccent2">
             <table class="min-w-full divide-y divide-eaccent2 text-sm">
+
+                <!-- Seccion Tabla header -->
                 <thead class="bg-eaccent2 text-eprimary uppercase tracking-wide text-xs font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-6 py-4 text-center">ID</th>
@@ -25,30 +39,36 @@
                         <th class="px-6 py-4 text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-efore font-['Roboto']">
+
+                <!--Table-row -->
+                <tbody class="font-['Roboto']">
                     @foreach ($pedidos as $pedido)
-                        <tr class="hover:bg-efore transition duration-200 cursor-pointer" onclick="toggleDetalles({{ $pedido->id }})">
+                        <tr class="border-b border-eaccent2 hover:bg-efore transition duration-200 cursor-pointer" onclick="toggleDetalles({{ $pedido->id }}, event)">
                             <td class="px-6 py-4 text-center font-bold text-eprimary">{{ $pedido->id }}</td>
                             <td class="px-6 py-4 text-center">{{ $pedido->usuario->name }}</td>
                             <td class="px-6 py-4 text-center">${{ number_format($pedido->total, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 text-center">
                                 @include('pedidos.partials.estado_form', ['pedido' => $pedido])
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                <span id="icon-{{ $pedido->id }}" class="inline-block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-5 h-5 text-eprimary">
-                                        <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                                    </svg>
-                                </span>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="text-blue-600 hover:underline">
+                                    Editar
+                                </a>
+                                <button type="button" class="text-red-600 hover:underline ml-2"
+                                    onclick="openDeleteModal({{ $pedido->id }}, 'Pedido #{{ $pedido->id }}')">
+                                    Eliminar
+                                </button>
                             </td>
                         </tr>
+
+                        <!-- Detalles pedido -->
                         <tr>
                             <td colspan="5" class="p-0">
                                 <div id="detalles-{{ $pedido->id }}" class="max-h-0 overflow-hidden opacity-0 transition-all duration-300 bg-efore text-sm border-t border-esecondary">
                                     <div class="p-6 space-y-4">
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <p><strong class="text-eprimary">Método de entrega:</strong> {{ $pedido->metodo_entrega }}</p>
-                                            <p><strong class="text-eprimary">Dirección:</strong> {{ $pedido->direccion ?? 'No disponible' }}</p>
+                                            <p><strong class="text-eprimary">Dirección:</strong> {{ $pedido->direccion_entrega ?? 'No disponible' }}</p>
                                             <p><strong class="text-eprimary">Fecha de pedido:</strong> {{ $pedido->created_at->format('d-m-Y H:i') }}</p>
                                         </div>
 
@@ -63,7 +83,7 @@
                                                 @endforeach
                                             </ul>
                                         </div>
-
+                                        <!-- Seleccion Boleta -->
                                         <div class="flex flex-wrap items-center gap-4">
                                             <div class="flex items-center gap-2">
                                                 <strong class="text-eprimary">Boleta SII:</strong>
@@ -111,5 +131,61 @@
 {{-- Modales --}}
 @include('pedidos.partials.modals')
 @include('pedidos.partials.scripts')
+
+<script>
+    // Abre/cierra detalles solo si no clickeaste en botones de acción (editar/eliminar/estado)
+    function toggleDetalles(id, event) {
+        if(event.target.closest('a, button, select, input, form')) {
+            return; // No toggle si click fue en botón o select o formulario
+        }
+
+        const detalles = document.getElementById(`detalles-${id}`);
+        if (!detalles) return;
+
+        const isOpen = detalles.style.maxHeight && detalles.style.maxHeight !== '0px';
+
+        document.querySelectorAll('[id^="detalles-"]').forEach(el => {
+            el.style.maxHeight = '0px';
+            el.style.opacity = '0';
+        });
+
+        if (!isOpen) {
+            detalles.style.maxHeight = detalles.scrollHeight + 'px';
+            detalles.style.opacity = '1';
+        }
+    }
+
+    function openDeleteModal(id, nombre) {
+        document.getElementById('modalProductName').textContent = nombre;
+        document.getElementById('deleteForm').action = `/pedidos/${id}`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
+
+    // Función para abrir el modal de eliminación con la acción adecuada
+    function openDeleteModal(id, nombre) {
+        document.getElementById('modalProductName').textContent = nombre; // Mostrar nombre en el modal
+        // Cambiar la acción del formulario al ID del pedido
+        document.getElementById('deleteForm').action = `/pedidos/${id}`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    // Función para cerrar el modal de eliminación
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
+
+    // Cerrar modal al hacer clic en el botón de cerrar
+    document.getElementById('delete-modal-close').addEventListener('click', closeDeleteModal);
+
+
+</script>
 
 @endsection
