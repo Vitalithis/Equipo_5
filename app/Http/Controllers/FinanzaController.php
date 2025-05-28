@@ -9,45 +9,29 @@ use Illuminate\Support\Facades\Auth;
 class FinanzaController extends Controller
 {
     public function index(Request $request)
-{
-    // Obtener filtros desde el request
-    $tipo = $request->input('tipo');
-    $categoria = $request->input('categoria');
+    {
+        $query = Finanza::query()->with('usuario');
 
-    // Consulta base
-    $query = Finanza::query();
+        // Filtro por fechas
+        if ($request->filled('desde')) {
+            $query->whereDate('fecha', '>=', $request->desde);
+        }
+        if ($request->filled('hasta')) {
+            $query->whereDate('fecha', '<=', $request->hasta);
+        }
 
-    if ($tipo) {
-        $query->where('tipo', $tipo);
+        $finanzas = $query->latest()->get();
+
+        $totalIngresos = $finanzas->where('tipo', 'ingreso')->sum('monto');
+        $totalEgresos = $finanzas->where('tipo', 'egreso')->sum('monto');
+        $balance = $totalIngresos - $totalEgresos;
+
+        return view('dashboard.finance.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
     }
-
-    if ($categoria) {
-        $query->where('categoria', $categoria);
-    }
-
-    // Obtener registros filtrados y ordenados
-    $finanzas = $query->orderBy('fecha', 'desc')->get();
-
-    // Calcular métricas en base a la misma consulta
-    $totalIngresos = (clone $query)->where('tipo', 'ingreso')->sum('monto');
-    $totalEgresos = (clone $query)->where('tipo', 'egreso')->sum('monto');
-    $balance = $totalIngresos - $totalEgresos;
-
-    // Obtener todas las categorías disponibles (únicas)
-    $categorias = Finanza::select('categoria')->distinct()->pluck('categoria');
-
-    return view('dashboard.finanzas', compact(
-        'finanzas',
-        'totalIngresos',
-        'totalEgresos',
-        'balance',
-        'categorias'
-    ));
-}
 
     public function create()
     {
-        return view('dashboard.finanzas_edit');
+        return view('dashboard.finance.finanzas_edit');
     }
 
     public function store(Request $request)
@@ -75,7 +59,7 @@ class FinanzaController extends Controller
     public function edit($id)
     {
         $finanza = Finanza::findOrFail($id);
-        return view('dashboard.finanzas_edit', compact('finanza'));
+        return view('dashboard.finance.finanzas_edit', compact('finanza'));
     }
 
     public function update(Request $request, $id)

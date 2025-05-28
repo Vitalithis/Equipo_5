@@ -10,12 +10,12 @@ class InsumoController extends Controller
     public function index()
     {
         $insumos = Insumo::orderBy('created_at', 'desc')->get();
-        return view('dashboard.insumos', compact('insumos'));
+        return view('dashboard.supply.insumos', compact('insumos'));
     }
 
     public function create()
     {
-        return view('dashboard.insumos_edit', ['insumo' => null]);
+        return view('dashboard.supply.insumos_edit', ['insumo' => null]);
     }
 
     public function store(Request $request)
@@ -42,7 +42,7 @@ class InsumoController extends Controller
     public function edit($id)
     {
         $insumo = Insumo::findOrFail($id);
-        return view('dashboard.insumos_edit', compact('insumo'));
+        return view('dashboard.supply.insumos_edit', compact('insumo'));
     }
 
     public function update(Request $request, $id)
