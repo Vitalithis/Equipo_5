@@ -14,7 +14,6 @@
     @endif
 
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Ventas</h2>
         <a href="{{ route('pedidos.create') }}"
            class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -89,14 +88,10 @@
                                                 <strong class="text-eprimary">Boleta SII:</strong>
                                                 @if($pedido->boleta_final_path)
                                                     <span class="text-green-600 font-medium">Subida</span>
-                                                    <button class="open-modal-pdf text-esecondary hover:text-eaccent text-sm underline"
-                                                            data-pdf="{{ asset('storage/' . $pedido->boleta_final_path) }}">
+                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}" 
+                                                    target="_blank" 
+                                                    class="text-esecondary hover:text-eaccent text-sm underline cursor-pointer">
                                                         Ver PDF
-                                                    </button>
-                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}"
-                                                       target="_blank"
-                                                       class="text-sm text-blue-600 hover:text-blue-800 underline ml-2">
-                                                        Descargar
                                                     </a>
                                                 @else
                                                     <span class="text-red-500 font-medium">No subida</span>

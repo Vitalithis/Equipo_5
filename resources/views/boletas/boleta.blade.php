@@ -17,7 +17,7 @@
             <p><strong>N° Pedido:</strong> {{ $pedido->id }}</p>
             <p><strong>Cliente:</strong> {{ $pedido->usuario->name }}</p>
             <p><strong>Método de entrega:</strong> {{ $pedido->metodo_entrega }}</p>
-            <p><strong>Dirección:</strong> {{ $pedido->direccion ?? 'No disponible' }}</p>
+            <p><strong>Dirección:</strong> {{ $pedido->direccion_entrega ?? 'No disponible' }}</p>
         </div>
 
         <div class="overflow-x-auto rounded-lg shadow mb-4">
