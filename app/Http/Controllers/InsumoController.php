@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Insumo;
+use App\Models\Finanza;
 use Illuminate\Http\Request;
 
 class InsumoController extends Controller
@@ -18,26 +20,46 @@ class InsumoController extends Controller
         return view('dashboard.supply.insumos_edit', ['insumo' => null]);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'tipo_uso' => 'required|in:venta,uso',
-            'stock' => 'required|integer|min:0',
-            'precio' => 'nullable|integer|min:0',
-            'descripcion' => 'nullable|string',
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'cantidad' => 'required|integer|min:0',
+        'costo' => 'required|integer|min:0',
+        'descripcion' => 'nullable|string',
+    ]);
+
+    $insumo = Insumo::where('nombre', $request->nombre)->first();
+
+    if ($insumo) {
+        // Aumentar cantidad y actualizar costo si se desea
+        $insumo->cantidad += $request->cantidad;
+        $insumo->costo = $request->costo;
+        $insumo->save();
+    } else {
+        // Crear nuevo insumo
+        $insumo = Insumo::create([
+            'nombre' => $request->nombre,
+            'cantidad' => $request->cantidad,
+            'costo' => $request->costo,
+            'descripcion' => $request->descripcion,
         ]);
-
-        // Si es de uso interno, el precio debe ir en cero
-        $datos = $request->all();
-        if ($datos['tipo_uso'] === 'uso') {
-            $datos['precio'] = 0;
-        }
-
-        Insumo::create($datos);
-
-        return redirect()->route('dashboard.insumos')->with('success', 'Insumo creado correctamente.');
     }
+
+    // Registrar egreso automáticamente
+    Finanza::create([
+        'fecha' => now(),
+        'tipo' => 'egreso',
+        'monto' => $request->cantidad * $request->costo,
+        'categoria' => 'Compra de Insumos',
+        'descripcion' => $request->nombre,
+        'created_by' => auth()->id(),
+    ]);
+
+    return redirect()->route('dashboard.insumos')->with('success', 'Insumo guardado y egreso registrado correctamente.');
+}
+
+
 
     public function edit($id)
     {
@@ -50,19 +72,18 @@ class InsumoController extends Controller
         $insumo = Insumo::findOrFail($id);
 
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'tipo_uso' => 'required|in:venta,uso',
-            'stock' => 'required|integer|min:0',
-            'precio' => 'nullable|integer|min:0',
+            'nombre' => 'required|string|max:255|unique:insumos,nombre,' . $insumo->id,
+            'cantidad' => 'required|integer|min:0',
+            'costo' => 'required|integer|min:0',
             'descripcion' => 'nullable|string',
         ]);
 
-        $datos = $request->all();
-        if ($datos['tipo_uso'] === 'uso') {
-            $datos['precio'] = 0;
-        }
-
-        $insumo->update($datos);
+        $insumo->update([
+            'nombre' => $request->nombre,
+            'cantidad' => $request->cantidad,
+            'costo' => $request->costo,
+            'descripcion' => $request->descripcion,
+        ]);
 
         return redirect()->route('dashboard.insumos')->with('success', 'Insumo actualizado correctamente.');
     }
@@ -75,4 +96,3 @@ class InsumoController extends Controller
         return redirect()->route('dashboard.insumos')->with('success', 'Insumo eliminado correctamente.');
     }
 }
-
