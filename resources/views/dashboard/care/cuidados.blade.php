@@ -28,7 +28,7 @@
                     <th class="px-6 py-3 whitespace-nowrap">Luz</th>
                     <th class="px-6 py-3 whitespace-nowrap">Abono</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
-                    <th class="px-6 py-3 whitespace-nowrap">PDF</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Archivos</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-eaccent2 font-['Roboto'] text-gray-800">
@@ -50,6 +50,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Ver PDF</a>
+                            <a href="{{ route('dashboard.cuidados.qr', $cuidado->id) }}" target="_blank" class="text-green-600 hover:text-green-900">
+                                Ver QR
+                            </a>
                         </td>
                     </tr>
                 @empty

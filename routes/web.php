@@ -184,7 +184,13 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::delete('/cuidados/{id}', [CuidadoController::class, 'destroy'])->name('dashboard.cuidados.destroy');
     Route::get('/dashboard/cuidados/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
 
+    //QR
+    Route::get('/cuidados/{id}/qr', [CuidadoController::class, 'mostrarQr'])->name('dashboard.cuidados.qr');
+    Route::get('/cuidados/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
+
 });
+
+
 
 // Rutas para el mantenedor de finanzas
 Route::prefix('finanzas')->middleware(['auth'])->group(function () {
