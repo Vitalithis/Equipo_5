@@ -66,7 +66,7 @@
           Descubrir colección
         </button>
       </div>
-      <img src='/storage/images/slide2.jpg' alt="Slide 2" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
+      <img src='/storage/images/slide1.jpg' alt="Slide 2" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
     </div>
 
     <!-- Slide 3 -->
@@ -83,7 +83,7 @@
           Comprar ahora
         </button>
       </div>
-      <img src='/storage/images/slide3.jpg' alt="Slide 3" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
+      <img src='/storage/images/slide1.jpg' alt="Slide 3" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
     </div>
 
     <!-- Controles de navegación personalizados -->

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Producto;
 use App\Models\Categoria;
-
+use Illuminate\Support\Facades\Storage;
 class ProductoController extends Controller
 {
     public function home(Request $request)
@@ -63,13 +63,16 @@ class ProductoController extends Controller
 
     public function show($slug)
     {
+        // Obtener el producto específico por su slug
         $producto = Producto::where('slug', $slug)->firstOrFail();
 
+        // Obtener productos relacionados por categoría, excluyendo el producto actual
         $relacionados = Producto::where('categoria', $producto->categoria)
             ->where('id', '!=', $producto->id)
             ->take(3)
             ->get();
 
+        // Pasar los datos a la vista
         return view('products.show', compact('producto', 'relacionados'));
     }
 
@@ -167,14 +170,14 @@ class ProductoController extends Controller
     public function dashboard_show()
     {
         $productos = Producto::all();
-        return view('dashboard.catalogo', compact('productos'));
+        return view('dashboard.catalog.catalogo', compact('productos'));
     }
 
     public function create()
     {
         $categorias = Categoria::all();
         $dificultades = Producto::distinct()->pluck('nivel_dificultad');
-        return view('dashboard.catalogo_edit', compact('categorias', 'dificultades'));
+        return view('dashboard.catalog.catalogo_edit', compact('categorias', 'dificultades'));
     }
 
     public function store(Request $request)
@@ -191,18 +194,51 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($id);
         $categorias = Categoria::all();
         $dificultades = Producto::distinct()->pluck('nivel_dificultad');
-        return view('dashboard\catalogo_edit', compact('producto', 'categorias', 'dificultades'));
+        return view('dashboard.catalog.catalogo_edit', compact('producto', 'categorias', 'dificultades'));
     }
-    public function update(Request $request, $id)
-    {
-        $producto = Producto::findOrFail($id);
-        $producto->update($request->all());
-        return redirect()->route('dashboard.catalogo')->with('success', 'Producto actualizado correctamente.');
+
+
+public function update(Request $request, $id)
+{
+    $producto = Producto::findOrFail($id);
+
+    // Validación
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'precio' => 'required|numeric',
+        // otros campos...
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10000',
+    ]);
+
+    // Manejo de imagen
+    if ($request->hasFile('imagen')) {
+        $imagen = $request->file('imagen');
+
+        // Eliminar imagen anterior si existía
+        if ($producto->imagen && $producto->imagen !== 'storage/images/default-logo.png') {
+            Storage::delete(str_replace('storage/', 'public/', $producto->imagen));
+        }
+
+        // Guardar nueva imagen
+        $ruta = $imagen->store('public/images/productos');
+        $producto->imagen = str_replace('public/', 'storage/', $ruta);
+    } elseif (!$producto->imagen) {
+        // Si no tiene imagen previa, usar la imagen por defecto
+        $producto->imagen = 'storage/images/default-logo.png';
     }
+
+    // Actualizar otros campos (excepto imagen, ya la tratamos aparte)
+    $producto->fill($request->except('imagen'));
+
+    $producto->save();
+
+    return redirect()->route('dashboard.catalogo')->with('success', 'Producto actualizado correctamente.');
+}
+
     public function destroy($id)
     {
         $producto = Producto::findOrFail($id);
         $producto->delete();
-        return redirect()->route('dashboard.catalogo')->with('success', 'Producto eliminado correctamente.');
+        return redirect()->route('dashboard.catalog.catalogo')->with('success', 'Producto eliminado correctamente.');
     }
 }
