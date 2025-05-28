@@ -58,9 +58,6 @@
                             <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Ver PDF</a>
                             <a href="{{ route('dashboard.cuidados.qr', $cuidado->id) }}" target="_blank" class="text-green-600 hover:text-green-900">
                                 Ver QR
-                            <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank"
-                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-3 py-1 rounded transition-colors">
-                                Ver PDF
                             </a>
                         </td>
                     </tr>
