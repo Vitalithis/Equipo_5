@@ -1,0 +1,31 @@
+
+
+<?php $__env->startSection('title', 'Editar proveedor'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="py-8 px-4 md:px-8 max-w-4xl mx-auto">
+    <div class="flex items-center mb-6">
+        <a href="<?php echo e(route('proveedores.index')); ?>" class="flex items-center text-green-700 hover:text-green-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
+            Volver a la lista
+        </a>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">Editar proveedor</h1>
+    </div>
+
+    <form method="POST" action="<?php echo e(route('proveedores.update', $proveedor->id)); ?>" class="space-y-6">
+        <?php echo csrf_field(); ?>
+        <?php echo method_field('PUT'); ?>
+
+        <?php echo $__env->make('proveedores.form-fields', ['proveedor' => $proveedor], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        
+        <div class="flex justify-end space-x-4 mt-4">
+            <a href="<?php echo e(route('proveedores.index')); ?>" class="px-4 py-2 border rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50 transition">Cancelar</a>
+            <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">Actualizar</button>
+        </div>
+    </form>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/proveedores/edit.blade.php ENDPATH**/ ?>

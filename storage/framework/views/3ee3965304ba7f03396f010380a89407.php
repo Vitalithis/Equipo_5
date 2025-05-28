@@ -13,7 +13,7 @@
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
 </head>
-<body class="0 flex flex-col min-h-screen font-roboto_sans">
+<body class="0 flex flex-col min-h-screen">
 
     
     <?php echo $__env->make('components.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

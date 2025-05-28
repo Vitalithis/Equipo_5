@@ -98,50 +98,15 @@
           </li>
           <?php endif; ?>
 
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
+          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('gestionar proveedores')): ?>
           <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.fertilizantes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-person-digging"></i>
-              <span>Fertilizante</span>
+            <a href="<?php echo e(route('proveedores.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+              <i class="fa-solid fa-truck-field"></i>
+              <span>Proveedores</span>
             </a>
           </li>
           <?php endif; ?>
 
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.ordenes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-umbrella"></i>
-              <span>Orden de Producción</span>
-            </a>
-          </li>
-          <?php endif; ?>
-
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.cuidados')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-sun"></i>
-              <span>Cuidados</span>
-            </a>
-          </li>
-          <?php endif; ?>
-
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.finanzas')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-coins"></i>
-              <span>Finanzas</span>
-            </a>
-          </li>
-          <?php endif; ?>
-
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.insumos')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-droplet"></i>
-              <span>Insumos</span>
-            </a>
-          </li>
-          <?php endif; ?>
         </ul>
       </nav>
     </div>

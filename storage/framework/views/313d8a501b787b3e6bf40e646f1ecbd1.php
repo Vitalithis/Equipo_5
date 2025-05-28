@@ -9,7 +9,7 @@
 ?>
 
 <nav
-    class="bg-white px-6 md:px-20 py-2 flex items-center justify-between font-roboto_condensed  sticky top-0 z-50"
+    class="bg-white px-6 md:px-20 py-2 flex items-center justify-between font-['Roboto_Condensed']  sticky top-0 z-50"
     x-data="{ menuOpen: false, userMenuOpen: false }"
 >
     <!-- Logo -->
@@ -56,29 +56,8 @@
             x-cloak
         >
             <div class="py-1">
-            <?php if(Route::has('login')): ?>
-                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-                         <a href="/dashboard" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Dashboard</a>
-                    <?php endif; ?>
-
-                         <a href="/cart" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Carrito</a>
-                    <?php if(auth()->guard()->check()): ?>
-                    <form method="POST" action="<?php echo e(route('logout')); ?>">
-                      <?php echo csrf_field(); ?>
-                      <button type="submit" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                          Cerrar sesión
-                      </button>
-                  </form>
-                    <?php else: ?>
-                        
-                        <a href="/login" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Iniciar Sesión</a>
-                        <?php if(Route::has('register')): ?>
-                            
-                            <a href="/register" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Registrarse</a>
-                        <?php endif; ?>
-                    <?php endif; ?>
-
-            <?php endif; ?>
+                <a href="/registro" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Registrarse</a>
+                <a href="/login" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Iniciar Sesión</a>
             </div>
         </div>
     </div>
@@ -114,7 +93,7 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </ul>
     <div class="border-t border-gray-300 pt-4 space-y-2">
-        <a href="/register" class="block text-black hover:text-gray-500 text-lg">Registrarse</a>
+        <a href="/registro" class="block text-black hover:text-gray-500 text-lg">Registrarse</a>
         <a href="/login" class="block text-black hover:text-gray-500 text-lg">Iniciar Sesión</a>
     </div>
 </div>

@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\QRCodeController;
 
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
@@ -95,7 +97,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resource('proveedores', ProveedorController::class)
+    ->parameters(['proveedores' => 'proveedor'])
+    ->middleware('permission:gestionar proveedores');
+
+
+
+
 Route::resource('pedidos', PedidoController::class)->middleware('permission:gestionar pedidos');
+
+Route::middleware(['auth', 'permission:gestionar qr'])->group(function () {
+    // Ruta para generar el QR
+    Route::get('/generar-qr', [QRCodeController::class, 'generarQr'])->name('generar.qr');
+});
+
+//cuidados???
+Route::get('/plant/{id}/care', [QRCodeController::class, 'showCare'])->name('plant.care');
+
 
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
 Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');

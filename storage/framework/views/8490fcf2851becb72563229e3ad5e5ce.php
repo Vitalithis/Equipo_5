@@ -77,5 +77,23 @@ document.addEventListener('DOMContentLoaded', function() {
             msg.style.display = 'none';
         }
     }, 10000); // 10000 ms = 10 segundos
+
+
+     // Función para abrir el modal de eliminación
+    function openDeleteModal(id, nombre) {
+        document.getElementById('modalProductName').textContent = nombre; // Mostrar nombre en el modal
+        document.getElementById('deleteForm').action = `/pedidos/${id}`; // Cambiar la acción del formulario
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    // Función para cerrar el modal de eliminación
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
+
+    // Cerrar el modal al hacer clic en el botón de cierre
+    document.getElementById('delete-modal-close').addEventListener('click', closeDeleteModal);
 </script>
 <?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/pedidos/partials/scripts.blade.php ENDPATH**/ ?>
