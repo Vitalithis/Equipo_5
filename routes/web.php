@@ -31,8 +31,26 @@ use App\Http\Controllers\InsumoController;
 
 use App\Models\ProductCategory;
 
+use App\Http\Controllers\AdminClienteController;
+use App\Http\Controllers\ClienteController;
+
+use App\Http\Controllers\WorkController;
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+
+Route::middleware(['auth', 'role:soporte'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/clientes', [AdminClienteController::class, 'index'])->name('clientes.index');
+    Route::get('/clientes/crear', [AdminClienteController::class, 'create'])->name('clientes.create');
+    Route::post('/clientes', [AdminClienteController::class, 'store'])->name('clientes.store');
+    Route::get('/clientes/{cliente}/usuarios', [AdminClienteController::class, 'usuarios'])->name('clientes.usuarios');
+    Route::get('/clientes/{cliente}/productos', [AdminClienteController::class, 'productos'])->name('clientes.productos');
+    Route::delete('/clientes/{cliente}', [AdminClienteController::class, 'destroy'])->name('clientes.destroy');
+    Route::get('/admin/cliente/{cliente}/asignar-permisos', [AdminClienteController::class, 'asignarPermisosExistente'])->name('admin.clientes.asignarPermisos');
+
+});
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['permission:ver dashboard'])->group(function () {
@@ -173,16 +191,6 @@ Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class,
 Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->middleware('permission:gestionar productos')->name('fertilizantes.update');
 Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->middleware('permission:gestionar productos')->name('fertilizantes.destroy');
 
-Route::prefix('dashboard/ordenes-produccion')->middleware(['auth', 'permission:ver ordenes'])->group(function () {
-    Route::get('/', [OrdenProduccionController::class, 'index'])->name('dashboard.ordenes');
-    Route::get('/create', [OrdenProduccionController::class, 'create'])->middleware('permission:crear ordenes')->name('ordenes.create');
-    Route::post('/', [OrdenProduccionController::class, 'store'])->middleware('permission:crear ordenes')->name('ordenes.store');
-    Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->middleware('permission:editar ordenes')->name('ordenes.edit');
-    Route::put('/{id}', [OrdenProduccionController::class, 'update'])->middleware('permission:editar ordenes')->name('ordenes.update');
-    Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->middleware('permission:eliminar ordenes')->name('ordenes.destroy');
-    Route::get('/ordenes/export/pdf', [OrdenProduccionController::class, 'exportarPDF'])->name('ordenes.export.pdf');
-
-});
 
 
 //Rutas para cuidados de cada Planta
@@ -213,6 +221,8 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
 });
+//ruta tareas
+Route::resource('works', WorkController::class);
 
 //Rutas para el mantenedor de insumos
 Route::middleware(['auth'])->prefix('insumos')->group(function () {
@@ -223,5 +233,21 @@ Route::middleware(['auth'])->prefix('insumos')->group(function () {
     Route::put('/{id}', [InsumoController::class, 'update'])->name('insumos.update');
     Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
 });
+
+//ruta para crear usuarios
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware('can:gestionar usuarios');
+Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('can:gestionar usuarios');
+//ruta para primer log
+use App\Http\Controllers\PasswordController;
+
+Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form')->middleware('auth');
+Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change')->middleware('auth');
+// Listado de usuarios
+Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+
+// Actualización directa del estado de tareas
+Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
+Route::resource('works', WorkController::class);
+
 
 require __DIR__ . '/auth.php';

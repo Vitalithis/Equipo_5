@@ -27,22 +27,16 @@
           <span class="text-lg font-semibold">{{ $seccion }}</span>
         </div>
       </div>
-
-      <div class="p-4 border-b border-{{ $color }}-700">
-        <div class="flex items-center space-x-3">
-          <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="User" class="h-10 w-10 rounded-full">
-          <div>
-            <div class="font-medium">{{ Auth::user()->name }}</div>
-            @php $rol = Auth::user()->getRoleNames()->first(); @endphp
-            <div class="text-sm text-white bg-{{ $color }}-600 rounded-full px-2 py-0.5 inline-block mt-1">
-              {{ $rol ?? 'Sin rol' }}
-            </div>
-          </div>
-        </div>
-      </div>
-
       <nav class="p-4">
         <ul>
+          @role('soporte')
+          <li class="mb-1">
+            <a href="{{ route('admin.clientes.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          @endrole
           @can('ver dashboard')
           <li class="mb-1">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
@@ -96,7 +90,14 @@
             </a>
           </li>
           @endcan
-
+          @can('gestionar tareas')
+          <li class="mb-1">
+            <a href="{{ route('works.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-list-check"></i>
+              <span>Tareas del Vivero</span>
+            </a>
+          </li>
+          @endcan
           @can('ver dashboard')
           <li class="mb-1">
             <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
@@ -163,7 +164,7 @@
             <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none lg:hidden">
               <i class="fas fa-bars"></i>
             </button>
-            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-eprimary tracking-wide">
+            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-black tracking-wide">
               @yield('title', 'Dashboard')
             </h1>
           </div>
@@ -195,8 +196,15 @@
       </header>
 
       <main class="flex-1 overflow-y-auto p-6">
-        @yield('content')
+          @if (Auth::user()?->must_change_password)
+              <div class="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded shadow-md">
+                  ⚠️ <strong>Debes cambiar tu contraseña</strong> antes de continuar usando el sistema. 
+              </div>
+          @endif
+
+          @yield('content')
       </main>
+
 
       <footer class="bg-white border-t py-4 px-6">
         <div class="flex justify-between items-center">

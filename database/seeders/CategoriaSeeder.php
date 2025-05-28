@@ -9,15 +9,21 @@ class CategoriaSeeder extends Seeder
 {
     public function run()
     {
-        // Crear algunas categorías de ejemplo
-        Categoria::create(['nombre' => 'Suculenta']);
-        Categoria::create(['nombre' => 'Interior']);
-        Categoria::create(['nombre' => 'Exterior']);
-        Categoria::create(['nombre' => 'Medicinal']);
-        Categoria::create(['nombre' => 'Árbol']);
-        Categoria::create(['nombre' => 'Decorativa']);
+        $categorias = [
+            'Suculenta',
+            'Interior',
+            'Exterior',
+            'Medicinal',
+            'Árbol',
+            'Decorativa'
+        ];
 
+        foreach ($categorias as $nombre) {
+            Categoria::firstOrCreate([
+                'nombre' => $nombre,
+            ]);
+        }
 
-        $this->command->info('Categorias creadas exitosamente.');
+        $this->command->info('Categorías creadas exitosamente.');
     }
 }
