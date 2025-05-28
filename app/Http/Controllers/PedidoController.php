@@ -13,6 +13,7 @@ class PedidoController extends Controller
         $pedidos = Pedido::with(['usuario', 'productos'])->get();
         return view('pedidos.index', compact('pedidos'));
 
+
     }
 
     public function update(Request $request, $id)
@@ -33,5 +34,21 @@ class PedidoController extends Controller
 
         return redirect()->route('pedidos.index')->with('success', 'Estado del pedido actualizado correctamente.');
     }
+
+        public function misCompras()
+{
+    $pedidos = Pedido::where('usuario_id', auth()->id())->latest()->get();
+    return view('shopping.index', compact('pedidos'));
+}
+public function show(Pedido $pedido)
+{
+    // Solo permitir ver sus propios pedidos
+    if ($pedido->usuario_id!== auth()->id()) {
+        abort(403);
+    }
+
+    return view('shopping.show', compact('pedido'));
+}
+
 }
 

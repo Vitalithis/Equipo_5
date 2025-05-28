@@ -24,7 +24,6 @@
                     <th class="px-6 py-3 whitespace-nowrap">Nombre</th>
                     <th class="px-6 py-3 whitespace-nowrap">Tipo</th>
                     <th class="px-6 py-3 whitespace-nowrap">Stock</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Información</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
@@ -34,14 +33,11 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->nombre }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->tipo }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->stock }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
                             <button @click="modalFert = {{ $fertilizante->id }}"
                                     class="text-green-600 hover:text-green-800 transition font-medium">
                                 Ver detalles
                             </button>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
                             <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}"
                                class="text-blue-600 hover:text-blue-800 font-medium transition">Editar</a>
                             <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">

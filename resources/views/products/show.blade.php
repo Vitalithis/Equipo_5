@@ -23,7 +23,7 @@
             </div>
 
             <!-- Agregar al carrito -->
-            <form method="POST" action="{{ route('cart.añadirCarrito', ['id' => $producto->id]) }}" class="space-y-4">
+            <form method="POST" action="{{ route('cart.add', ['id' => $producto->id]) }}" class="space-y-4">
 
                 @csrf
                 <input type="hidden" name="producto_id" value="{{ $producto->id }}">

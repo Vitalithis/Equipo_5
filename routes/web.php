@@ -123,10 +123,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
 });
-
-Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
-Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
-Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+//rutas de checkout
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+    Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
+    Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+    Route::post('/checkout/clear', [CheckoutController::class, 'clearCart'])->name('checkout.clearCart');
+});
 
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
@@ -194,6 +198,9 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::get('/{id}/editar', [FinanzaController::class, 'edit'])->name('finanzas.edit');
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
+    Route::get('/finanzas/pdf', [FinanzaController::class, 'exportarPDF'])->name('finanzas.exportarPDF');
+
+
 });
 
 //Rutas para el mantenedor de insumos
@@ -205,5 +212,8 @@ Route::middleware(['auth'])->prefix('insumos')->group(function () {
     Route::put('/{id}', [InsumoController::class, 'update'])->name('insumos.update');
     Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
 });
+
+// Ruta de mis compras
+Route::middleware(['auth'])->get('/mis-compras', [PedidoController::class, 'misCompras'])->name('compras.index');
 
 require __DIR__ . '/auth.php';

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Finanza;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FinanzaController extends Controller
 {
@@ -89,5 +90,18 @@ class FinanzaController extends Controller
         $finanza->delete();
 
         return redirect()->route('dashboard.finanzas')->with('success', 'Registro financiero eliminado exitosamente.');
+    }
+    public function exportarPDF(Request $request)
+    {
+    $finanzas = Finanza::with('usuario')->orderBy('fecha', 'desc')->get();
+    $totalIngresos = $finanzas->where('tipo', 'ingreso')->sum('monto');
+    $totalEgresos = $finanzas->where('tipo', 'egreso')->sum('monto');
+    $balance = $totalIngresos - $totalEgresos;
+
+    $pdf = Pdf::loadView('finance.pdf', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'))
+             ->setPaper('a4', 'landscape');
+
+    $fecha = now()->format('Y-m-d');
+    return $pdf->download("resumen_financiero_{$fecha}.pdf");
     }
 }

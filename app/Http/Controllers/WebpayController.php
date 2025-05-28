@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\CartItem;
+use App\Models\Pedido;
 use Transbank\Webpay\WebpayPlus\Transaction;
-use Transbank\Webpay\WebpayPlus\WebpayPlus;
+
 
 class WebpayController extends Controller
 {
@@ -16,19 +16,15 @@ class WebpayController extends Controller
     }
 
     // Inicia la transacción
-    public function pagar(Request $request)
+   public function pagar(Request $request)
 {
-    $userId = auth()->id();
-    $items = CartItem::where('user_id', $userId)->get();
+    $cart = session('cart', []);
 
-    // Convertir monto total a entero
-    $amount = $items->sum(fn($i) => (int)$i->precio_unitario * (int)$i->cantidad);
-    $amount = intval($amount); // adicional por seguridad
-
-
-    if ($amount <= 0) {
-        return redirect()->route('cart.index')->with('error', 'Tu carrito está vacío.');
+    if (empty($cart)) {
+        return redirect()->route('checkout.index')->with('error', 'Tu carrito está vacío.');
     }
+
+    $amount = collect($cart)->sum(fn($item) => (int)$item['precio_unitario'] * (int)$item['cantidad']);
 
     $buyOrder  = uniqid('order_');
     $sessionId = session()->getId();
@@ -37,29 +33,57 @@ class WebpayController extends Controller
     $transaction = new Transaction();
     $response = $transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
 
+    // Guarda carrito y orden temporal en sesión
+    session()->put('carrito_pago', $cart);
+    session()->put('buy_order', $buyOrder);
+    session()->put('monto_total', $amount);
+
     return redirect($response->getUrl() . '?token_ws=' . $response->getToken());
 }
 
 
+
     // Recibe la respuesta de Webpay
-    public function respuesta(Request $request)
-    {
-        $token = $request->get('token_ws');
-        if (! $token) {
-            return redirect()->route('cart.index')->with('error', 'Transacción cancelada.');
-        }
+   public function respuesta(Request $request)
+{
+    $token = $request->get('token_ws');
 
-        $transaction = new Transaction();
-        $result = $transaction->commit($token);
-
-        if ($result->isApproved()) {
-            // Aquí puedes marcar los CartItem como comprados o vaciar el carrito
-            CartItem::where('user_id', auth()->id())->delete();
-
-            return redirect()->route('cart.index')
-                             ->with('success', 'Pago exitoso. Orden: ' . $result->getBuyOrder());
-        }
-
-        return redirect()->route('cart.index')->with('error', 'Pago rechazado.');
+    if (!$token) {
+        return redirect()->route('checkout.index')->with('error', 'Transacción cancelada.');
     }
+
+    $transaction = new Transaction();
+    $result = $transaction->commit($token);
+
+    if ($result->isApproved()) {
+        $user = auth()->user();
+        $cart = session('carrito_pago', []);
+        $total = session('monto_total');
+
+        $pedido = Pedido::create([
+            'usuario_id' => $user->id,
+            'total' => $total,
+            'estado_pedido' => 'pendiente',
+            'metodo_entrega' => 'retiro', // ajusta según tu flujo real
+        ]);
+
+        foreach ($cart as $item) {
+            $pedido->productos()->attach($item['producto_id'], [
+                'cantidad' => $item['cantidad'],
+                'precio_unitario' => $item['precio_unitario'],
+                'subtotal' => $item['cantidad'] * $item['precio_unitario'],
+                'nombre_producto_snapshot' => $item['nombre'],
+                'codigo_barras_snapshot' => $item['codigo_barras'],
+                'imagen_snapshot' => $item['imagen'],
+            ]);
+        }
+
+        session()->forget(['carrito_pago', 'buy_order', 'monto_total', 'cart']);
+
+        return redirect()->route('checkout.index')->with('success', 'Pago exitoso. Pedido registrado.');
+    }
+
+    return redirect()->route('checkout.index')->with('error', 'Pago rechazado.');
+}
+
 }
