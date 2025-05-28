@@ -103,20 +103,9 @@
             <a href="<?php echo e(route('dashboard.fertilizantes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
             <i class="fa-solid fa-person-digging"></i>
               <span>Fertilizante</span>
-<<<<<<< HEAD
           </li>
           <?php endif; ?>
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('gestionar proveedores')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('proveedores.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-              <i class="fa-solid fa-truck-field"></i>
-              <span>Proveedores</span>
-=======
->>>>>>> 14a6380 (Revert "Merge branch 'dev' into Felipe")
-            </a>
-          </li>
-          <?php endif; ?>
-
+          
           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
           <li class="mb-1">
             <a href="<?php echo e(route('dashboard.ordenes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
@@ -152,9 +141,20 @@
             </a>
           </li>
           <?php endif; ?>
+
+          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('gestionar proveedores')): ?>
+          <li class="mb-1">
+            <a href="<?php echo e(route('proveedores.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+              <i class="fa-solid fa-truck-field"></i>
+              <span>Proveedores</span>
+            </a>
+          </li>
+          <?php endif; ?>
+
         </ul>
       </nav>
     </div>
+
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">

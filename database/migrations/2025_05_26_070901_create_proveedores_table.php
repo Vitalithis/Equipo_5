@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('telefono')->nullable();
             $table->text('direccion')->nullable();
             $table->string('empresa')->nullable();
-            $table->enum('tipo_proveedor', ['Insumos médicos', 'Farmacia', 'Servicios externos'])->nullable();
+            $table->string('tipo_proveedor')->nullable();
             $table->enum('estado', ['Activo', 'Inactivo'])->default('Activo');
             $table->text('notas')->nullable();
             $table->timestamps();

@@ -41,6 +41,9 @@ class PermissionSeeder extends Seeder
             'gestionar pedidos',       // <-- Usado para pedidos
             'gestionar descuentos',    // <-- Usado para sección descuentos
 
+            // Proveedores 
+            'gestionar proveedores',
+
             // Reportes
             'ver reportes',
         ];
