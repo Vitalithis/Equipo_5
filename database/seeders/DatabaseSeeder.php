@@ -24,7 +24,9 @@ class DatabaseSeeder extends Seeder
             CuidadoSeeder::class,
             RolUserSeeder::class,
             FinanzaSeeder::class,
-            InsumoSeeder::class
+            InsumoSeeder::class,
+            WorkSeeder::class,
+
             
         ]);
 

@@ -98,6 +98,7 @@
             </a>
           </li>
           @endcan
+          @can('ver dashboard')
           <li class="mb-1">
             <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-person-digging"></i>
@@ -105,16 +106,6 @@
             </a>
           </li>
           @endcan
-
-          @can('ver dashboard')
-          <li class="mb-1">
-            <a href="{{ route('dashboard.ordenes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
-            <i class="fa-solid fa-umbrella"></i>
-              <span>Orden de Producción</span>
-            </a>
-          </li>
-          @endcan
-
           @can('ver dashboard')
           <li class="mb-1">
             <a href="{{ route('dashboard.cuidados') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
@@ -153,7 +144,7 @@
             <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none lg:hidden">
               <i class="fas fa-bars"></i>
             </button>
-            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-eprimary tracking-wide">
+            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-black tracking-wide">
               @yield('title', 'Dashboard')
             </h1>
           </div>
@@ -185,8 +176,15 @@
       </header>
 
       <main class="flex-1 overflow-y-auto p-6">
-        @yield('content')
+          @if (Auth::user()?->must_change_password)
+              <div class="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded shadow-md">
+                  ⚠️ <strong>Debes cambiar tu contraseña</strong> antes de continuar usando el sistema. 
+              </div>
+          @endif
+
+          @yield('content')
       </main>
+
 
       <footer class="bg-white border-t py-4 px-6">
         <div class="flex justify-between items-center">

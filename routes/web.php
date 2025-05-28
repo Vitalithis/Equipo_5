@@ -179,16 +179,6 @@ Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class,
 Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->middleware('permission:gestionar productos')->name('fertilizantes.update');
 Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->middleware('permission:gestionar productos')->name('fertilizantes.destroy');
 
-Route::prefix('dashboard/ordenes-produccion')->middleware(['auth', 'permission:ver ordenes'])->group(function () {
-    Route::get('/', [OrdenProduccionController::class, 'index'])->name('dashboard.ordenes');
-    Route::get('/create', [OrdenProduccionController::class, 'create'])->middleware('permission:crear ordenes')->name('ordenes.create');
-    Route::post('/', [OrdenProduccionController::class, 'store'])->middleware('permission:crear ordenes')->name('ordenes.store');
-    Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->middleware('permission:editar ordenes')->name('ordenes.edit');
-    Route::put('/{id}', [OrdenProduccionController::class, 'update'])->middleware('permission:editar ordenes')->name('ordenes.update');
-    Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->middleware('permission:eliminar ordenes')->name('ordenes.destroy');
-    Route::get('/ordenes/export/pdf', [OrdenProduccionController::class, 'exportarPDF'])->name('ordenes.export.pdf');
-
-});
 
 
 //Rutas para cuidados de cada Planta
@@ -225,5 +215,21 @@ Route::middleware(['auth'])->prefix('insumos')->group(function () {
     Route::put('/{id}', [InsumoController::class, 'update'])->name('insumos.update');
     Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
 });
+
+//ruta para crear usuarios
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware('can:gestionar usuarios');
+Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('can:gestionar usuarios');
+//ruta para primer log
+use App\Http\Controllers\PasswordController;
+
+Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form')->middleware('auth');
+Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change')->middleware('auth');
+// Listado de usuarios
+Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+
+// Actualización directa del estado de tareas
+Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
+Route::resource('works', WorkController::class);
+
 
 require __DIR__ . '/auth.php';

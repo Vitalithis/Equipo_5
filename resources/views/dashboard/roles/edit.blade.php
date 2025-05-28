@@ -69,7 +69,7 @@
 
         <div class="mt-6">
             <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow">
+                    class="bg-eaccent2 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow">
                 Actualizar
             </button>
         </div>

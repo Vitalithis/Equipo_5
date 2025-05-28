@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Work;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,12 @@ class WorkController extends Controller
 
     public function create()
     {
-        return view('dashboard.works.create');
+        // Obtener todos los usuarios que no tienen el rol 'user'
+        $responsables = User::whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'user');
+        })->get();
+
+        return view('dashboard.works.create', compact('responsables'));
     }
 
     public function store(Request $request)
@@ -59,4 +65,17 @@ class WorkController extends Controller
 
         return redirect()->route('works.index')->with('success', 'Tarea eliminada correctamente.');
     }
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'estado' => 'required|in:pendiente,en progreso,completada',
+        ]);
+
+        $tarea = Work::findOrFail($id);
+        $tarea->estado = $request->estado;
+        $tarea->save();
+
+        return redirect()->back()->with('success', 'Estado actualizado correctamente.');
+    }
+
 }

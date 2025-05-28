@@ -77,7 +77,7 @@
 
         <div class="mt-6">
             <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded shadow">
+                    class="bg-eaccent2 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded shadow">
                 Guardar
             </button>
         </div>

@@ -13,9 +13,6 @@
                 </svg>
                 Volver a la lista
             </a>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-                {{ isset($insumo->id) ? 'Editar' : 'Nuevo' }} insumo
-            </h1>
         </div>
 
         <form action="{{ isset($insumo->id) ? route('insumos.update', $insumo->id) : route('insumos.store') }}" method="POST" class="space-y-6">
@@ -115,7 +112,7 @@
                     Cancelar
                 </a>
                 <button type="submit"
-                    class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                    class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-eaccent2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 -ml-1" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>

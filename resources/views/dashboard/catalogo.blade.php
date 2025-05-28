@@ -11,9 +11,9 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Productos</h2>
                 <a href="{{ route('catalogo.create') }}"
-                   class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v16m8-8H4"/>
                     </svg>
                     Añadir Producto
@@ -48,11 +48,17 @@
                                 <td class="px-4 py-2">{{ $product->activo ? 'Sí' : 'No' }}</td>
                                 <td class="px-4 py-2">{{ $product->stock }}</td>
                                 <td class="px-4 py-2">
-                                    <a href="{{ route('catalogo_edit', ['id' => $product->id]) }}" class="text-blue-600 hover:underline">Editar</a>
-                                    <button type="button" class="text-red-600 hover:underline ml-2"
-                                            onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria }}')">
-                                        Eliminar
-                                    </button>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                <a href="{{ route('catalogo_edit', ['id' => $product->id]) }}"
+                                class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
+                                    Editar
+                                </a>
+                                <button type="button"
+                                        class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
+                                        onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria }}')">
+                                    Eliminar
+                                </button>
+                                </div>
                                 </td>
                             </tr>
                         @endforeach

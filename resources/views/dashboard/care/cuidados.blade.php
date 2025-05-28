@@ -9,7 +9,7 @@
 <div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
     <div class="flex items-center mb-6">
         <a href="{{ route('dashboard.cuidados.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+           class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor"
                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
@@ -40,16 +40,25 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $cuidado->tipo_luz }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $cuidado->frecuencia_abono ?? '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('dashboard.cuidados.edit', $cuidado->id) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                            <a href="{{ route('dashboard.cuidados.edit', $cuidado->id) }}"
+                               class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
+                                Editar
+                            </a>
                             <form action="{{ route('dashboard.cuidados.destroy', $cuidado->id) }}" method="POST" class="inline-block ml-2"
                                   onsubmit="return confirm('¿Estás seguro de eliminar este cuidado?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                <button type="submit"
+                                        class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">
+                                    Eliminar
+                                </button>
                             </form>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Ver PDF</a>
+                            <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank"
+                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-3 py-1 rounded transition-colors">
+                                Ver PDF
+                            </a>
                         </td>
                     </tr>
                 @empty
