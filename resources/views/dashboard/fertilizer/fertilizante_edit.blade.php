@@ -11,9 +11,7 @@
             </svg>
             Volver a la lista
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($fertilizante->id) ? 'Editar' : 'Nuevo' }} fertilizante
-        </h1>
+        
     </div>
 
     <form action="{{ isset($fertilizante->id) ? route('fertilizantes.update', $fertilizante->id) : route('fertilizantes.store') }}"

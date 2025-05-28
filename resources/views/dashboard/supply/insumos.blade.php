@@ -24,8 +24,8 @@
                     <tr>
                         <th class="px-6 py-3 whitespace-nowrap">Nombre</th>
                         <th class="px-6 py-3 whitespace-nowrap">Tipo de Uso</th>
-                        <th class="px-6 py-3 whitespace-nowrap">Stock</th>
-                        <th class="px-6 py-3 whitespace-nowrap">Precio</th>
+                        <th class="px-6 py-3 whitespace-nowrap">Cantidad</th>
+                        <th class="px-6 py-3 whitespace-nowrap">Costo</th>
                         <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                     </tr>
                 </thead>
