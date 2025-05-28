@@ -126,4 +126,4 @@
     <?php endif; ?>
 </body>
 </html>
-<?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/cuidado/cuidado.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\Equipo_5\resources\views/cuidado/cuidado.blade.php ENDPATH**/ ?>

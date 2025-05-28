@@ -37,17 +37,10 @@ class CuidadoController extends Controller
             'frecuencia_abono' => 'nullable|string',
             'plagas_comunes' => 'nullable|string',
             'cuidados_adicionales' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'imagen_url' => 'nullable|url',
         ]);
 
-        $data = $request->except('imagen');
-
-        if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('cuidados', 'public');
-            $data['imagen_url'] = $path;
-        }
-
-        Cuidado::create($data);
+        Cuidado::create($request->all());
 
         return redirect()->route('dashboard.cuidados')->with('success', 'Cuidado registrado exitosamente.');
     }
@@ -74,34 +67,38 @@ class CuidadoController extends Controller
             'frecuencia_abono' => 'nullable|string',
             'plagas_comunes' => 'nullable|string',
             'cuidados_adicionales' => 'nullable|string',
-            
+            'imagen_url' => 'nullable|url',
         ]);
+
+        $cuidado->update($request->all());
+
         return redirect()->route('dashboard.cuidados')->with('success', 'Cuidado actualizado correctamente.');
     }
 
     public function destroy($id)
     {
         $cuidado = Cuidado::findOrFail($id);
-
         $cuidado->delete();
 
         return redirect()->route('dashboard.cuidados')->with('success', 'Cuidado eliminado correctamente.');
     }
-
     public function generarPdf($id)
-    {
-        $cuidado = Cuidado::with('producto')->findOrFail($id);
+{
+    $cuidado = Cuidado::with('producto')->findOrFail($id);
 
-        $filename = 'cuidado_' . $cuidado->id . '.pdf';
-        $path = 'public/cuidados/' . $filename;
+    $filename = 'cuidado_' . $cuidado->id . '.pdf';
+    $path = 'public/cuidados/' . $filename;
 
-        if (Storage::exists($path)) {
-            return response()->file(storage_path('app/' . $path));
-        }
-
-        $pdf = Pdf::loadView('cuidado.cuidado', compact('cuidado'));
-        Storage::put($path, $pdf->output());
-
+    // Si ya existe, servir directamente
+    if (Storage::exists($path)) {
         return response()->file(storage_path('app/' . $path));
     }
+
+    // Generar PDF y guardar
+    $pdf = Pdf::loadView('cuidado.cuidado', compact('cuidado'));
+    Storage::put($path, $pdf->output());
+
+    // Servir el archivo generado
+    return response()->file(storage_path('app/' . $path));
+}
 }
