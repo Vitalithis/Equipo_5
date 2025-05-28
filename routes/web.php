@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\ProveedorController;
+    
 
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
