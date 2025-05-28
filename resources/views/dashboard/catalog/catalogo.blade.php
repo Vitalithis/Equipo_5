@@ -9,7 +9,7 @@
     <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
         <div class="rounded-lg shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Productos</h2>
+                <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800"></h2>
                 <a href="{{ route('catalogo.create') }}"
                 class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
