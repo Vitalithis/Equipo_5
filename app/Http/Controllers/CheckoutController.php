@@ -13,9 +13,12 @@ class CheckoutController extends Controller
         $amount = $request->input('amount');
         $sessionId = uniqid();
         $buyOrder = uniqid('ORDER_');
-        $returnUrl = route('checkout');
+        $returnUrl = route('checkout.pay');
 
-        $response = (new Transaction)->create(
+
+        $transaction = new Transaction($config);
+
+        $response = $transaction->create(
             $buyOrder,
             $sessionId,
             $amount,
@@ -51,15 +54,13 @@ class CheckoutController extends Controller
     }
 
     public function index()
-{
-    return view('checkout.index');
-}
+    {
+        return view('checkout.index');
+    }
 
     public function clearCart()
-{
-    session()->forget('cart');
-    return redirect()->route('home');
-}
-
-
+    {
+        session()->forget('cart');
+        return redirect()->route('home');
+    }
 }

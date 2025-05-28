@@ -10,11 +10,11 @@ class DescuentoController extends Controller
     public function mostrarTodos()
     {
         $descuentos = Descuento::all();
-        return view('dashboard.descuentos', compact('descuentos'));
+        return view('dashboard.discounts.descuentos', compact('descuentos'));
     }
     public function create()
     {
-        return view('dashboard.descuentos_edit');
+        return view('dashboard.discounts.descuentos_edit');
     }
     public function store(Request $request)
     {
@@ -32,12 +32,12 @@ class DescuentoController extends Controller
         $descuento->usos_actuales = 0; // Inicialmente 0
         $descuento->save();
 
-        return redirect()->route('dashboard.descuentos')->with('success', 'Descuento creado exitosamente.');
+        return redirect()->route('dashboard.discounts.descuentos')->with('success', 'Descuento creado exitosamente.');
     }
     public function edit($id)
     {
         $descuento = Descuento::findOrFail($id);
-        return view('dashboard.descuentos_edit', compact('descuento'));
+        return view('dashboard.discounts.descuentos_edit', compact('descuento'));
     }
     public function update(Request $request, $id)
     {
@@ -55,13 +55,13 @@ class DescuentoController extends Controller
         // No actualizamos usos_actuales aquí
         $descuento->save();
 
-        return redirect()->route('dashboard.descuentos')->with('success', 'Descuento actualizado exitosamente.');
+        return redirect()->route('dashboard.discounts.descuentos')->with('success', 'Descuento actualizado exitosamente.');
     }
     public function destroy($id)
     {
         $descuento = Descuento::findOrFail($id);
         $descuento->delete();
 
-        return redirect()->route('dashboard.descuentos')->with('success', 'Descuento eliminado exitosamente.');
+        return redirect()->route('dashboard.discounts.descuentos')->with('success', 'Descuento eliminado exitosamente.');
     }
 }
