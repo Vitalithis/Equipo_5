@@ -16,15 +16,21 @@ class CheckoutController extends Controller
 
     public function pay(Request $request)
     {
+        $request->validate([
+            'amount' => 'required|integer|min:1',
+            'metodo_entrega' => 'required|in:retiro,domicilio',
+            'direccion_entrega' => 'required_if:metodo_entrega,domicilio|string|nullable',
+        ]);
+
         $amount = intval($request->input('amount'));
         $sessionId = uniqid();
         $buyOrder = uniqid('ORDER_');
         $returnUrl = route('checkout.response');
 
-        // Guardar método y dirección de entrega en sesión
+        // Guardar en sesión el método y la dirección si aplica
         session([
-            'metodo_entrega' => $request->input('metodo_entrega', 'retiro'),
-            'direccion_entrega' => $request->input('metodo_entrega') === 'domicilio'
+            'metodo_entrega' => $request->input('metodo_entrega'),
+            'direccion_entrega' => $request->input('metodo_entrega') === 'domicilio' && $request->has('guardar_direccion')
                 ? $request->input('direccion_entrega')
                 : null,
         ]);
@@ -34,6 +40,8 @@ class CheckoutController extends Controller
 
         return redirect()->away($response->getUrl() . '?token_ws=' . $response->getToken());
     }
+
+
 
     public function response(Request $request)
     {

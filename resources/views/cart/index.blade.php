@@ -115,38 +115,31 @@
                     </button>
                 </form>
 
-                    <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro' }">
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro' }">
         @csrf
         <input type="hidden" name="amount" value="{{ $total }}">
 
-        <!-- Método de entrega -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">¿Cómo deseas recibir tu pedido?</label>
-            <div class="flex gap-4">
-                <label class="inline-flex items-center">
-                    <input type="radio" name="metodo_entrega" value="retiro" x-model="metodo" class="text-green-600 focus:ring-green-500 border-gray-300">
-                    <span class="ml-2">Retiro en tienda</span>
-                </label>
-                <label class="inline-flex items-center">
-                    <input type="radio" name="metodo_entrega" value="domicilio" x-model="metodo" class="text-green-600 focus:ring-green-500 border-gray-300">
-                    <span class="ml-2">Envío a domicilio</span>
-                </label>
-            </div>
-        </div>
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro', guardar: false }">
+    @csrf
+    <input type="hidden" name="amount" value="{{ $total }}">
 
-        <!-- Dirección (solo si es domicilio) -->
-        <div x-show="metodo === 'domicilio'" class="transition">
-            <label for="direccion_entrega" class="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
-            <input type="text" name="direccion_entrega" id="direccion_entrega"
-                class="w-full px-3 py-2 border rounded focus:ring-greenPrimary focus:border-greenPrimary"
-                placeholder="Ej: Calle Falsa 1234, Ciudad">
+    <!-- Método de entrega -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">¿Cómo deseas recibir tu pedido?</label>
+        <div class="flex gap-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="metodo_entrega" value="retiro" x-model="metodo" checked class="text-green-600 focus:ring-green-500 border-gray-300">
+                <span class="ml-2">Retiro en tienda</span>
+            </label>
         </div>
+    </div>
 
-        <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90"
-            style="background-color: #40C239;">
-            Proceder al Pago con Webpay
-        </button>
-    </form>
+
+    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90" style="background-color: #40C239;">
+        Proceder al Pago con Webpay
+    </button>
+</form>
+
 
             </div>
         </div>

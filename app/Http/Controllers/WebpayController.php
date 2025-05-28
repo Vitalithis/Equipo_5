@@ -63,11 +63,13 @@ class WebpayController extends Controller
         $total = session('monto_total');
 
         $pedido = Pedido::create([
-            'usuario_id' => $user->id,
-            'total' => $total,
-            'estado_pedido' => 'pendiente',
-            'metodo_entrega' => 'retiro', // ajusta según tu flujo real
-        ]);
+        'usuario_id' => $user->id,
+        'total' => $total,
+        'estado_pedido' => 'pendiente',
+        'metodo_entrega' => session('metodo_entrega', 'retiro'),
+        'direccion_entrega' => session('direccion_entrega'),
+    ]);
+
 
         foreach ($cart as $item) {
             $pedido->productos()->attach($item['producto_id'], [
@@ -80,7 +82,10 @@ class WebpayController extends Controller
             ]);
         }
 
-        session()->forget(['carrito_pago', 'buy_order', 'monto_total', 'cart']);
+        session()->forget([
+            'carrito_pago', 'buy_order', 'monto_total', 'cart',
+            'metodo_entrega', 'direccion_entrega'
+        ]);
 
         return redirect()->route('checkout.index')->with('success', 'Pago exitoso. Pedido registrado.');
     }
