@@ -67,12 +67,15 @@
             max-height: 180px;
             object-fit: contain;
         }
+        .logo {
+            height: 60px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
-        {{-- Si tienes un logo local, usa asset('storage/logo.png') --}}
-        {{-- <img src="{{ public_path('images/logo.png') }}" class="logo" alt="Logo"> --}}
+        <img src="{{ public_path('images/logo.png') }}" class="logo" alt="Logo">
         <h1>Ficha de Cuidado de Planta</h1>
         <p>{{ $cuidado->producto->nombre }}</p>
     </header>
@@ -118,11 +121,5 @@
     </section>
     @endif
 
-    @if($cuidado->imagen_url)
-    <section class="image-preview">
-        <h2>Imagen Referencial</h2>
-        <img src="{{ $cuidado->imagen_url }}" alt="Imagen del cuidado">
-    </section>
-    @endif
 </body>
 </html>

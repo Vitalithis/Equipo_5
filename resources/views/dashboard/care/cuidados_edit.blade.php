@@ -99,23 +99,6 @@
                 <textarea name="cuidados_adicionales" id="cuidados_adicionales" rows="3"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">{{ old('cuidados_adicionales', $cuidado->cuidados_adicionales ?? '') }}</textarea>
             </div>
-
-            {{-- Imagen Manual --}}
-            <div class="mt-4">
-                <label for="imagen" class="block text-sm font-medium text-gray-700 mb-1">Imagen del cuidado</label>
-                <input type="file" name="imagen" id="imagen"
-                    class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-green-50 file:text-green-700
-                    hover:file:bg-green-100 transition">
-                @if(!empty($cuidado->imagen_url))
-                    <div class="mt-3">
-                        <p class="text-sm text-gray-600 mb-1">Imagen actual:</p>
-                        <img src="{{ $cuidado->imagen_url }}" alt="Imagen del cuidado" class="w-32 h-32 object-cover rounded">
-                    </div>
-                @endif
-            </div>
         </div>
 
         {{-- Botones --}}

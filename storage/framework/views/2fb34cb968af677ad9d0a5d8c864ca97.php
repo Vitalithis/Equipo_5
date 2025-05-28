@@ -67,12 +67,15 @@
             max-height: 180px;
             object-fit: contain;
         }
+        .logo {
+            height: 60px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
-        
-        
+        <img src="<?php echo e(public_path('images/logo.png')); ?>" class="logo" alt="Logo">
         <h1>Ficha de Cuidado de Planta</h1>
         <p><?php echo e($cuidado->producto->nombre); ?></p>
     </header>
@@ -118,12 +121,6 @@
     </section>
     <?php endif; ?>
 
-    <?php if($cuidado->imagen_url): ?>
-    <section class="image-preview">
-        <h2>Imagen Referencial</h2>
-        <img src="<?php echo e($cuidado->imagen_url); ?>" alt="Imagen del cuidado">
-    </section>
-    <?php endif; ?>
 </body>
 </html>
 <?php /**PATH C:\xampp\htdocs\xampp\Equipo_5\resources\views/cuidado/cuidado.blade.php ENDPATH**/ ?>
