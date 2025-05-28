@@ -8,20 +8,30 @@ use Illuminate\Support\Facades\Auth;
 
 class FinanzaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $finanzas = Finanza::orderBy('fecha', 'desc')->get();
+        $query = Finanza::query()->with('usuario');
 
-        $totalIngresos = Finanza::where('tipo', 'ingreso')->sum('monto');
-        $totalEgresos = Finanza::where('tipo', 'egreso')->sum('monto');
+        // Filtro por fechas
+        if ($request->filled('desde')) {
+            $query->whereDate('fecha', '>=', $request->desde);
+        }
+        if ($request->filled('hasta')) {
+            $query->whereDate('fecha', '<=', $request->hasta);
+        }
+
+        $finanzas = $query->latest()->get();
+
+        $totalIngresos = $finanzas->where('tipo', 'ingreso')->sum('monto');
+        $totalEgresos = $finanzas->where('tipo', 'egreso')->sum('monto');
         $balance = $totalIngresos - $totalEgresos;
 
-        return view('dashboard.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
+        return view('dashboard.finance.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
     }
 
     public function create()
     {
-        return view('dashboard.finanzas_edit');
+        return view('dashboard.finance.finanzas_edit');
     }
 
     public function store(Request $request)
@@ -49,7 +59,7 @@ class FinanzaController extends Controller
     public function edit($id)
     {
         $finanza = Finanza::findOrFail($id);
-        return view('dashboard.finanzas_edit', compact('finanza'));
+        return view('dashboard.finance.finanzas_edit', compact('finanza'));
     }
 
     public function update(Request $request, $id)

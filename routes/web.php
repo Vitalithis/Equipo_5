@@ -25,6 +25,7 @@ use App\Http\Controllers\FertilizanteController;
 use App\Http\Controllers\OrdenProduccionController;
 use App\Http\Controllers\CuidadoController;
 use App\Http\Controllers\FinanzaController;
+use App\Http\Controllers\InsumoController;
 
 use App\Models\ProductCategory;
 
@@ -203,6 +204,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
 });
 
+// Rutas para el mantenedor de finanzas
 Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::get('/', [FinanzaController::class, 'index'])->name('dashboard.finanzas');
     Route::get('/crear', [FinanzaController::class, 'create'])->name('finanzas.create');
@@ -214,6 +216,14 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
 //ruta tareas
 Route::resource('works', WorkController::class);
 
-
+//Rutas para el mantenedor de insumos
+Route::middleware(['auth'])->prefix('insumos')->group(function () {
+    Route::get('/', [InsumoController::class, 'index'])->name('dashboard.insumos');
+    Route::get('/crear', [InsumoController::class, 'create'])->name('insumos.create');
+    Route::post('/', [InsumoController::class, 'store'])->name('insumos.store');
+    Route::get('/{id}/editar', [InsumoController::class, 'edit'])->name('insumos.edit');
+    Route::put('/{id}', [InsumoController::class, 'update'])->name('insumos.update');
+    Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
+});
 
 require __DIR__ . '/auth.php';

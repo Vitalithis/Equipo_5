@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Fertilizante;
@@ -9,12 +10,12 @@ class FertilizanteController extends Controller
     public function mostrarTodos()
     {
         $fertilizantes = Fertilizante::all();
-        return view('dashboard.fertilizante', compact('fertilizantes'));
+        return view('dashboard.fertilizer.fertilizante', compact('fertilizantes'));
     }
 
     public function create()
     {
-        return view('dashboard.fertilizante_edit');
+        return view('dashboard.fertilizer.fertilizante_edit');
     }
 
     public function store(Request $request)
@@ -45,7 +46,7 @@ class FertilizanteController extends Controller
     public function edit($id)
     {
         $fertilizante = Fertilizante::findOrFail($id);
-        return view('dashboard.fertilizante_edit', compact('fertilizante'));
+        return view('dashboard.fertilizer.fertilizante_edit', compact('fertilizante'));
     }
 
     public function update(Request $request, $id)

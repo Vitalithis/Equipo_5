@@ -6,6 +6,10 @@
 /public/storage
 !/public/storage
 !/public/storage/images
+/storage/framework/*
+!storage/framework/.gitignore
+/storage/logs/*
+!storage/logs/.gitignore
 !storage/app/public/images
 /storage/*.key
 /.phpunit.cache

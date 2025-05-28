@@ -24,8 +24,8 @@ export default {
                 float: "float 3s ease-in-out infinite",
             },
             fontFamily: {
-                sans: ["Roboto", ...defaultTheme.fontFamily.sans], // Fuente general
-                condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans], // Para títulos
+                roboto_sans: ["Roboto", ...defaultTheme.fontFamily.sans], // Fuente general
+                roboto_condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans], // Para títulos
             },
 
             fill: (theme) => ({

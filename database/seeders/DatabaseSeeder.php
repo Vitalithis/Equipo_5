@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
             FertilizanteSeeder::class,
             OrdenProduccionSeeder::class,
             CuidadoSeeder::class,
-            FinanzaSeeder::class
+            RolUserSeeder::class,
+            FinanzaSeeder::class,
+            InsumoSeeder::class
+            
         ]);
 
         // \App\Models\User::factory(10)->create();
