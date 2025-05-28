@@ -13,20 +13,19 @@ class PedidoSeeder extends Seeder
         Pedido::factory()
             ->count(10)
             ->create()
-            ->each(function ($pedido) {
+            ->each(function ($pedido) use (&$totalSubtotal) {
                 $totalSubtotal = 0;
 
-                // Crea entre 1 y 5 detalles usando el factory
                 DetallePedido::factory()
                     ->count(rand(1, 5))
                     ->make()
                     ->each(function ($detalle) use ($pedido, &$totalSubtotal) {
                         $detalle->pedido_id = $pedido->id;
                         $detalle->save();
+
                         $totalSubtotal += $detalle->subtotal;
                     });
 
-                // Calcular impuestos y total
                 $impuesto = $totalSubtotal * 0.19;
                 $descuento = $totalSubtotal * 0.05;
                 $totalFinal = $totalSubtotal + $impuesto - $descuento;

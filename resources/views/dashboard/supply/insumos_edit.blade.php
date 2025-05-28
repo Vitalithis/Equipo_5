@@ -3,18 +3,17 @@
 @section('title', isset($insumo->id) ? 'Editar insumo' : 'Nuevo insumo')
 
 @section('content')
-<div class="py-8 px-4 md:px-8 max-w-4xl mx-auto">
-    <div class="flex items-center mb-6">
-        <a href="{{ route('dashboard.insumos') }}"
-           class="flex items-center text-green-700 hover:text-green-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-            Volver a la lista
-        </a>
-        
-    </div>
+    <div class="py-8 px-4 md:px-8 max-w-4xl mx-auto" x-data="{ tipoUso: '{{ old('tipo_uso', $insumo->tipo_uso ?? '') }}' }">
+        <div class="flex items-center mb-6">
+            <a href="{{ route('dashboard.insumos') }}"
+               class="flex items-center text-green-700 hover:text-green-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+                Volver a la lista
+            </a>
+        </div>
 
     <form action="{{ isset($insumo->id) ? route('insumos.update', $insumo->id) : route('insumos.store') }}"
           method="POST" class="space-y-6">
@@ -77,16 +76,23 @@
                 </div>
             </div>
 
-            {{-- Descripción --}}
-            <div class="mt-4">
-                <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">
-                    Descripción
-                </label>
-                <textarea id="descripcion" name="descripcion" rows="3"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-all">{{ old('descripcion', $insumo->descripcion ?? '') }}</textarea>
-                @error('descripcion')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                @enderror
+            {{-- Botones --}}
+            <div class="flex justify-end space-x-4">
+                <a href="{{ route('dashboard.insumos') }}"
+                   class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50 focus:ring-green-500">
+                    Cancelar
+                </a>
+                <button type="submit"
+                    class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-eaccent2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 -ml-1" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    {{ isset($insumo->id) ? 'Actualizar' : 'Guardar' }} insumo
+                </button>
+
             </div>
         </div>
 

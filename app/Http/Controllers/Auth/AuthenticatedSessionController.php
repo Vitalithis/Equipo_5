@@ -26,8 +26,11 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
+
+        if (Auth::user()->must_change_password) {
+            return redirect()->route('password.change.form');
+        }
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

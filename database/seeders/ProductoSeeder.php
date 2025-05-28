@@ -7,14 +7,14 @@ use App\Models\Producto;
 
 class ProductoSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        $this->command->info('Echando a correr factory de productos...');
 
-        $this->command->info('Echando a correr factory de productos');
-        Producto::factory()->count(20)->create();
+        Producto::factory()
+            ->count(20)
+            ->create();
+
         $this->command->info('Productos creados exitosamente.');
     }
 }
