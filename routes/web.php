@@ -127,7 +127,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Eliminar producto del carrito (sesión)
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove.solo');
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/add/{id}', [CartController::class, 'añadirCarrito'])->name('cart.add');
     Route::post('/cart/guardar', [CartController::class, 'guardarCarrito'])->name('cart.guardar');
     Route::get('/cart/obtener', [CartController::class, 'obtenerCarrito'])->name('cart.obtener');
     Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');

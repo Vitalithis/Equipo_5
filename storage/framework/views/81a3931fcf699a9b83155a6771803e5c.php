@@ -1,4 +1,5 @@
 <?php $__env->startSection('content'); ?>
+
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <h2 class="text-3xl font-bold mb-8 text-[#486379] text-center">Tu Carrito</h2>
 
@@ -132,4 +133,4 @@
 </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Code\Equipo_5\resources\views/cart/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.home', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Code\Equipo_5\resources\views/cart/index.blade.php ENDPATH**/ ?>

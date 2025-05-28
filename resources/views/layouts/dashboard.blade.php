@@ -16,7 +16,7 @@
   <div class="flex h-screen">
 
     @php
-        $color = 'green'; 
+        $color = 'green';
         $seccion = 'Panel de Administración';
     @endphp
 
@@ -102,6 +102,8 @@
             <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-person-digging"></i>
               <span>Fertilizante</span>
+          </li>
+          @endcan
           @can('gestionar proveedores')
           <li class="mb-1">
             <a href="{{ route('proveedores.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
@@ -221,3 +223,4 @@
   </script>
 </body>
 </html>
+
