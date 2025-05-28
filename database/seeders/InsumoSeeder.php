@@ -12,30 +12,26 @@ class InsumoSeeder extends Seeder
         $insumos = [
             [
                 'nombre' => 'Tierra de hoja',
-                'tipo_uso' => 'venta',
-                'stock' => 100,
-                'precio' => 2500,
+                'cantidad' => 100,
+                'costo' => 2500,
                 'descripcion' => 'Sustrato orgánico para maceteros y jardinería.',
             ],
             [
                 'nombre' => 'Guano compostado',
-                'tipo_uso' => 'uso',
-                'stock' => 50,
-                'precio' => 0,
+                'cantidad' => 50,
+                'costo' => 0,
                 'descripcion' => 'Abono natural utilizado en cultivos internos del vivero.',
             ],
             [
                 'nombre' => 'Macetero plástico 20cm',
-                'tipo_uso' => 'venta',
-                'stock' => 200,
-                'precio' => 1200,
+                'cantidad' => 200,
+                'costo' => 1200,
                 'descripcion' => 'Macetero resistente para plantas medianas.',
             ],
             [
                 'nombre' => 'Fertilizante líquido (uso interno)',
-                'tipo_uso' => 'uso',
-                'stock' => 80,
-                'precio' => 0,
+                'cantidad' => 80,
+                'costo' => 0,
                 'descripcion' => 'Fertilizante aplicado en producción interna del vivero.',
             ],
         ];

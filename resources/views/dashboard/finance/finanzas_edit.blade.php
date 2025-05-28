@@ -11,9 +11,7 @@
             </svg>
             Volver al listado
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($finanza->id) ? 'Editar' : 'Nuevo' }} Movimiento Financiero
-        </h1>
+        
     </div>
 
     <form action="{{ isset($finanza->id) ? route('finanzas.update', $finanza->id) : route('finanzas.store') }}" method="POST" class="space-y-6">

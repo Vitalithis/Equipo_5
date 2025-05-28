@@ -11,9 +11,7 @@
             </svg>
             Volver a la lista
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($cuidado->id) ? 'Editar' : 'Nuevo' }} cuidado
-        </h1>
+        
     </div>
 
     <form action="{{ isset($cuidado->id) ? route('dashboard.cuidados.update', $cuidado->id) : route('dashboard.cuidados.store') }}"

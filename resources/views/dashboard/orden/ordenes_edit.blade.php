@@ -13,9 +13,7 @@
             </svg>
             Volver al listado
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($orden) ? 'Editar' : 'Nueva' }} orden de producción
-        </h1>
+        
     </div>
 
     <form action="{{ isset($orden) ? route('ordenes.update', $orden->id) : route('ordenes.store') }}"
