@@ -36,7 +36,7 @@ class CuidadoSeeder extends Seeder
                 'frecuencia_abono' => collect(['Cada 15 días', 'Mensual', 'Trimestral'])->random(),
                 'plagas_comunes' => collect(['Pulgones', 'Araña roja', 'Mosca blanca'])->random(),
                 'cuidados_adicionales' => fake()->sentence(10),
-                'imagen_url' => 'https://upload.wikimedia.org/wikipedia/commons/0/0f/Aloe_vera_flower.JPG',
+                // 'imagen_url' => null, // <- si quisieras dejarlo explícito
             ]);
 
             $this->command->info("✅ Cuidado creado para '{$producto->nombre}'");
