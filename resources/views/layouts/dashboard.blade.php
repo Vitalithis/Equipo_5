@@ -98,7 +98,7 @@
             </a>
           </li>
           @endcan
-          @can('ver dashboard')
+          @can('gestionar fertilizantes')
           <li class="mb-1">
             <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-person-digging"></i>
@@ -106,7 +106,7 @@
             </a>
           </li>
           @endcan
-          @can('ver dashboard')
+          @can('gestionar cuidados')
           <li class="mb-1">
             <a href="{{ route('dashboard.cuidados') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-sun"></i>
@@ -115,7 +115,7 @@
           </li>
           @endcan
 
-          @can('ver dashboard')
+          @can('gestionar finanzas')
           <li class="mb-1">
             <a href="{{ route('dashboard.finanzas') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-coins"></i>
@@ -124,7 +124,7 @@
           </li>
           @endcan
 
-          @can('ver dashboard')
+          @can('gestionar insumos')
           <li class="mb-1">
             <a href="{{ route('dashboard.insumos') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
             <i class="fa-solid fa-droplet"></i>

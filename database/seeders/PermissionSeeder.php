@@ -35,9 +35,10 @@ class PermissionSeeder extends Seeder
             'gestionar descuentos',
             'ver reportes',
             'gestionar tareas',
-            'ver fertilizante',
-            'ver finanzas',
-            'ver insumos',
+            'gestionar fertilizantes',
+            'gestionar cuidados',
+            'gestionar finanzas',
+            'gestionar insumos'
 
 
         ];
