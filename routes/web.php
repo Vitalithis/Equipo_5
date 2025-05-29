@@ -40,36 +40,22 @@ use App\Http\Controllers\WorkController;
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 
-Route::middleware(['auth', 'role:soporte'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/clientes', [AdminClienteController::class, 'index'])->name('clientes.index');
-    Route::get('/clientes/crear', [AdminClienteController::class, 'create'])->name('clientes.create');
-    Route::post('/clientes', [AdminClienteController::class, 'store'])->name('clientes.store');
-    Route::get('/clientes/{cliente}/usuarios', [AdminClienteController::class, 'usuarios'])->name('clientes.usuarios');
-    Route::get('/clientes/{cliente}/productos', [AdminClienteController::class, 'productos'])->name('clientes.productos');
-    Route::delete('/clientes/{cliente}', [AdminClienteController::class, 'destroy'])->name('clientes.destroy');
-    Route::get('/admin/cliente/{cliente}/asignar-permisos', [AdminClienteController::class, 'asignarPermisosExistente'])->name('admin.clientes.asignarPermisos');
+Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
+    Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
+
+    Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:ver roles')->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->middleware('permission:crear roles')->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:crear roles')->name('roles.store');
+    Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->middleware('permission:editar roles')->name('roles.edit');
+    Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:editar roles')->name('roles.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
 });
 
 
-
-Route::middleware(['auth'])->group(function () {
-    Route::middleware(['permission:ver dashboard'])->group(function () {
-        Route::get('/dashboard', [HomeController::class, 'dashboard'])
-            ->middleware(['auth', 'permission:ver dashboard'])
-            ->name('dashboard');
-
-        Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
-        Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
-
-        Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:ver roles')->name('roles.index');
-        Route::get('/roles/create', [RoleController::class, 'create'])->middleware('permission:crear roles')->name('roles.create');
-        Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:crear roles')->name('roles.store');
-        Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->middleware('permission:editar roles')->name('roles.edit');
-        Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:editar roles')->name('roles.update');
-        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
-    });
-
-    Route::middleware(['permission:gestionar permisos'])->group(function () {
+    Route::middleware(['auth', 'tenant', 'permission:gestionar permisos'])->group(function () {
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
         Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
         Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
@@ -78,17 +64,19 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
     });
 
-    Route::middleware(['permission:gestionar ingresos'])->group(function () {
+
+    Route::middleware(['auth', 'tenant', 'permission:gestionar ingresos'])->group(function () {
         Route::get('/ingresos', [IngresoController::class, 'index'])->name('ingresos.index');
     });
 
-    Route::middleware(['permission:gestionar egresos'])->group(function () {
+    Route::middleware(['auth', 'tenant', 'permission:gestionar egresos'])->group(function () {
         Route::get('/egresos', [EgresoController::class, 'index'])->name('egresos.index');
     });
-});
+
+
 
 Route::get('dashboard.catalogo', [ProductoController::class, 'dashboard_show'])
-    ->middleware(['auth', 'permission:gestionar catálogo'])
+    ->middleware(['auth', 'tenant', 'permission:gestionar catálogo'])
     ->name('dashboard.catalogo');
 Route::get('/dashboard/catalogo/create', [ProductoController::class, 'create'])->middleware('permission:gestionar catálogo')->name('catalogo.create');
 Route::post('/dashboard/catalogo', [ProductoController::class, 'store'])->middleware('permission:gestionar catálogo')->name('catalogo.store');
@@ -119,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -147,7 +135,7 @@ Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->na
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
 Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->middleware('permission:gestionar proveedores');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/agregar', [CartController::class, 'agregarProducto'])->name('cart.agregar');
     Route::post('/cart/actualizar/{id}', [CartController::class, 'actualizarProducto'])->name('cart.actualizar');
@@ -167,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
 });
@@ -272,7 +260,7 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
 Route::resource('works', WorkController::class);
 
 //Rutas para el mantenedor de insumos
-Route::middleware(['auth'])->prefix('insumos')->group(function () {
+Route::middleware(['auth', 'tenant'])->prefix('insumos')->group(function () {
     Route::get('/', [InsumoController::class, 'index'])->name('dashboard.insumos');
     Route::get('/crear', [InsumoController::class, 'create'])->name('insumos.create');
     Route::post('/', [InsumoController::class, 'store'])->name('insumos.store');
@@ -306,7 +294,15 @@ Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 // Actualización directa del estado de tareas
 Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 Route::resource('works', WorkController::class);
+//rutas soporte
+use App\Http\Controllers\ClientController;
 
+Route::middleware(['auth', 'tenant', 'permission:gestionar clientes'])->group(function () {
+    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+});
+Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
 
 // Legal
 Route::view('/politicas-de-privacidad', 'politicas')->name('politicas');

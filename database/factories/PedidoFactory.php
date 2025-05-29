@@ -12,10 +12,11 @@ class PedidoFactory extends Factory
 
     public function definition(): array
     {
-        $usuario = User::inRandomOrder()->first();
+        // Busca el usuario admin@editha.com
+        $usuario = User::where('email', 'admin@editha.com')->first();
 
         return [
-            'usuario_id' => $usuario?->id ?? User::factory(), // usa uno existente o crea uno nuevo
+            'usuario_id' => $usuario?->id ?? 1, // Usa el ID del usuario encontrado o fallback al ID 1
             'metodo_entrega' => $this->faker->randomElement(['retiro', 'domicilio']),
             'direccion_entrega' => $this->faker->address,
             'estado_pedido' => $this->faker->randomElement([

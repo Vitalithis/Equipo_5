@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Models\Role;
+use App\Models\Permission;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::with('permissions')->get();
+        $clienteId = app('clienteActual')->id;
+
+        $roles = Role::with('permissions')
+            ->where('cliente_id', $clienteId)
+            ->get();
+
         $source = 'default';
 
         return view('dashboard.roles.index', compact('roles', 'source'));
@@ -18,7 +23,10 @@ class RoleController extends Controller
 
     public function create()
     {
-        $permissions = \Spatie\Permission\Models\Permission::all();
+        $clienteId = app('clienteActual')->id;
+
+        $permissions = Permission::where('cliente_id', $clienteId)->get();
+
         return view('dashboard.roles.create', compact('permissions'));
     }
 
@@ -30,11 +38,20 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role = \Spatie\Permission\Models\Role::create(['name' => $request->name]);
+        $clienteId = app('clienteActual')->id;
+
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => 'web',
+            'cliente_id' => $clienteId,
+        ]);
 
         if ($request->has('permissions')) {
-        $permissions = Permission::whereIn('id', $request->permissions ?? [])->pluck('name');
-        $role->syncPermissions($permissions);
+            $permissions = Permission::whereIn('id', $request->permissions)
+                ->where('cliente_id', $clienteId)
+                ->pluck('name');
+
+            $role->syncPermissions($permissions);
         }
 
         return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
@@ -42,11 +59,13 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if (in_array($role->name, ['admin', 'user'])) {
-            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser modificado.');
+        $clienteId = app('clienteActual')->id;
+
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
-        $permissions = Permission::all();
+        $permissions = Permission::where('cliente_id', $clienteId)->get();
         $source = request()->get('source', 'default');
 
         return view('dashboard.roles.edit', compact('role', 'permissions', 'source'));
@@ -54,8 +73,10 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        if (in_array($role->name, ['admin', 'user'])) {
-            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser modificado.');
+        $clienteId = app('clienteActual')->id;
+
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
         $request->validate([
@@ -64,7 +85,11 @@ class RoleController extends Controller
         ]);
 
         $role->update(['name' => $request->name]);
-        $permissions = Permission::whereIn('id', $request->permissions ?? [])->pluck('name');
+
+        $permissions = Permission::whereIn('id', $request->permissions ?? [])
+            ->where('cliente_id', $clienteId)
+            ->pluck('name');
+
         $role->syncPermissions($permissions);
 
         return redirect()->route('roles.index')->with('success', 'Rol actualizado exitosamente.');
@@ -72,11 +97,14 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if (in_array($role->name, ['admin', 'user'])) {
-            return redirect()->route('roles.index')->with('error', 'Este rol no puede ser eliminado.');
+        $clienteId = app('clienteActual')->id;
+
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
         $role->delete();
+
         return redirect()->route('roles.index')->with('success', 'Rol eliminado exitosamente.');
     }
 }

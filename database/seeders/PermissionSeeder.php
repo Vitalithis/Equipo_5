@@ -11,7 +11,7 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // Limpiar cache de permisos para evitar conflictos
+        // Limpiar cache de permisos
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permisos = [
@@ -60,6 +60,31 @@ class PermissionSeeder extends Seeder
             'editar cotizaciones',      // Editar una cotización existente
             'eliminar cotizaciones',    // Eliminar una cotización existente
 
+            // Permisos para soporte
+            'ver panel soporte',
+            'crear cliente',
+            'gestionar clientes',
+            'ver dashboard',
+            'gestionar usuarios',
+            'ver usuarios',
+            'gestionar permisos',
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
+            'ver ordenes',
+            'crear ordenes',
+            'editar ordenes',
+            'eliminar ordenes',
+            'gestionar ingresos',
+            'gestionar egresos',
+            'gestionar productos',
+            'gestionar catálogo',
+            'gestionar pedidos',
+            'gestionar descuentos',
+            'ver reportes',
+            'gestionar tareas',
+            
         ];
 
         foreach ($permisos as $nombre) {
@@ -69,20 +94,42 @@ class PermissionSeeder extends Seeder
             ]);
         }
 
-        // Crear rol admin si no existe
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-
-        // Asignar todos los permisos al rol admin
-        $admin->syncPermissions(Permission::all());
-        // Asegurar que el rol admin exista
-        $adminRole = Role::firstOrCreate([
-            'name' => 'admin',
+        // Crear rol soporte si no existe
+        $rolSoporte = Role::firstOrCreate([
+            'name' => 'soporte',
             'guard_name' => 'web',
         ]);
 
-        // Asignar todos los permisos al rol admin
-        $adminRole->syncPermissions(Permission::all());
+        // Asignar permisos del soporte
+        $rolSoporte->syncPermissions([
+            'ver panel soporte',
+            'crear cliente',
+            'gestionar clientes',
+            'ver dashboard',
+            'gestionar usuarios',
+            'ver usuarios',
+            'gestionar permisos',
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
+            'ver ordenes',
+            'crear ordenes',
+            'editar ordenes',
+            'eliminar ordenes',
+            'gestionar ingresos',
+            'gestionar egresos',
+            'gestionar productos',
+            'gestionar catálogo',
+            'gestionar pedidos',
+            'gestionar descuentos',
+            'ver reportes',
+            'gestionar tareas',
+            
 
-        $this->command->info("✅ Permisos creados y asignados correctamente al rol admin.");
+
+        ]);
+
+        $this->command->info("Permisos y rol soporte creados correctamente.");
     }
 }
