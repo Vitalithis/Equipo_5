@@ -11,7 +11,7 @@ class MaintenanceReportController extends Controller
 {
     public function index()
     {
-        if (Gate::denies('ver reportes infraestructura')) {
+        if (Gate::denies('gestionar infraestructura')) {
             abort(403);
         }
 

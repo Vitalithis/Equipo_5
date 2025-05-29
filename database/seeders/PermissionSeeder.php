@@ -42,8 +42,7 @@ class PermissionSeeder extends Seeder
             // Proveedores ✅ AÑADIDO
             'gestionar proveedores',
 
-            // Mantenimiento Infrastructura
-            'ver reportes infraestructura', // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
+            // Mantenimiento Infrastructura // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
             'gestionar infraestructura',
             // Reportes
 
@@ -55,10 +54,8 @@ class PermissionSeeder extends Seeder
             'gestionar insumos',
 
             // Cotizaciones
-            'ver cotizaciones',         // Ver listado de cotizaciones
-            'despachar cotizaciones',      // Crear una nueva cotización
-            'editar cotizaciones',      // Editar una cotización existente
-            'eliminar cotizaciones',    // Eliminar una cotización existente
+            'gestionar cotizaciones',       
+           
 
             // Permisos para soporte
             'ver panel soporte',
@@ -102,6 +99,49 @@ class PermissionSeeder extends Seeder
 
         // Asignar permisos del soporte
         $rolSoporte->syncPermissions([
+            'ver dashboard',
+            'gestionar usuarios',
+            'ver usuarios',
+            'gestionar permisos',
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
+            'ver ordenes',
+            'crear ordenes',
+            'editar ordenes',
+            'eliminar ordenes',
+            'gestionar ingresos',
+            'gestionar egresos',
+            'gestionar productos',
+            'gestionar proveedores',
+            'gestionar catálogo',
+            // Pedidos y descuentos
+
+            'gestionar pedidos',
+            'gestionar descuentos',
+
+            'gestionar descuentos',    // <-- Usado para sección descuentos
+
+            // Proveedores ✅ AÑADIDO
+            'gestionar proveedores',
+
+            // Mantenimiento Infrastructura // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
+            'gestionar infraestructura',
+            // Reportes
+
+            'ver reportes',
+            'gestionar tareas',
+            'gestionar fertilizantes',
+            'gestionar cuidados',
+            'gestionar finanzas',
+            'gestionar insumos',
+
+            // Cotizaciones
+            'gestionar cotizaciones',       
+           
+
+            // Permisos para soporte
             'ver panel soporte',
             'crear cliente',
             'gestionar clientes',
@@ -125,7 +165,6 @@ class PermissionSeeder extends Seeder
             'gestionar descuentos',
             'ver reportes',
             'gestionar tareas',
-            
 
 
         ]);
