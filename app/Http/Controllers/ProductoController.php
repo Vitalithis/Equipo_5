@@ -120,10 +120,13 @@ class ProductoController extends Controller
 
     public function filter(Request $request, ?string $category = null, ?int $tamano = null, ?string $dificultad = null, ?string $ordenar_por = null, ?bool $ordenar_ascendente = false)
     {
-        // Validación básica de parámetros
+        /* Validación básica de parámetros
         if ($category && !Categoria::where('nombre', $category)->exists()) {
             abort(404, 'Categoría no encontrada');
         }
+            */
+             $category = $request->input('categorias'); // <- Esto ahora funciona con ?categorias=Suculenta
+
 
         // Construcción de la consulta
         $productos = Producto::query()
@@ -317,4 +320,5 @@ public function update(Request $request, $id)
         $producto->delete();
         return redirect()->route('dashboard.catalog.catalogo')->with('success', 'Producto eliminado correctamente.');
     }
+
 }

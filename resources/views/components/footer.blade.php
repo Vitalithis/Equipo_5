@@ -11,10 +11,10 @@
                     <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase ">¿Quienes Somos?</h2>
                     <ul class="text-gray-500 dark:text-gray-400 font-medium">
                         <li class="mb-4">
-                            <a href="https://plantaseditha.me/#nosotros" class="hover:underline">Nosotros</a>
+                            <a href="/home#quienes-somos" class="hover:underline">Nosotros</a>
                         </li>
                         <li>
-                            <a href="https://plantaseditha.me/#mision" class="hover:underline">Misión y Visión</a>
+                            <a href="/home#mision" class="hover:underline">Misión y Visión</a>
                         </li>
                     </ul>
                 </div>
@@ -33,10 +33,10 @@
                     <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase ">Legal</h2>
                     <ul class="text-gray-500 dark:text-gray-400 font-medium">
                         <li class="mb-4">
-                            <a href="#" class="hover:underline">Políticas de Privacidad</a>
+                            <a  href="{{ route('politicas') }}" class="hover:underline">Políticas de Privacidad</a>
                         </li>
                         <li>
-                            <a href="#" class="hover:underline">Términos y Condiciones</a>
+                            <a href="{{ route('terminos') }}" class="hover:underline">Términos y Condiciones</a>
                         </li>
                     </ul>
                 </div>

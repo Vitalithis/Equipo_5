@@ -7,15 +7,16 @@
 
 <div x-data="{ modalFert: null }" class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
     <div class="flex items-center mb-6">
-        <a href="{{ route('fertilizantes.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Agregar Fertilizante
-        </a>
-    </div>
+    <a href="{{ route('fertilizantes.create') }}"
+       class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v16m8-8H4"/>
+        </svg>
+        Agregar Fertilizante
+    </a>
+</div>
+
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">

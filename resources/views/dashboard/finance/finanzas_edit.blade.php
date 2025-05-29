@@ -11,9 +11,7 @@
             </svg>
             Volver al listado
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($finanza->id) ? 'Editar' : 'Nuevo' }} Movimiento Financiero
-        </h1>
+        
     </div>
 
     <form action="{{ isset($finanza->id) ? route('finanzas.update', $finanza->id) : route('finanzas.store') }}" method="POST" class="space-y-6">
@@ -83,7 +81,7 @@
             <a href="{{ route('dashboard.finanzas') }}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                 Cancelar
             </a>
-            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700">
+            <button type="submit" class="px-4 py-2 bg-eaccent2 text-white rounded-md shadow hover:bg-green-700">
                 {{ isset($finanza->id) ? 'Actualizar' : 'Guardar' }}
             </button>
         </div>

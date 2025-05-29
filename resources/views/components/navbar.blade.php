@@ -1,10 +1,10 @@
 @php
     $links = [
         ['name' => 'Inicio', 'href' => '/'],
-        ['name' => '¿Quiénes Somos?', 'href' => '/nosotros'],
+        ['name' => '¿Quiénes Somos?', 'href' => '/home#quienes-somos'],
         ['name' => 'Productos', 'href' => '/productos'],
-        ['name' => 'Preguntas Frecuentes', 'href' => '/faq'],
-        ['name' => 'Contacto', 'href' => '/contacto'],
+        ['name' => 'Preguntas Frecuentes', 'href' => '/home#faq'],
+        ['name' => 'Contacto', 'href' => '/home#contact'],
     ];
 @endphp
 
@@ -61,6 +61,7 @@
                     @endcan
 
                          <a href="/cart" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Carrito</a>
+                         <a href="/cotizacion" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Mis Cotizaciones</a>
                     @auth
                     <form method="POST" action="{{ route('logout') }}">
                       @csrf
@@ -69,10 +70,10 @@
                       </button>
                   </form>
                     @else
-                        
+
                         <a href="/login" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Iniciar Sesión</a>
                         @if (Route::has('register'))
-                            
+
                             <a href="/register" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Registrarse</a>
                         @endif
                     @endauth

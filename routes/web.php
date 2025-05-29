@@ -29,8 +29,25 @@ use App\Http\Controllers\InsumoController;
 
 use App\Models\ProductCategory;
 
+use App\Http\Controllers\AdminClienteController;
+use App\Http\Controllers\ClienteController;
+
+use App\Http\Controllers\WorkController;
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+
+Route::middleware(['auth', 'role:soporte'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/clientes', [AdminClienteController::class, 'index'])->name('clientes.index');
+    Route::get('/clientes/crear', [AdminClienteController::class, 'create'])->name('clientes.create');
+    Route::post('/clientes', [AdminClienteController::class, 'store'])->name('clientes.store');
+    Route::get('/clientes/{cliente}/usuarios', [AdminClienteController::class, 'usuarios'])->name('clientes.usuarios');
+    Route::get('/clientes/{cliente}/productos', [AdminClienteController::class, 'productos'])->name('clientes.productos');
+    Route::delete('/clientes/{cliente}', [AdminClienteController::class, 'destroy'])->name('clientes.destroy');
+    Route::get('/admin/cliente/{cliente}/asignar-permisos', [AdminClienteController::class, 'asignarPermisosExistente'])->name('admin.clientes.asignarPermisos');
+});
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['permission:ver dashboard'])->group(function () {
@@ -111,6 +128,7 @@ Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])
 Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
 Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
 Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
+Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->middleware('permission:gestionar proveedores');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -127,12 +145,37 @@ Route::middleware(['auth'])->group(function () {
 
     // Vaciar carrito en base de datos
     Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
+
+    // Ajax para agregar producto al carrito
+    Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
 });
+
+// Cotizaciones
+use App\Http\Controllers\CotizacionController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cotizacion', [CotizacionController::class, 'index'])->name('cotizacion.index');
+    Route::post('/cotizacion/agregar/{producto}', [CotizacionController::class, 'agregar'])->name('cotizacion.agregar');
+    Route::delete('/cotizacion/{cotizacion}/producto/{producto}', [CotizacionController::class, 'eliminarProducto'])->name('cotizacion.eliminar');
+    Route::post('/cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCotizacion'])->name('cotizacion.enviar');
+    Route::post('/cotizacion/ajax/agregar/{id}', [App\Http\Controllers\CotizacionController::class, 'ajaxAgregar'])->middleware('auth');
+});
+
+// Cotizaciones admin
+use App\Http\Controllers\Admin\CotizacionAdminController;
+
+Route::prefix('dashboard')->middleware(['auth', 'can:ver dashboard'])->group(function () {
+    Route::get('/cotizaciones', [CotizacionAdminController::class, 'index'])->name('dashboard.cotizaciones.index');
+    Route::get('/cotizaciones/{id}', [CotizacionAdminController::class, 'show'])->name('dashboard.cotizaciones.show');
+    Route::post('/cotizaciones/{id}/responder', [CotizacionAdminController::class, 'responder'])->name('dashboard.cotizaciones.responder');
+});
+
+
 
 Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
 Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
@@ -171,16 +214,6 @@ Route::get('/dashboard/fertilizantes/{id}/edit', [FertilizanteController::class,
 Route::put('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'update'])->middleware('permission:gestionar productos')->name('fertilizantes.update');
 Route::delete('/dashboard/fertilizantes/{id}', [FertilizanteController::class, 'destroy'])->middleware('permission:gestionar productos')->name('fertilizantes.destroy');
 
-Route::prefix('dashboard/ordenes-produccion')->middleware(['auth', 'permission:ver ordenes'])->group(function () {
-    Route::get('/', [OrdenProduccionController::class, 'index'])->name('dashboard.ordenes');
-    Route::get('/create', [OrdenProduccionController::class, 'create'])->middleware('permission:crear ordenes')->name('ordenes.create');
-    Route::post('/', [OrdenProduccionController::class, 'store'])->middleware('permission:crear ordenes')->name('ordenes.store');
-    Route::get('/{id}/edit', [OrdenProduccionController::class, 'edit'])->middleware('permission:editar ordenes')->name('ordenes.edit');
-    Route::put('/{id}', [OrdenProduccionController::class, 'update'])->middleware('permission:editar ordenes')->name('ordenes.update');
-    Route::delete('/{id}', [OrdenProduccionController::class, 'destroy'])->middleware('permission:eliminar ordenes')->name('ordenes.destroy');
-    Route::get('/ordenes/export/pdf', [OrdenProduccionController::class, 'exportarPDF'])->name('ordenes.export.pdf');
-
-});
 
 
 //Rutas para cuidados de cada Planta
@@ -193,7 +226,6 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::put('/cuidados/{id}', [CuidadoController::class, 'update'])->name('dashboard.cuidados.update');
     Route::delete('/cuidados/{id}', [CuidadoController::class, 'destroy'])->name('dashboard.cuidados.destroy');
     Route::get('/dashboard/cuidados/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
-
 });
 
 // Rutas para el mantenedor de finanzas
@@ -205,6 +237,8 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
 });
+//ruta tareas
+Route::resource('works', WorkController::class);
 
 //Rutas para el mantenedor de insumos
 Route::middleware(['auth'])->prefix('insumos')->group(function () {
@@ -215,5 +249,25 @@ Route::middleware(['auth'])->prefix('insumos')->group(function () {
     Route::put('/{id}', [InsumoController::class, 'update'])->name('insumos.update');
     Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
 });
+
+//ruta para crear usuarios
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware('can:gestionar usuarios');
+Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('can:gestionar usuarios');
+//ruta para primer log
+use App\Http\Controllers\PasswordController;
+
+Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form')->middleware('auth');
+Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change')->middleware('auth');
+// Listado de usuarios
+Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+
+// Actualización directa del estado de tareas
+Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
+Route::resource('works', WorkController::class);
+
+
+// Legal
+Route::view('/politicas-de-privacidad', 'politicas')->name('politicas');
+Route::view('/terminos-y-condiciones', 'terminos')->name('terminos');
 
 require __DIR__ . '/auth.php';

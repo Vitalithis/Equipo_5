@@ -11,10 +11,9 @@ return new class extends Migration {
     {
         Schema::create('insumos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->enum('tipo_uso', ['venta', 'uso']);
-            $table->integer('stock')->default(0);
-            $table->integer('precio')->nullable(); // Solo si es para venta
+            $table->string('nombre')->unique();
+            $table->integer('cantidad')->default(0);
+            $table->integer('costo')->default(0);
             $table->text('descripcion')->nullable();
             $table->timestamps();
         });

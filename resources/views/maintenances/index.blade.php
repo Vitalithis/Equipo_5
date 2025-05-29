@@ -8,7 +8,6 @@
 <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
     <div class="rounded-lg shadow-sm p-6">
         <div class="mb-4 flex justify-between items-center">
-            <h1 class="text-xl font-['Roboto_Condensed']">Reportes de Mantención</h1>
 
             @can('gestionar infraestructura')
                 <a href="{{ route('maintenance.create') }}"

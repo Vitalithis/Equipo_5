@@ -11,9 +11,9 @@
             <div class="mb-4 flex items-center justify-between">
                 <form method="GET" action="<?php echo e(route('dashboard.catalogo')); ?>" class="flex space-x-4 items-center">
                     <input type="text" name="busqueda" value="<?php echo e(request('busqueda')); ?>" placeholder="Buscar por nombre"
-                        class="px-3 py-2 border rounded text-sm" />
+                        class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-green-500" />
 
-                    <select name="categoria" class="px-3 py-2 border rounded text-sm">
+                    <select name="categoria" class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-green-500"">
                         <option value="">Todas las categorías</option>
                         <?php $__currentLoopData = $categorias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($cat->id); ?>" <?php echo e(request('categoria') == $cat->nombre ? 'selected' : ''); ?>><?php echo e($cat->nombre); ?></option>
@@ -26,7 +26,7 @@
                 </form>
 
                 <a href="<?php echo e(route('catalogo.create')); ?>"
-                    class="flex items-center text-green-700 hover:text-green-800 transition-colors text-sm">
+                    class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v16m8-8H4" />
@@ -63,12 +63,17 @@
                                 <td class="px-4 py-2"><?php echo e($product->activo ? 'Sí' : 'No'); ?></td>
                                 <td class="px-4 py-2"><?php echo e($product->stock); ?></td>
                                 <td class="px-4 py-2">
-                                    <a href="<?php echo e(route('catalogo_edit', ['id' => $product->id])); ?>"
-                                        class="text-blue-600 hover:underline">Editar</a>
-                                    <button type="button" class="text-red-600 hover:underline ml-2"
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                <a href="<?php echo e(route('catalogo_edit', ['id' => $product->id])); ?>"
+                                class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
+                                    Editar
+                                </a>
+                                <button type="button"
+                                        class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
                                         onclick="openDeleteModal(<?php echo e($product->id); ?>, '<?php echo e($product->nombre); ?>', '<?php echo e($product->categoria); ?>')">
-                                        Eliminar
-                                    </button>
+                                    Eliminar
+                                </button>
+                                </div>
                                 </td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

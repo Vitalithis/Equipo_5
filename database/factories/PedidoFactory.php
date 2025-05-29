@@ -12,12 +12,16 @@ class PedidoFactory extends Factory
 
     public function definition(): array
     {
+        $usuario = User::inRandomOrder()->first();
+
         return [
-            'usuario_id' => User::inRandomOrder()->first()->id,  // usuario aleatorio existente
+            'usuario_id' => $usuario?->id ?? User::factory(), // usa uno existente o crea uno nuevo
             'metodo_entrega' => $this->faker->randomElement(['retiro', 'domicilio']),
             'direccion_entrega' => $this->faker->address,
-            'estado_pedido' => $this->faker->randomElement(['pendiente', 'en_preparacion', 'en_camino', 'enviado', 'entregado', 'listo_para_retiro']),
-            'subtotal' => 0,  // lo calcularás después
+            'estado_pedido' => $this->faker->randomElement([
+                'pendiente', 'en_preparacion', 'en_camino', 'enviado', 'entregado', 'listo_para_retiro'
+            ]),
+            'subtotal' => 0,
             'descuento' => 0,
             'impuesto' => 0,
             'total' => 0,

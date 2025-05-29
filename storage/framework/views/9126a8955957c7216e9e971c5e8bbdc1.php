@@ -27,23 +27,16 @@
           <span class="text-lg font-semibold"><?php echo e($seccion); ?></span>
         </div>
       </div>
-
-      <div class="p-4 border-b border-<?php echo e($color); ?>-700">
-        <div class="flex items-center space-x-3">
-          <img src="<?php echo e(asset('dist/img/user2-160x160.jpg')); ?>" alt="User" class="h-10 w-10 rounded-full">
-          <div>
-            <div class="font-medium"><?php echo e(Auth::user()->name); ?></div>
-            <?php $rol = Auth::user()->getRoleNames()->first(); ?>
-            <div class="text-sm text-white bg-<?php echo e($color); ?>-600 rounded-full px-2 py-0.5 inline-block mt-1">
-              <?php echo e($rol ?? 'Sin rol'); ?>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
       <nav class="p-4">
         <ul>
+          <?php if (\Illuminate\Support\Facades\Blade::check('role', 'soporte')): ?>
+          <li class="mb-1">
+            <a href="<?php echo e(route('admin.clientes.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+              <i class="fa-solid fa-building"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          <?php endif; ?>
           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
           <li class="mb-1">
             <a href="<?php echo e(route('home')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
@@ -97,7 +90,14 @@
             </a>
           </li>
           <?php endif; ?>
-
+          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('gestionar tareas')): ?>
+          <li class="mb-1">
+            <a href="<?php echo e(route('works.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+              <i class="fa-solid fa-list-check"></i>
+              <span>Tareas del Vivero</span>
+            </a>
+          </li>
+          <?php endif; ?>
           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
           <li class="mb-1">
             <a href="<?php echo e(route('dashboard.fertilizantes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
@@ -113,16 +113,6 @@
             </a>
           </li>
           <?php endif; ?>
-
-          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
-          <li class="mb-1">
-            <a href="<?php echo e(route('dashboard.ordenes')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
-            <i class="fa-solid fa-umbrella"></i>
-              <span>Orden de Producción</span>
-            </a>
-          </li>
-          <?php endif; ?>
-
           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
           <li class="mb-1">
             <a href="<?php echo e(route('dashboard.cuidados')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
@@ -159,7 +149,14 @@
                 </a>
             </li>
           <?php endif; ?>
-
+           <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('ver dashboard')): ?>
+            <li class="mb-1">
+                <a href="<?php echo e(route('dashboard.cotizaciones.index')); ?>" class="flex items-center space-x-2 px-3 py-2 bg-<?php echo e($color); ?>-700 rounded-md">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>Cotizaciones</span>
+                </a>
+            </li>
+            <?php endif; ?>
         </ul>
       </nav>
     </div>
@@ -172,7 +169,7 @@
             <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none lg:hidden">
               <i class="fas fa-bars"></i>
             </button>
-            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-eprimary tracking-wide">
+            <h1 class="ml-4 text-2xl font-['Roboto_Condensed'] font-bold text-black tracking-wide">
               <?php echo $__env->yieldContent('title', 'Dashboard'); ?>
             </h1>
           </div>
@@ -204,7 +201,13 @@
       </header>
 
       <main class="flex-1 overflow-y-auto p-6">
-        <?php echo $__env->yieldContent('content'); ?>
+          <?php if(Auth::user()?->must_change_password): ?>
+              <div class="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded shadow-md">
+                  ⚠️ <strong>Debes cambiar tu contraseña</strong> antes de continuar usando el sistema.
+              </div>
+          <?php endif; ?>
+
+          <?php echo $__env->yieldContent('content'); ?>
       </main>
 
       <footer class="bg-white border-t py-4 px-6 hidden">

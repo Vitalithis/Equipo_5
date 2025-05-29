@@ -3,18 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $permisos = [
-            // Dashboard
-            'ver dashboard',
+        // Limpiar cache de permisos para evitar conflictos
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-            // Usuarios y roles
+        $permisos = [
+            'ver dashboard',
             'gestionar usuarios',
             'ver usuarios',
             'gestionar permisos',
@@ -22,18 +23,12 @@ class PermissionSeeder extends Seeder
             'crear roles',
             'editar roles',
             'eliminar roles',
-
-            // Ordenes
             'ver ordenes',
             'crear ordenes',
             'editar ordenes',
             'eliminar ordenes',
-
-            // Finanzas
             'gestionar ingresos',
             'gestionar egresos',
-
-            // Productos
             'gestionar productos',
             'gestionar catálogo',     // <-- Usado en el layout
 
@@ -48,12 +43,21 @@ class PermissionSeeder extends Seeder
             'ver reportes infraestructura', // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
             'gestionar infraestructura',
             // Reportes
+
             'ver reportes',
+            'gestionar tareas',
+
+            // Cotizaciones
+            'ver cotizaciones',         // Ver listado de cotizaciones
+            'despachar cotizaciones',      // Crear una nueva cotización
+            'editar cotizaciones',      // Editar una cotización existente
+            'eliminar cotizaciones',    // Eliminar una cotización existente
+
         ];
 
-        foreach ($permisos as $permiso) {
+        foreach ($permisos as $nombre) {
             Permission::firstOrCreate([
-                'name' => $permiso,
+                'name' => $nombre,
                 'guard_name' => 'web',
             ]);
         }
@@ -63,7 +67,15 @@ class PermissionSeeder extends Seeder
 
         // Asignar todos los permisos al rol admin
         $admin->syncPermissions(Permission::all());
+        // Asegurar que el rol admin exista
+        $adminRole = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => 'web',
+        ]);
 
-        $this->command->info('✅ Permisos creados y asignados al rol admin.');
+        // Asignar todos los permisos al rol admin
+        $adminRole->syncPermissions(Permission::all());
+
+        $this->command->info("✅ Permisos creados y asignados correctamente al rol admin.");
     }
 }
