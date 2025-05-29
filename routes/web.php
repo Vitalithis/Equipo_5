@@ -26,6 +26,7 @@ use App\Http\Controllers\OrdenProduccionController;
 use App\Http\Controllers\CuidadoController;
 use App\Http\Controllers\FinanzaController;
 use App\Http\Controllers\InsumoController;
+use App\Http\Controllers\FertilizationController;
 
 use App\Models\ProductCategory;
 
@@ -215,5 +216,14 @@ Route::middleware(['auth'])->prefix('insumos')->group(function () {
 
 // Ruta de mis compras
 Route::middleware(['auth'])->get('/mis-compras', [PedidoController::class, 'misCompras'])->name('compras.index');
+
+// ruta de fertilizacion
+Route::middleware(['auth'])->group(function () {
+    Route::get('/fertilizantes/{id}', [FertilizanteController::class, 'show'])->name('fertilizantes.show');
+
+    Route::get('/fertilizations/create', [FertilizationController::class, 'create'])->name('fertilizations.create');
+    Route::post('/fertilizations', [FertilizationController::class, 'store'])->name('fertilizations.store');
+    Route::get('/fertilizaciones/historial', [FertilizationController::class, 'historial'])->name('fertilizations.historial');
+});
 
 require __DIR__ . '/auth.php';

@@ -61,4 +61,9 @@ class Producto extends Model
             ->take(4)
             ->get();
     }
+    public function fertilizaciones()
+{
+    return $this->hasMany(Fertilization::class);
+}
+
 }

@@ -23,4 +23,10 @@ class Fertilizante extends Model
         'imagen',
         'activo',
     ];
+
+    public function fertilizaciones()
+{
+    return $this->hasMany(Fertilization::class);
+}
+
 }
