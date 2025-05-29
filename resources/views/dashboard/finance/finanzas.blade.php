@@ -15,7 +15,7 @@
             <p class="text-xl font-semibold">${{ number_format($totalIngresos, 0, ',', '.') }}</p>
         </div>
         <div class="bg-red-100 text-red-800 p-4 rounded shadow">
-            <h3 class="font-bold text-lg">Total Egresos</h3>
+            <h3 class="font-bold text-lg">Total Egresos (Costos)</h3>
             <p class="text-xl font-semibold">${{ number_format($totalEgresos, 0, ',', '.') }}</p>
         </div>
         <div class="bg-blue-100 text-blue-800 p-4 rounded shadow">

@@ -13,8 +13,12 @@
         Volver a la lista
     </a>
 
-    <form action="{{ isset($insumo->id) ? route('insumos.update', $insumo->id) : route('insumos.store') }}"
-          method="POST" @submit.prevent="validarFormulario" x-data="insumoForm()">
+    <form x-ref="form"
+          action="{{ isset($insumo->id) ? route('insumos.update', $insumo->id) : route('insumos.store') }}"
+          method="POST"
+          @submit.prevent="validarFormulario"
+          x-data="insumoForm()"
+          x-init="initDetalles(@json($insumo->detalles ?? []))">
         @csrf
         @if(isset($insumo->id)) @method('PUT') @endif
 
@@ -26,6 +30,7 @@
                 <div>
                     <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                     <input type="text" name="nombre" id="nombre"
+                           x-model="nombreInsumo"
                            value="{{ old('nombre', $insumo->nombre ?? '') }}"
                            class="mt-1 block w-full border rounded px-3 py-2"
                            required>
@@ -49,28 +54,32 @@
 
         {{-- Subdetalles --}}
         <div class="bg-white p-6 rounded-lg shadow mt-6 space-y-4">
-            <h2 class="text-xl font-['Roboto_Condensed'] text-gray-900">Subdetalles del Insumo (opcional)</h2>
+            <h2 class="text-xl font-['Roboto_Condensed'] text-gray-900">Subdetalles del Insumo</h2>
 
             <template x-for="(detalle, index) in detalles" :key="index">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border p-4 rounded-md">
                     <div>
                         <label class="text-sm">Nombre</label>
                         <input type="text" :name="'detalles['+index+'][nombre]'" x-model="detalle.nombre"
-                               class="w-full border rounded px-2 py-1" required>
+                               class="w-full border rounded px-2 py-1" required @keydown.enter.prevent>
                     </div>
                     <div>
                         <label class="text-sm">Cantidad</label>
                         <input type="number" :name="'detalles['+index+'][cantidad]'" x-model.number="detalle.cantidad"
-                               @input="recalcularCantidad()" min="0" class="w-full border rounded px-2 py-1" required>
+                               @input="recalcularCantidad()" min="0" class="w-full border rounded px-2 py-1" required @keydown.enter.prevent>
                     </div>
                     <div>
                         <label class="text-sm">Costo</label>
-                        <input type="number" :name="'detalles['+index+'][costo]'" x-model.number="detalle.costo"
-                               min="0" class="w-full border rounded px-2 py-1" required>
+                        <div class="relative">
+                            <span class="absolute left-2 top-1.5 text-gray-500 text-sm">$</span>
+                            <input type="number" :name="'detalles['+index+'][costo]'" x-model.number="detalle.costo"
+                                   min="0" class="w-full border rounded pl-6 pr-2 py-1" required @keydown.enter.prevent>
+                        </div>
                     </div>
                     <div class="flex items-end">
                         <button type="button" @click="eliminarDetalle(index)"
-                                class="w-full px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                class="w-full px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                                title="Eliminar este subdetalle">
                             Eliminar
                         </button>
                     </div>
@@ -83,8 +92,14 @@
             </button>
 
             <template x-if="mensajeError">
-                <p class="text-red-600 text-sm" x-text="mensajeError"></p>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative text-sm mt-2">
+                    <span x-text="mensajeError"></span>
+                </div>
             </template>
+
+            <p class="text-sm text-gray-700 mt-2">
+                Costo total estimado: <span class="font-semibold" x-text="calcularCostoTotal() + ' CLP'"></span>
+            </p>
         </div>
 
         {{-- Botones --}}
@@ -105,8 +120,29 @@
 function insumoForm() {
     return {
         cantidadTotal: {{ old('cantidad', $insumo->cantidad ?? 0) }},
+        nombreInsumo: '{{ old('nombre', $insumo->nombre ?? '') }}',
         detalles: [],
         mensajeError: '',
+
+        initDetalles(iniciales) {
+            this.detalles = iniciales.length ? iniciales : [];
+
+            if (!this.detalles.length && this.cantidadTotal >= 1) {
+                this.agregarDetalleInicial();
+            }
+        },
+
+        agregarDetalleInicial() {
+            let sugerencia = 'Unidad';
+
+            const nombre = this.nombreInsumo.toLowerCase();
+            if (nombre.includes('fertilizante')) sugerencia = 'Saco de 25 kg';
+            else if (nombre.includes('maceta')) sugerencia = 'Maceta plástica';
+            else if (nombre.includes('sustrato')) sugerencia = 'Bolsa 5L';
+            else if (nombre.includes('pala')) sugerencia = 'Pala chica';
+
+            this.detalles.push({ nombre: sugerencia, cantidad: 0, costo: 0 });
+        },
 
         eliminarDetalle(index) {
             this.detalles.splice(index, 1);
@@ -120,20 +156,41 @@ function insumoForm() {
             } else {
                 this.mensajeError = '';
             }
+
+            if (this.detalles.length === 0 && this.cantidadTotal >= 1) {
+                this.agregarDetalleInicial();
+            }
+        },
+
+        calcularCostoTotal() {
+            return this.detalles.reduce((acc, d) => acc + ((parseFloat(d.costo) || 0) * (parseInt(d.cantidad) || 0)), 0);
         },
 
         validarFormulario() {
-            if (this.mensajeError) return;
+    if (this.cantidadTotal <= 0) {
+        this.mensajeError = 'La cantidad total debe ser mayor que cero.';
+        return;
+    }
 
-            for (const d of this.detalles) {
-                if (!d.nombre || d.cantidad <= 0 || d.costo < 0) {
-                    this.mensajeError = 'Completa todos los campos en los subdetalles o elimínalos si no los usarás.';
-                    return;
-                }
-            }
+    if (this.detalles.length === 0) {
+        this.mensajeError = 'Debes agregar al menos un subdetalle.';
+        return;
+    }
 
-            $el.closest('form').submit();
-        }
+    let subdetalleValido = this.detalles.some(d =>
+        d.nombre && d.cantidad > 0 && d.costo >= 0
+    );
+
+    if (!subdetalleValido) {
+        this.mensajeError = 'Debes completar al menos un subdetalle correctamente.';
+        return;
+    }
+
+    if (this.mensajeError) return;
+
+    this.$refs.form.submit();
+}
+
     };
 }
 </script>

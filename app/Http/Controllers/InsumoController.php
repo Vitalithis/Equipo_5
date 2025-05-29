@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Insumo;
+use App\Models\InsumoDetalle;
 use App\Models\Finanza;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,7 @@ class InsumoController extends Controller
 {
     public function index()
     {
-        $insumos = Insumo::with('detalles')->orderBy('created_at', 'desc')->get();
+        $insumos = Insumo::orderBy('created_at', 'desc')->get();
         return view('dashboard.supply.insumos', compact('insumos'));
     }
 
@@ -34,7 +35,7 @@ class InsumoController extends Controller
         $insumo = Insumo::create([
             'nombre' => $request->nombre,
             'cantidad' => $request->cantidad,
-            'costo' => 0, // Se calculará desde los subdetalles si existen
+            'costo' => 0, // Se recalcula abajo
             'descripcion' => $request->descripcion,
         ]);
 
@@ -46,83 +47,93 @@ class InsumoController extends Controller
                     $insumo->detalles()->create([
                         'nombre' => $detalle['nombre'],
                         'cantidad' => $detalle['cantidad'],
-                        'costo' => $detalle['costo'],
+                        'costo_unitario' => $detalle['costo'],
                     ]);
 
                     $costoTotal += $detalle['cantidad'] * $detalle['costo'];
                 }
             }
+
+            // Actualiza el costo en la tabla insumos
+            $insumo->update([
+                'costo' => $costoTotal / max(1, $request->cantidad), // promedio por unidad
+            ]);
         }
 
-        // Actualizar el costo del insumo si se usaron subdetalles
-        $insumo->update(['costo' => $costoTotal / max($insumo->cantidad, 1)]);
-
+        if ($costoTotal > 0) {
         Finanza::create([
-            'fecha' => now(),
-            'tipo' => 'egreso',
-            'monto' => $costoTotal,
-            'categoria' => 'Compra de Insumos',
-            'descripcion' => $insumo->nombre,
-            'created_by' => auth()->id(),
-        ]);
+        'fecha' => now(),
+        'tipo' => 'egreso',
+        'monto' => $costoTotal,
+        'categoria' => 'Compra de Insumos',
+        'descripcion' => $request->nombre,
+        'created_by' => auth()->id(),
+    ]);
+}
+
 
         return redirect()->route('dashboard.insumos')->with('success', 'Insumo y subdetalles guardados correctamente.');
     }
 
     public function edit($id)
-    {
-        $insumo = Insumo::with('detalles')->findOrFail($id);
-        return view('dashboard.supply.insumos_edit', compact('insumo'));
-    }
+{
+    $insumo = Insumo::with('detalles')->findOrFail($id);
+    return view('dashboard.supply.insumos_edit', compact('insumo'));
+}
+
 
     public function update(Request $request, $id)
-    {
-        $insumo = Insumo::findOrFail($id);
+{
+    $insumo = Insumo::findOrFail($id);
 
-        $request->validate([
-            'nombre' => 'required|string|max:255|unique:insumos,nombre,' . $insumo->id,
-            'cantidad' => 'required|integer|min:0',
-            'descripcion' => 'nullable|string',
-            'detalles' => 'nullable|array',
-            'detalles.*.nombre' => 'required_with:detalles.*.cantidad,detalles.*.costo|string|max:255',
-            'detalles.*.cantidad' => 'required_with:detalles.*.nombre|integer|min:1',
-            'detalles.*.costo' => 'required_with:detalles.*.nombre|integer|min:0',
-        ]);
+    $request->validate([
+        'nombre' => 'required|string|max:255|unique:insumos,nombre,' . $insumo->id,
+        'cantidad' => 'required|integer|min:0',
+        'descripcion' => 'nullable|string',
+        'detalles' => 'nullable|array',
+        'detalles.*.nombre' => 'required_with:detalles.*.cantidad,detalles.*.costo|string|max:255',
+        'detalles.*.cantidad' => 'required_with:detalles.*.nombre|integer|min:1',
+        'detalles.*.costo' => 'required_with:detalles.*.nombre|integer|min:0',
+    ]);
 
-        $insumo->update([
-            'nombre' => $request->nombre,
-            'cantidad' => $request->cantidad,
-            'descripcion' => $request->descripcion,
-        ]);
+    // Actualiza los campos principales del insumo
+    $insumo->update([
+        'nombre' => $request->nombre,
+        'cantidad' => $request->cantidad,
+        'descripcion' => $request->descripcion,
+    ]);
 
-        // Eliminar subdetalles anteriores
-        $insumo->detalles()->delete();
+    // Borra subdetalles anteriores
+    $insumo->detalles()->delete();
 
-        $costoTotal = 0;
+    $costoTotal = 0;
 
-        if ($request->filled('detalles')) {
-            foreach ($request->detalles as $detalle) {
-                if (!empty($detalle['nombre']) && isset($detalle['cantidad']) && isset($detalle['costo'])) {
-                    $insumo->detalles()->create([
-                        'nombre' => $detalle['nombre'],
-                        'cantidad' => $detalle['cantidad'],
-                        'costo' => $detalle['costo'],
-                    ]);
-                    $costoTotal += $detalle['cantidad'] * $detalle['costo'];
-                }
+    // Crea nuevos subdetalles si existen
+    if ($request->filled('detalles')) {
+        foreach ($request->detalles as $detalle) {
+            if (!empty($detalle['nombre']) && isset($detalle['cantidad']) && isset($detalle['costo'])) {
+                $insumo->detalles()->create([
+                    'nombre' => $detalle['nombre'],
+                    'cantidad' => $detalle['cantidad'],
+                    'costo_unitario' => $detalle['costo'],
+                ]);
+
+                $costoTotal += $detalle['cantidad'] * $detalle['costo'];
             }
         }
 
-        // Actualizar el costo promedio del insumo
-        $insumo->update(['costo' => $costoTotal / max($insumo->cantidad, 1)]);
-
-        return redirect()->route('dashboard.insumos')->with('success', 'Insumo y subdetalles actualizados correctamente.');
+        // Calcula y actualiza el costo promedio por unidad
+        $insumo->update([
+            'costo' => $costoTotal / max(1, $request->cantidad),
+        ]);
     }
+
+    return redirect()->route('dashboard.insumos')->with('success', 'Insumo actualizado correctamente.');
+}
 
     public function destroy($id)
     {
         $insumo = Insumo::findOrFail($id);
-        $insumo->detalles()->delete();
         $insumo->delete();
 
         return redirect()->route('dashboard.insumos')->with('success', 'Insumo eliminado correctamente.');
