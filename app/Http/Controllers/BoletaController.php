@@ -17,10 +17,12 @@ class BoletaController extends Controller
         $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
 
         $subtotal = $pedido->detalles->sum('subtotal');
-        $descuento = $subtotal * 0.10;
-        $totalFinal = $subtotal - $descuento;
+        $descuentoMonto = $pedido->descuento ?? 0;
+        $descuentoPorcentaje = $subtotal > 0 ? ($descuentoMonto / $subtotal) * 100 : 0;
+        $impuesto = ($subtotal - $descuentoMonto) * 0.19;
+        $totalFinal = $subtotal - $descuentoMonto + $impuesto;
 
-        return view('boletas.provisoria', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
+        return view('boletas.provisoria', compact('pedido', 'subtotal', 'descuentoMonto', 'descuentoPorcentaje', 'impuesto', 'totalFinal'));
     }
 
     /**
@@ -31,10 +33,19 @@ class BoletaController extends Controller
         $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
 
         $subtotal = $pedido->detalles->sum('subtotal');
-        $descuento = $subtotal * 0.10;
-        $totalFinal = $subtotal - $descuento;
 
-        $pdf = PDF::loadView('boletas.pdf', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
+        $descuentoMonto = $pedido->descuento ?? 0;
+
+        // Calcular el porcentaje de descuento dinámicamente (cuidado con división por cero)
+        $descuentoPorcentaje = $subtotal > 0 ? ($descuentoMonto / $subtotal) * 100 : 0;
+
+        $subtotalDesc = $subtotal - $descuentoMonto;
+
+        $impuesto = $subtotalDesc * 0.19;
+
+        $total = $subtotalDesc + $impuesto;
+
+        $pdf = PDF::loadView('boletas.pdf', compact('pedido', 'subtotal', 'descuentoPorcentaje', 'descuentoMonto', 'impuesto', 'total'));
 
         return $pdf->download("boleta_pedido_{$pedido->id}.pdf");
     }
@@ -63,13 +74,23 @@ class BoletaController extends Controller
      * Generar boleta provisoria desde otra vista.
      */
     public function generarProvisoria($pedidoId)
-    {
-        $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
+{
+    $pedido = Pedido::with('detalles', 'usuario')->findOrFail($pedidoId);
 
-        $subtotal = $pedido->detalles->sum('subtotal');
-        $descuento = $subtotal * 0.10;
-        $totalFinal = $subtotal - $descuento;
+    $subtotal = $pedido->detalles->sum('subtotal');
+    $descuentoPorcentaje = 10.0; // O el porcentaje real que tengas guardado
+    $descuentoMonto = $subtotal * ($descuentoPorcentaje / 100);
+    $subtotalDesc = $subtotal - $descuentoMonto;
+    $impuesto = $subtotalDesc * 0.19;
+    $total = $subtotalDesc + $impuesto;
 
-        return view('boletas.boleta', compact('pedido', 'subtotal', 'descuento', 'totalFinal'));
-    }
+    return view('boletas.boleta', compact(
+        'pedido',
+        'subtotal',
+        'descuentoPorcentaje',
+        'descuentoMonto',
+        'impuesto',
+        'total'
+    ));
+}
 }

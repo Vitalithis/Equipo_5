@@ -34,7 +34,7 @@
                         <th class="px-6 py-4 text-center">ID</th>
                         <th class="px-6 py-4 text-center">Usuario</th>
                         <th class="px-6 py-4 text-center">Total</th>
-                        <th class="text-left pl-20">Estado</th>
+                        <th class="text-left pl-20">Estado Entrega</th>
                         <th class=" text-left pl-20">Acciones</th>
                     </tr>
                 </thead>
@@ -61,13 +61,16 @@
 
                         <!-- Detalles pedido -->
                         <tr>
-                            <td colspan="5" class="p-0">
+                            <td colspan="5" class="p-0 font-['Roboto']">
                                 <div id="detalles-{{ $pedido->id }}" class="max-h-0 overflow-hidden opacity-0 transition-all duration-300 bg-efore text-sm border-t border-esecondary">
                                     <div class="p-6 space-y-4">
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <p><strong class="text-eprimary">Método de entrega:</strong> {{ $pedido->metodo_entrega }}</p>
                                             <p><strong class="text-eprimary">Dirección:</strong> {{ $pedido->direccion_entrega ?? 'No disponible' }}</p>
                                             <p><strong class="text-eprimary">Fecha de pedido:</strong> {{ $pedido->created_at->format('d-m-Y H:i') }}</p>
+                                            <p><strong class="text-eprimary">Estado de pago:</strong> {{ $pedido->estado_pago }}</p>
+                                            <p><strong class="text-eprimary">Observaciones:</strong> {{ $pedido->observaciones ?? 'Sin observaciones' }}</p>
+
                                         </div>
                                         
                                          <!-- Seleccion Boleta -->
