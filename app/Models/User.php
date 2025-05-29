@@ -38,22 +38,19 @@ class User extends Authenticatable
         return $this->belongsTo(Cliente::class);
     }
 
-    public function roles()
+    /**
+     * Roles filtrados por cliente actual.
+     */
+    public function filteredRoles()
     {
-        return Role::join('model_has_roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->where('model_has_roles.model_id', $this->id)
-            ->where('model_has_roles.model_type', self::class)
-            ->where(function ($query) {
-                $query->whereNull('model_has_roles.cliente_id')
-                    ->orWhere('model_has_roles.cliente_id', $this->cliente_id);
-            })
-            ->where('roles.cliente_id', $this->cliente_id) // Evita ambigüedad aquí
-            ->select('roles.*', 'model_has_roles.cliente_id as pivot_cliente_id')
-            ->get();
+        return $this->roles
+            ->where('cliente_id', $this->cliente_id)
+            ->values();
     }
 
-
-
+    /**
+     * Reimplementación de assignRole respetando cliente_id.
+     */
     public function assignRole(...$roles)
     {
         $roles = collect($roles)->flatten()->map(function ($role) {
@@ -71,24 +68,33 @@ class User extends Authenticatable
         return $this->traitAssignRole(...$roles);
     }
 
+    /**
+     * Necesario si usas teams o cliente_id como separación de permisos.
+     */
     public function getPermissionsTeamId()
     {
         return $this->cliente_id;
     }
 
+    /**
+     * Obtener todos los permisos por roles, filtrados por cliente.
+     */
     public function getAllPermissions()
-{
-    $permissions = collect();
+    {
+        $permissions = collect();
 
-    foreach ($this->roles() as $role) {
-        $permissions = $permissions->merge(
-            $role->permissions()->where('permissions.cliente_id', $this->cliente_id)->get() // especificar tabla
-        );
+        foreach ($this->filteredRoles() as $role) {
+            $permissions = $permissions->merge(
+                $role->permissions()->where('permissions.cliente_id', $this->cliente_id)->get()
+            );
+        }
+
+        return $permissions->unique('id');
     }
 
-    return $permissions->unique('id');
-}
-
+    /**
+     * Validar si tiene el permiso especificado.
+     */
     public function hasPermissionTo($permission, $guardName = null): bool
     {
         $permissions = $this->getAllPermissions();
