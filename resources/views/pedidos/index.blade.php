@@ -69,18 +69,7 @@
                                             <p><strong class="text-eprimary">Dirección:</strong> {{ $pedido->direccion_entrega ?? 'No disponible' }}</p>
                                             <p><strong class="text-eprimary">Fecha de pedido:</strong> {{ $pedido->created_at->format('d-m-Y H:i') }}</p>
                                         </div>
-                                        <div>
-                                            <p class="font-semibold text-eprimary mb-2">Productos:</p>
-                                            <ul class="list-disc list-inside ml-4 space-y-1">
-                                                @foreach ($pedido->detalles as $detalle)
-                                                    <li>
-                                                        <span>{{ $detalle->nombre_producto_snapshot }}</span>
-                                                        <span class="text-gray-600">(x{{ $detalle->cantidad }}, ${{ number_format($detalle->precio_unitario, 0, ',', '.') }}, Subtotal: ${{ number_format($detalle->subtotal, 0, ',', '.') }})</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-
+                                        
                                          <!-- Seleccion Boleta -->
                                         <div class="flex flex-wrap items-center gap-4">
                                             <div class="flex items-center gap-2">
@@ -106,7 +95,7 @@
                                         <div class="pt-2">
                                             <button class="open-modal-provisoria inline-block bg-yellow-100 hover:bg-yellow-200 text-eprimary font-semibold text-sm px-4 py-2 rounded shadow transition"
                                                     data-url="{{ route('boletas.provisoria', $pedido->id) }}">
-                                                Ver boleta provisoria
+                                                Ver Detalle 
                                             </button>
                                         </div>
                                     </div>

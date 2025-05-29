@@ -11,7 +11,6 @@
             </svg>
             Volver a la lista
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">Nuevo proveedor</h1>
     </div>
 
     <form method="POST" action="{{ route('proveedores.store') }}" class="space-y-6">

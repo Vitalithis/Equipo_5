@@ -14,6 +14,9 @@
             <label class="block text-sm font-medium text-gray-700">Empresa</label>
             <input type="text" name="empresa" value="{{ old('empresa', $proveedor->empresa) }}"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                @error('empresa')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
         </div>
 
         <div>
@@ -24,7 +27,12 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-            <input type="text" name="telefono" value="{{ old('telefono', $proveedor->telefono) }}"
+            <input
+                type="tel"
+                name="telefono"
+                pattern="^(?=(?:.*\d){8,})[\d\s\+\-\(\)]+$"
+                title="Ingrese un teléfono válido con al menos 8 números, sin letras."
+                value="{{ old('telefono', $proveedor->telefono) }}"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
         </div>
 
@@ -32,7 +40,7 @@
             <label class="block text-sm font-medium text-gray-700">Tipo de Proveedor</label>
             <select name="tipo_proveedor" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
                 <option value="">Seleccionar</option>
-                @foreach(['Sustratos', 'Productos aplicables', 'Herramientas', 'Servicios Vivero', 'Construccion', 'Plantas', 'Arboles', 'Plasticos/Cerámicas', 'Plantines'] as $tipo)
+                @foreach(['Sustratos', 'Productos aplicables', 'Herramientas', 'Servicios Vivero', 'Construccion', 'Plantas', 'Arboles', 'Plasticos/Cerámicas', 'Plantines', 'Varios'] as $tipo)
                     <option value="{{ $tipo }}" {{ old('tipo_proveedor', $proveedor->tipo_proveedor) == $tipo ? 'selected' : '' }}>
                         {{ $tipo }}
                     </option>
