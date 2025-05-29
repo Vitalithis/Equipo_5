@@ -15,9 +15,8 @@
 
         <div class="rounded-lg shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold font-['Roboto_Condensed'] text-gray-800">Proveedores</h2>
                 <a href="{{ route('proveedores.create') }}"
-                   class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+                   class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v16m8-8H4"/>
@@ -52,8 +51,8 @@
                                 <td class="px-4 py-2">{{ $proveedor->estado }}</td>
                                 <td class="px-4 py-2">
                                 <div class="flex space-x-3">
-                                    <a href="{{ route('proveedores.edit', $proveedor) }}" class="text-blue-600 hover:underline">Editar</a>
-                                    <button type="button" class="text-red-600 hover:underline"
+                                    <a href="{{ route('proveedores.edit', $proveedor) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
+                                    <button type="button" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
                                         onclick="openDeleteModal({{ $proveedor->id }}, '{{ $proveedor->nombre }}', '{{ $proveedor->empresa }}')">
                                         Eliminar
                                     </button>

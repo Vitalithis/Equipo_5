@@ -15,7 +15,7 @@
 
     <div class="flex justify-between items-center mb-4">
         <a href="{{ route('pedidos.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+           class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
@@ -29,17 +29,16 @@
             <table class="min-w-full divide-y divide-eaccent2 text-sm">
 
                 <!-- Seccion Tabla header -->
-                <thead class="bg-eaccent2 text-eprimary uppercase tracking-wide text-xs font-['Roboto_Condensed']">
+                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-6 py-4 text-center">ID</th>
                         <th class="px-6 py-4 text-center">Usuario</th>
                         <th class="px-6 py-4 text-center">Total</th>
-                        <th class="px-6 py-4 text-center">Estado</th>
-                        <th class="px-6 py-4 text-center">Acciones</th>
+                        <th class="text-left pl-20">Estado</th>
+                        <th class=" text-left pl-20">Acciones</th>
                     </tr>
                 </thead>
 
-                <!--Table-row -->
                 <tbody class="font-['Roboto']">
                     @foreach ($pedidos as $pedido)
                         <tr class="border-b border-eaccent2 hover:bg-efore transition duration-200 cursor-pointer" onclick="toggleDetalles({{ $pedido->id }}, event)">
@@ -49,11 +48,11 @@
                             <td class="px-6 py-4 text-center">
                                 @include('pedidos.partials.estado_form', ['pedido' => $pedido])
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="text-blue-600 hover:underline">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors mr-3">
                                     Editar
                                 </a>
-                                <button type="button" class="text-red-600 hover:underline ml-2"
+                                <button type="button" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
                                     onclick="openDeleteModal({{ $pedido->id }}, 'Pedido #{{ $pedido->id }}')">
                                     Eliminar
                                 </button>
