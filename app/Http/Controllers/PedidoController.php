@@ -130,7 +130,7 @@ public function show(Pedido $pedido)
     return view('shopping.show', compact('pedido'));
 }
 
-}
+
 
     public function index(){
         $pedidos = Pedido::with(['usuario', 'productos'])->get();
