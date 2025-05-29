@@ -148,9 +148,6 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-    // Vaciar carrito en base de datos
-    Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
-
     // Ajax para agregar producto al carrito
     Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
 });
