@@ -50,7 +50,7 @@
 
             {{-- Botón agregar --}}
             <a href="{{ route('finanzas.create') }}"
-            class="flex items-center text-green-700 hover:text-green-800 transition-colors text-sm">
+            class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 4v16m8-8H4"/>
@@ -60,7 +60,7 @@
 
             {{-- Descargar PDF --}}
             <a href="{{ route('finanzas.exportarPDF') }}"
-            class="flex items-center text-blue-700 hover:text-blue-800 transition-colors text-sm">
+            class="flex items-center text-blue-700 hover:text-blue-800 border border-blue-700 hover:border-blue-800 px-3 py-1 rounded transition-colors font-medium text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14m7-7H5"/>

@@ -9,7 +9,7 @@
 <div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800" x-data="{ abierto: null }">
     <div class="flex items-center mb-6">
         <a href="{{ route('insumos.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 transition-colors">
+           class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
