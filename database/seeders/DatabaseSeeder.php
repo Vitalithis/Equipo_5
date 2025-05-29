@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,8 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AdminSeeder::class,
-            PermissionSeeder::class,
+            PermissionSeeder::class,  
+            UserWithRolesSeeder::class,     
             CategoriaSeeder::class,
             DescuentoSeeder::class,
             ProductoSeeder::class,
@@ -24,14 +22,13 @@ class DatabaseSeeder extends Seeder
             FertilizanteSeeder::class,
             OrdenProduccionSeeder::class,
             CuidadoSeeder::class,
-            RolUserSeeder::class,
             FinanzaSeeder::class,
-            InsumoSeeder::class
+            InsumoSeeder::class,
+            WorkSeeder::class,
+
             
         ]);
 
-        // Opcional: Crear usuarios de prueba (si necesitas)
         // \App\Models\User::factory(10)->create();
-
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\User;
 use App\Models\Producto;
 use Illuminate\Database\Seeder;
@@ -10,9 +11,13 @@ class VentaSeeder extends Seeder
 {
     public function run()
     {
-        // Asegúrate de tener usuarios y productos
-        $user = User::first() ?? User::factory()->create();
+        $user = User::first();
         $producto = Producto::first();
+
+        if (!$user || !$producto) {
+            $this->command->warn('No hay usuario o producto disponible.');
+            return;
+        }
 
         DB::table('ventas')->insert([
             [
@@ -24,6 +29,7 @@ class VentaSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
+
+        $this->command->info('Venta creada exitosamente.');
     }
 }
-

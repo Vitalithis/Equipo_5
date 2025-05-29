@@ -8,14 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DetallePedido extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'pedido_id',
-        'producto_id',
-        'cantidad',
-        'precio_unitario',
-        'subtotal',
-        'nombre_producto_snapshot',
-        'codigo_barras_snapshot',
+        'pedido_id', 'producto_id', 'cantidad', 'precio_unitario',
+        'subtotal', 'nombre_producto_snapshot', 'codigo_barras_snapshot',
         'imagen_snapshot'
     ];
 

@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Asegura que se carguen los permisos y roles del usuario logueado en cada request
+        // Cargar roles y permisos del usuario logueado en todas las vistas
         view()->composer('*', function ($view) {
             if (Auth::check()) {
                 Auth::user()->loadMissing('roles.permissions', 'permissions');
