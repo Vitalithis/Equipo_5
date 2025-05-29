@@ -1,4 +1,5 @@
-<div class="w-full px-4 md:px-40 py-20 bg-blueLight">
+<section id="faq">
+    <div class="w-full px-4 md:px-40 py-20 bg-blueLight">
   <div class="max-w-2xl mx-auto">
     <h2 class="mb-4 text-3xl font-extrabold text-center text-blueDark">
       Preguntas Frecuentes
@@ -89,3 +90,5 @@
 
   </div>
 </div>
+
+</section>

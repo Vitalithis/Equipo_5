@@ -89,6 +89,53 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Producto añadido al carrito.');
     }
 
+    public function ajaxAñadirCarrito(Request $request, $id)
+    {
+        // Validación segura
+        $request->validate([
+            'cantidad' => 'required|integer|min:1|max:99',
+        ]);
+
+        $producto = Producto::findOrFail($id);
+        $cantidad = (int) $request->input('cantidad', 1);
+
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            $cart[$id]['cantidad'] += $cantidad;
+        } else {
+            $cart[$id] = [
+                'nombre' => $producto->nombre,
+                'precio' => $producto->precio,
+                'cantidad' => $cantidad,
+                'imagen' => $producto->imagen ?? '/images/default.png',
+                'codigo_barras' => $producto->codigo_barras ?? null,
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        // Debug: registrar información en el log de Laravel
+        \Log::debug('Carrito actualizado vía AJAX', [
+            'user_id' => auth()->id(),
+            'producto_id' => $id,
+            'cantidad' => $cart[$id]['cantidad'],
+            'cart' => $cart
+        ]);
+
+        return response()->json([
+            'message' => 'Producto añadido al carrito.',
+            'cart_count' => array_sum(array_column($cart, 'cantidad')),
+            'producto' => [
+                'id' => $id,
+                'nombre' => $producto->nombre,
+                'cantidad' => $cart[$id]['cantidad'],
+            ],
+            // Debug: devolver el carrito completo solo en entorno local
+            'debug_cart' => app()->environment('local') ? $cart : null,
+        ]);
+    }
+
     public function actualizarProducto(Request $request, $id)
     {
         $cart = session()->get('cart', []);

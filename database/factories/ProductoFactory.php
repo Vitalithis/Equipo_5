@@ -20,7 +20,7 @@ class ProductoFactory extends Factory
             'descripcion' => $this->faker->paragraph(3),
             'precio' => $this->faker->numberBetween(1000, 99990), // Entre $1.000 y $99.990
             'cantidad' => $this->faker->numberBetween(0, 100),
-            'imagen' => $this->generateProductImage(),
+            'imagen' => 'storage/images/default-logo.png',
             'codigo_barras' => $this->faker->unique()->ean13(),
             'cuidados' => $this->generateCareInstructions(),
             'nivel_dificultad' => $this->faker->randomElement($dificultades),
@@ -31,26 +31,10 @@ class ProductoFactory extends Factory
             'origen' => $this->faker->country(),
             'tamano' => $this->faker->numberBetween(5, 200), // En cm para más realismo
             'activo' => $this->faker->boolean(90),
+            'categoria' => Categoria::inRandomOrder()->first()?->id
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterCreating(function ($producto) {
-            // Asegurar que existan categorías primero
-            if (Categoria::count() === 0) {
-                Categoria::factory()->count(6)->create();
-            }
-
-            // Asignar 1-3 categorías aleatorias
-            $categoriaIds = Categoria::inRandomOrder()
-                ->take(rand(1, 3))
-                ->pluck('id')
-                ->toArray();
-
-            $producto->categorias()->sync($categoriaIds);
-        });
-    }
 
     // Métodos auxiliares para generar datos más realistas
     private function generateProductName(): string
@@ -152,11 +136,6 @@ class ProductoFactory extends Factory
             $this->faker->randomElement($features);
     }
 
-    private function generateProductImage(): string
-    {
-        $plantTypes = ['suculent', 'cactus', 'fern', 'palm', 'flower', 'bonsai'];
-        return 'https://source.unsplash.com/random/640x480/?plant,' . $this->faker->randomElement($plantTypes);
-    }
 
     private function generateCareInstructions(): string
     {

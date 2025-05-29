@@ -1,4 +1,5 @@
-<div class="flex flex-col md:flex-row w-full overflow-hidden h-fit">
+<section id="quienes-somos">
+    <div class="flex flex-col md:flex-row w-full overflow-hidden h-fit">
   <!-- Sección Izquierda -->
   <div class="text-center md:w-1/2 flex items-center justify-center h-full bg-white py-8 md:py-20">
     <div class="bg-blueLight px-4 py-16 my-20 w-full flex flex-col items-center">
@@ -10,10 +11,10 @@
       </p>
       <div class="flex gap-4 mt-6">
         <button class="border border-blueDark text-blueDark px-4 py-2 rounded-md hover:bg-blueLight transition">
-          Conócenos más
+          <a href="/home#mision">Conócenos más</a>
         </button>
         <button class="bg-blueDark text-white px-4 py-2 rounded-md hover:bg-blueDark transition">
-          Ver productos
+            <a href="/productos">Ver productos</a>
         </button>
       </div>
     </div>
@@ -28,3 +29,5 @@
     />
   </div>
 </div>
+
+</section>

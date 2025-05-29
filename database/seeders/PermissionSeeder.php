@@ -32,15 +32,33 @@ class PermissionSeeder extends Seeder
             'gestionar productos',
             'gestionar proveedores',
             'gestionar catálogo',
+            // Pedidos y descuentos
+
             'gestionar pedidos',
             'gestionar descuentos',
+
+            'gestionar descuentos',    // <-- Usado para sección descuentos
+
+            // Proveedores ✅ AÑADIDO
+            'gestionar proveedores',
+
+            // Mantenimiento Infrastructura
+            'ver reportes infraestructura', // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
+            'gestionar infraestructura',
+            // Reportes
+
             'ver reportes',
             'gestionar tareas',
             'gestionar fertilizantes',
             'gestionar cuidados',
             'gestionar finanzas',
-            'gestionar insumos'
+            'gestionar insumos',
 
+            // Cotizaciones
+            'ver cotizaciones',         // Ver listado de cotizaciones
+            'despachar cotizaciones',      // Crear una nueva cotización
+            'editar cotizaciones',      // Editar una cotización existente
+            'eliminar cotizaciones',    // Eliminar una cotización existente
 
         ];
 
@@ -51,6 +69,11 @@ class PermissionSeeder extends Seeder
             ]);
         }
 
+        // Crear rol admin si no existe
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+
+        // Asignar todos los permisos al rol admin
+        $admin->syncPermissions(Permission::all());
         // Asegurar que el rol admin exista
         $adminRole = Role::firstOrCreate([
             'name' => 'admin',

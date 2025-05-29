@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\Storage;
+
 class ProductoController extends Controller
 {
     public function home(Request $request)
@@ -119,10 +120,13 @@ class ProductoController extends Controller
 
     public function filter(Request $request, ?string $category = null, ?int $tamano = null, ?string $dificultad = null, ?string $ordenar_por = null, ?bool $ordenar_ascendente = false)
     {
-        // Validación básica de parámetros
+        /* Validación básica de parámetros
         if ($category && !Categoria::where('nombre', $category)->exists()) {
             abort(404, 'Categoría no encontrada');
         }
+            */
+             $category = $request->input('categorias'); // <- Esto ahora funciona con ?categorias=Suculenta
+
 
         // Construcción de la consulta
         $productos = Producto::query()
@@ -167,10 +171,29 @@ class ProductoController extends Controller
             'dificultades' => Producto::distinct()->pluck('nivel_dificultad'),
         ]);
     }
-    public function dashboard_show()
+    public function dashboard_show(Request $request)
     {
-        $productos = Producto::all();
-        return view('dashboard.catalog.catalogo', compact('productos'));
+        $query = Producto::query();
+
+        // Filtro por categoría si está presente
+        if ($request->filled('categoria')) {
+            $query->where('categoria', $request->categoria);
+        }
+
+        // Búsqueda por nombre similar si está presente
+        if ($request->filled('busqueda')) {
+            $searchTerm = '%' . $request->busqueda . '%';
+            $query->where('nombre', 'like', $searchTerm)
+                ->orWhere('descripcion', 'like', $searchTerm);
+        }
+
+        // Paginación con 10 elementos por página y conservar parámetros de búsqueda
+        $productos = $query->paginate(10)->withQueryString();
+
+        // Obtener lista de categorías distintas
+        $categorias = Categoria::all();
+
+        return view('dashboard.catalog.catalogo', compact('productos', 'categorias'));
     }
 
     public function create()
@@ -182,12 +205,52 @@ class ProductoController extends Controller
 
     public function store(Request $request)
     {
-        $producto = new Producto();
-        $producto->fill($request->all());
-        $producto->save();
+        // Validación
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'precio' => 'required|numeric',
+            'descripcion' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
+            'cuidados' => 'nullable|string',
+            'nivel_dificultad' => 'nullable|string',
+            'frecuencia_riego' => 'nullable|string',
+            'ubicacion_ideal' => 'nullable|string',
+            'beneficios' => 'nullable|string',
+            'toxica' => 'nullable|boolean',
+            'origen' => 'nullable|string',
+            'tamano' => 'nullable|string',
+            'activo' => 'nullable|boolean',
+            'categoria' => 'required|string|exists:categorias,nombre',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10000',
+        ]);
 
-        return redirect()->route('dashboard.catalogo')->with('success', 'Producto creado correctamente.');
+        $producto = new Producto();
+
+        // Manejo de imagen
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $ruta = $imagen->store('public/images/productos');
+            $producto->imagen = str_replace('public/', 'storage/', $ruta);
+        } else {
+            $producto->imagen = 'storage/images/default-logo.png';
+        }
+
+        // Obtener ID de la categoría desde el nombre
+        $categoria = Categoria::where('nombre', $request->categoria)->first();
+
+        if ($categoria) {
+            $producto->fill($request->except(['imagen', 'categoria']));
+            $producto->save();
+
+            // Asociar categoría en tabla pivote
+            $producto->categorias()->sync([$categoria->id]);
+
+            return redirect()->route('dashboard.catalogo')->with('success', 'Producto creado correctamente.');
+        } else {
+            return back()->withErrors(['categoria' => 'La categoría seleccionada no existe.'])->withInput();
+        }
     }
+
     public function edit($id)
     {
 
@@ -197,16 +260,25 @@ class ProductoController extends Controller
         return view('dashboard.catalog.catalogo_edit', compact('producto', 'categorias', 'dificultades'));
     }
 
-
 public function update(Request $request, $id)
 {
     $producto = Producto::findOrFail($id);
 
-    // Validación
     $request->validate([
         'nombre' => 'required|string|max:255',
         'precio' => 'required|numeric',
-        // otros campos...
+        'descripcion' => 'nullable|string',
+        'stock' => 'required|integer|min:0',
+        'cuidados' => 'nullable|string',
+        'nivel_dificultad' => 'nullable|string',
+        'frecuencia_riego' => 'nullable|string',
+        'ubicacion_ideal' => 'nullable|string',
+        'beneficios' => 'nullable|string',
+        'toxica' => 'nullable|boolean',
+        'origen' => 'nullable|string',
+        'tamano' => 'nullable|string',
+        'activo' => 'nullable|boolean',
+        'categoria' => 'required|string|exists:categorias,nombre',
         'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10000',
     ]);
 
@@ -214,21 +286,28 @@ public function update(Request $request, $id)
     if ($request->hasFile('imagen')) {
         $imagen = $request->file('imagen');
 
-        // Eliminar imagen anterior si existía
         if ($producto->imagen && $producto->imagen !== 'storage/images/default-logo.png') {
             Storage::delete(str_replace('storage/', 'public/', $producto->imagen));
         }
 
-        // Guardar nueva imagen
         $ruta = $imagen->store('public/images/productos');
         $producto->imagen = str_replace('public/', 'storage/', $ruta);
     } elseif (!$producto->imagen) {
-        // Si no tiene imagen previa, usar la imagen por defecto
         $producto->imagen = 'storage/images/default-logo.png';
     }
 
-    // Actualizar otros campos (excepto imagen, ya la tratamos aparte)
-    $producto->fill($request->except('imagen'));
+    // Obtener el ID de la categoría por su nombre
+    $categoria = \App\Models\Categoria::where('nombre', $request->categoria)->first();
+
+    if (!$categoria) {
+        return back()->withErrors(['categoria' => 'La categoría seleccionada no existe'])->withInput();
+    }
+
+    // Rellenar campos excepto imagen y categoria
+    $producto->fill($request->except(['imagen', 'categoria']));
+
+    // Asignar el ID numérico en lugar del nombre
+    $producto->categoria = $categoria->id;
 
     $producto->save();
 
@@ -241,4 +320,5 @@ public function update(Request $request, $id)
         $producto->delete();
         return redirect()->route('dashboard.catalog.catalogo')->with('success', 'Producto eliminado correctamente.');
     }
+
 }

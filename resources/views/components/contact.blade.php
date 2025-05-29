@@ -1,4 +1,4 @@
-<section class="bg-blueLight">
+<section class="bg-blueLight" id="contact">
     <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
         <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-blueDark">¡Contáctanos!</h2>
         <p class="mb-8 lg:mb-16 font-light text-center text-blueDark sm:text-xl">

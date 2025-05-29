@@ -1,4 +1,4 @@
-<section  class="bg-leafs bg-cover py-40 px-4 my-40">
+<section id="mision"  class="bg-leafs bg-cover py-40 px-4 my-40">
    <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-8 flex flex-col md:flex-row justify-around items-center gap-8 text-center py-44">
 
     <!-- Misión -->

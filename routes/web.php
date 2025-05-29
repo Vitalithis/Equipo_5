@@ -14,7 +14,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\BoletaController;
 use App\Http\Controllers\ProveedorController;
-    
+
 
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\CheckoutController;
@@ -48,7 +48,6 @@ Route::middleware(['auth', 'role:soporte'])->prefix('admin')->name('admin.')->gr
     Route::get('/clientes/{cliente}/productos', [AdminClienteController::class, 'productos'])->name('clientes.productos');
     Route::delete('/clientes/{cliente}', [AdminClienteController::class, 'destroy'])->name('clientes.destroy');
     Route::get('/admin/cliente/{cliente}/asignar-permisos', [AdminClienteController::class, 'asignarPermisosExistente'])->name('admin.clientes.asignarPermisos');
-
 });
 
 
@@ -109,6 +108,16 @@ use App\Http\Controllers\ContactController;
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
+// Ruta para el mantenedor de mantenimientos de infraestructura
+use App\Http\Controllers\MaintenanceReportController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('maintenance', MaintenanceReportController::class);
+});
+
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -131,7 +140,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->middleware('permission:gestionar proveedores');
-
+// check a esto
+Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generar'])->name('boletas.provisoria');
+Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
+Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
+Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
+Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->middleware('permission:gestionar proveedores');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -148,6 +162,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Vaciar carrito en base de datos
     Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
+
+    // Ajax para agregar producto al carrito
+    Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -162,6 +179,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::post('/checkout/clear', [CheckoutController::class, 'clearCart'])->name('checkout.clearCart');
 });
+
+// Cotizaciones
+use App\Http\Controllers\CotizacionController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cotizacion', [CotizacionController::class, 'index'])->name('cotizacion.index');
+    Route::post('/cotizacion/agregar/{producto}', [CotizacionController::class, 'agregar'])->name('cotizacion.agregar');
+    Route::delete('/cotizacion/{cotizacion}/producto/{producto}', [CotizacionController::class, 'eliminarProducto'])->name('cotizacion.eliminar');
+    Route::post('/cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCotizacion'])->name('cotizacion.enviar');
+    Route::post('/cotizacion/ajax/agregar/{id}', [App\Http\Controllers\CotizacionController::class, 'ajaxAgregar'])->middleware('auth');
+});
+
+// Cotizaciones admin
+use App\Http\Controllers\Admin\CotizacionAdminController;
+
+Route::prefix('dashboard')->middleware(['auth', 'can:ver dashboard'])->group(function () {
+    Route::get('/cotizaciones', [CotizacionAdminController::class, 'index'])->name('dashboard.cotizaciones.index');
+    Route::get('/cotizaciones/{id}', [CotizacionAdminController::class, 'show'])->name('dashboard.cotizaciones.show');
+    Route::post('/cotizaciones/{id}/responder', [CotizacionAdminController::class, 'responder'])->name('dashboard.cotizaciones.responder');
+});
+
+
 
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
@@ -268,5 +307,9 @@ Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 Route::resource('works', WorkController::class);
 
+
+// Legal
+Route::view('/politicas-de-privacidad', 'politicas')->name('politicas');
+Route::view('/terminos-y-condiciones', 'terminos')->name('terminos');
 
 require __DIR__ . '/auth.php';

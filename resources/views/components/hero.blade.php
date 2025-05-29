@@ -46,7 +46,7 @@
           Tu espacio verde comienza aquí.
         </h1>
         <button class="mt-4 px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-600 transition duration-300">
-          ¡Ver más!
+            <a href="/home#quienes-somos">Descubre más</a>
         </button>
       </div>
       <img src='/storage/images/slide1.jpg' alt="Slide 1" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
@@ -63,7 +63,7 @@
           Plantas que transforman espacios.
         </h1>
         <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300">
-          Descubrir colección
+          <a href="/productos">Descubrir colección</a>
         </button>
       </div>
       <img src='/storage/images/slide2.jpg' alt="Slide 2" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">
@@ -80,7 +80,7 @@
           Naturaleza en tu hogar.
         </h1>
         <button class="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition duration-300">
-          Comprar ahora
+         <a href="/productos" class="text-white">Explorar productos</a>
         </button>
       </div>
       <img src='/storage/images/slide3.jpg' alt="Slide 3" class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-50">

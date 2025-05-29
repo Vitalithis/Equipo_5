@@ -4,6 +4,7 @@
 
 @section('content')
     @include('components.hero')
+    @include('components.last-added')
     @include('components.quienes-somos')
     @include('components.mision-vision')
     @include('components.faq')

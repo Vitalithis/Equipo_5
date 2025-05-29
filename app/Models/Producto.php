@@ -12,10 +12,24 @@ class Producto extends Model
     protected $table = 'productos';
 
     protected $fillable = [
-        'slug', 'nombre', 'nombre_cientifico', 'descripcion',
-        'precio', 'stock', 'imagen', 'cuidados', 'nivel_dificultad',
-        'frecuencia_riego', 'ubicacion_ideal', 'beneficios', 'toxica',
-        'origen', 'tamano', 'activo'
+        'slug',
+        'nombre',
+        'nombre_cientifico',
+        'descripcion',
+        'precio',
+        'stock',
+        'imagen',
+        'cuidados',
+        'nivel_dificultad',
+        'frecuencia_riego',
+        'ubicacion_ideal',
+        'beneficios',
+        'toxica',
+        'origen',
+        'tamano',
+        'activo',
+        'categoria',
+        'codigo_barras'
     ];
 
     protected $casts = [

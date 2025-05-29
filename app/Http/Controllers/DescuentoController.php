@@ -55,13 +55,13 @@ class DescuentoController extends Controller
         // No actualizamos usos_actuales aquí
         $descuento->save();
 
-        return redirect()->route('dashboard.discounts.descuentos')->with('success', 'Descuento actualizado exitosamente.');
+        return redirect()->route('dashboard.descuentos')->with('success', 'Descuento actualizado exitosamente.');
     }
     public function destroy($id)
     {
         $descuento = Descuento::findOrFail($id);
         $descuento->delete();
 
-        return redirect()->route('dashboard.discounts.descuentos')->with('success', 'Descuento eliminado exitosamente.');
+        return redirect()->route('dashboard.descuentos')->with('success', 'Descuento eliminado exitosamente.');
     }
 }
