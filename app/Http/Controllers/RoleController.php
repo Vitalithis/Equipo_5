@@ -10,7 +10,8 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         $roles = Role::with('permissions')
             ->where('cliente_id', $clienteId)
@@ -23,7 +24,8 @@ class RoleController extends Controller
 
     public function create()
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         $permissions = Permission::where('cliente_id', $clienteId)->get();
 
@@ -38,7 +40,8 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         $role = Role::create([
             'name' => $request->name,
@@ -59,7 +62,8 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
@@ -73,7 +77,8 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
@@ -97,7 +102,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
