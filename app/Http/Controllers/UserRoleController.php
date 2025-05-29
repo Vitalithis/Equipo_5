@@ -16,7 +16,7 @@ class UserRoleController extends Controller
             ? Role::all()
             : Role::where('name', '!=', 'admin')->get();
 
-        $layout = 'layouts.dashboard'; // 👈 Aquí se define
+        $layout = 'layouts.dashboard'; //  Aquí se define
 
         return view('dashboard.users.index', compact('users', 'roles', 'layout'));
     }
