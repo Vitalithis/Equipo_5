@@ -13,7 +13,9 @@
             </svg>
             Volver a la lista
         </a>
-
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
+            {{ isset($pedido->id) ? 'Editar' : 'Nueva' }} Venta
+        </h1>
     </div>
     <form action="{{ isset($pedido->id) ? route('pedidos.update', $pedido->id) : route('pedidos.store') }}"
         method="POST" id="pedido-form" class="space-y-6">
@@ -63,29 +65,12 @@
             </div>
 
             <div id="direccion-contenedor" class="mt-6 {{ (old('metodo_entrega', $pedido->metodo_entrega ?? '') == 'domicilio') ? '' : 'hidden' }}">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
-
-                <input type="text" name="calle" placeholder="Calle" required
-                    value="{{ old('calle', $calle ?? '') }}"
-                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
-
-                <input type="number" name="numero" placeholder="Número" required min="1"
-                    value="{{ old('numero', $numero ?? '') }}"
-                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
-
-                <input type="text" name="depto" placeholder="Depto / Oficina (opcional)"
-                    value="{{ old('depto', $depto ?? '') }}"
-                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
-
-                <input type="text" name="comuna" placeholder="Comuna" required
-                    value="{{ old('comuna', $comuna ?? '') }}"
-                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
-
-                <input type="text" name="ciudad" placeholder="Ciudad" required
-                    value="{{ old('ciudad', $ciudad ?? '') }}"
-                    class="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                <label for="direccion_entrega" class="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
+                <textarea name="direccion_entrega" rows="3"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                    placeholder="Ej: Calle 123, Depto 4B, Comuna...">{{ old('direccion_entrega', $pedido->direccion_entrega ?? '') }}</textarea>
             </div>
-
+        </div>
 
 
         <div class="bg-white rounded-lg shadow-md p-6">
@@ -124,7 +109,13 @@
                                 value="{{ old('subtotal[]', $detalle->subtotal) }}">
                         </div>
 
-                        <button type="button" class="remove-row bg-red-500 text-white px-2 py-1 rounded hidden">🗑</button>
+                        <button type="button"
+                            class="remove-row text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 rounded transition"
+                            title="Eliminar producto" aria-label="Eliminar producto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4" />
+                            </svg>
+                        </button>
                     </div>
                     @endforeach
                 @else
@@ -156,7 +147,13 @@
                                 class="subtotal-input w-full rounded-md border border-gray-300 shadow-sm bg-gray-100" readonly>
                         </div>
 
-                        <button type="button" class="remove-row bg-red-500 text-white px-2 py-1 rounded hidden">🗑</button>
+                        <button type="button"
+                            class="remove-row text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 rounded transition"
+                            title="Eliminar producto" aria-label="Eliminar producto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4" />
+                            </svg>
+                        </button>
                     </div>
                 @endif
             </div>

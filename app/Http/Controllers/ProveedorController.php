@@ -21,7 +21,7 @@ class ProveedorController extends Controller
 
     public function store(Request $request)
     {
-        $valores_permitidos = ['Insumos médicos', 'Farmacia', 'Servicios externos', 'Servicios Vivero', 'Otros'];
+        $valores_permitidos = ['Sustratos', 'Productos aplicables', 'Herramientas', 'Servicios Vivero', 'Construccion', 'Plantas', 'Arboles', 'Plasticos/Cerámicas', 'Plantines'];
         
         $request->validate([
             'nombre' => 'required|string|max:255',
