@@ -17,7 +17,7 @@
             <p><strong>N° Pedido:</strong> {{ $pedido->id }}</p>
             <p><strong>Cliente:</strong> {{ $pedido->usuario->name }}</p>
             <p><strong>Método de entrega:</strong> {{ $pedido->metodo_entrega }}</p>
-            <p><strong>Dirección:</strong> {{ $pedido->direccion ?? 'No disponible' }}</p>
+            <p><strong>Dirección:</strong> {{ $pedido->direccion_entrega ?? 'No disponible' }}</p>
         </div>
 
         <div class="overflow-x-auto rounded-lg shadow mb-4">
@@ -45,8 +45,10 @@
 
         <div class="text-right text-sm mb-4">
             <p><strong>Subtotal:</strong> ${{ number_format($subtotal, 0, ',', '.') }}</p>
-            <p><strong>Descuento (10%):</strong> -${{ number_format($descuento, 0, ',', '.') }}</p>
-            <p class="text-lg font-bold text-green-700"><strong>Total Final:</strong> ${{ number_format($totalFinal, 0, ',', '.') }}</p>
+            <p><strong>Descuento ({{ number_format($descuentoPorcentaje, 2) }}%):</strong> -${{ number_format($descuentoMonto, 0, ',', '.') }}</p>
+            <p><strong>Impuesto (19%):</strong> ${{ number_format($impuesto, 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-green-700"><strong>Total Final:</strong> ${{ number_format($total, 0, ',', '.') }}</p>
+
         </div>
 
         <div class="text-center text-gray-600 text-sm">

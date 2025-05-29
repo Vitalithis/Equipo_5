@@ -102,11 +102,12 @@
         </table>
     </div>
 
-    <div class="summary">
-        <p><strong>Subtotal:</strong> ${{ number_format($subtotal, 0, ',', '.') }}</p>
-        <p><strong>Descuento (10%):</strong> -${{ number_format($descuento, 0, ',', '.') }}</p>
-        <p><strong>Total Final:</strong> ${{ number_format($totalFinal, 0, ',', '.') }}</p>
-    </div>
+<div class="summary">
+    <p><strong>Subtotal:</strong> ${{ number_format($subtotal, 0, ',', '.') }}</p>
+    <p><strong>Descuento ({{ number_format($descuentoPorcentaje, 2) }}%):</strong> -${{ number_format($descuentoMonto, 0, ',', '.') }}</p>
+    <p><strong>Impuesto (19%):</strong> ${{ number_format($impuesto, 0, ',', '.') }}</p>
+    <p><strong>Total Final:</strong> ${{ number_format($total, 0, ',', '.') }}</p>
+</div>
 
     <div class="footer">
         Gracias por su compra<br>

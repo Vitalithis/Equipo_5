@@ -30,6 +30,7 @@ class PermissionSeeder extends Seeder
             'gestionar ingresos',
             'gestionar egresos',
             'gestionar productos',
+            'gestionar proveedores',
             'gestionar catálogo',
             'gestionar pedidos',
             'gestionar descuentos',

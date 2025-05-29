@@ -28,7 +28,7 @@
                     <th class="px-6 py-3 whitespace-nowrap">Luz</th>
                     <th class="px-6 py-3 whitespace-nowrap">Abono</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
-                    <th class="px-6 py-3 whitespace-nowrap">PDF</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Archivos</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-eaccent2 font-['Roboto'] text-gray-800">
@@ -55,9 +55,13 @@
                             </form>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank"
-                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-3 py-1 rounded transition-colors">
-                                Ver PDF
+                            <a href="{{ route('dashboard.cuidados.pdf', $cuidado->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">
+                                Ver PDF</a>
+                            <a href="{{ route('dashboard.cuidados.qr', $cuidado->id) }}" 
+                                data-url="{{ route('dashboard.cuidados.qr', $cuidado->id) }}"
+                                id="btn-ver-qr-{{ $cuidado->id }}" 
+                                class="text-green-600 hover:text-green-900 cursor-pointer">
+                                Ver QR
                             </a>
                         </td>
                     </tr>

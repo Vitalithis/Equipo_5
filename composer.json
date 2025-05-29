@@ -13,8 +13,9 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
-        "spatie/laravel-permission": "^6.17",
-        "transbank/transbank-sdk": "2.0"
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-permission": "^6.18",
+        "transbank/transbank-sdk": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
