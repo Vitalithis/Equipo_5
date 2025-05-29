@@ -11,7 +11,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         $query = User::query()->with('roles');
 
@@ -27,7 +28,8 @@ class UserController extends Controller
 
     public function create()
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
         $roles = Role::where('cliente_id', $clienteId)->get();
 
         return view('dashboard.users.create', compact('roles'));
@@ -35,7 +37,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $clienteId = app('clienteActual')->id;
+        $clienteId = auth()->user()->cliente_id;
+
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -66,7 +69,7 @@ class UserController extends Controller
 
     public function updateRole(Request $request, User $user)
     {
-        $clienteId = app('clienteActual')->id;
+       $clienteId = auth()->user()->cliente_id;
 
         $request->validate([
             'role' => 'required|exists:roles,name',
