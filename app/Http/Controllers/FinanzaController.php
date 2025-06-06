@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pedido;
 use App\Models\Finanza;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,25 +11,43 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class FinanzaController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Finanza::query()->with('usuario');
+{
+    $query = Finanza::query()->with('usuario');
 
-        // Filtro por fechas
-        if ($request->filled('desde')) {
-            $query->whereDate('fecha', '>=', $request->desde);
-        }
-        if ($request->filled('hasta')) {
-            $query->whereDate('fecha', '<=', $request->hasta);
-        }
-
-        $finanzas = $query->latest()->get();
-
-        $totalIngresos = $finanzas->where('tipo', 'ingreso')->sum('monto');
-        $totalEgresos = $finanzas->where('tipo', 'egreso')->sum('monto');
-        $balance = $totalIngresos - $totalEgresos;
-
-        return view('dashboard.finance.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
+    // Filtro por fechas
+    if ($request->filled('desde')) {
+        $query->whereDate('fecha', '>=', $request->desde);
     }
+    if ($request->filled('hasta')) {
+        $query->whereDate('fecha', '<=', $request->hasta);
+    }
+
+    // Filtro por tipo
+    if ($request->filled('tipo')) {
+        $query->where('tipo', $request->tipo);
+    }
+
+    // Filtro por categoría
+    if ($request->filled('categoria')) {
+        $query->where('categoria', 'like', '%' . $request->categoria . '%');
+    }
+
+    // Filtro por nombre del usuario
+    if ($request->filled('usuario')) {
+        $query->whereHas('usuario', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->usuario . '%');
+        });
+    }
+
+    $finanzas = $query->latest()->get();
+
+    $totalIngresos = $finanzas->where('tipo', 'ingreso')->sum('monto');
+    $totalEgresos = $finanzas->where('tipo', 'egreso')->sum('monto');
+    $balance = $totalIngresos - $totalEgresos;
+
+    return view('dashboard.finance.finanzas', compact('finanzas', 'totalIngresos', 'totalEgresos', 'balance'));
+}
+
 
     public function create()
     {
@@ -104,4 +123,47 @@ class FinanzaController extends Controller
     $fecha = now()->format('Y-m-d');
     return $pdf->download("resumen_financiero_{$fecha}.pdf");
     }
+
+
+public function guardarReporteVentas(Request $request)
+{
+
+    Log::info('Datos recibidos en guardarReporteVentas', $request->all());
+    $request->validate([
+        'mes' => 'required|date_format:Y-m',
+        'descripcion' => 'nullable|string|max:255',
+        'total' => 'required|numeric|min:0',
+        'cantidad' => 'required|integer|min:0',
+    ]);
+
+    $usuarioId = auth()->id();
+
+    $inicioMes = $request->mes . '-01 00:00:00';
+    $finMes = date('Y-m-t 23:59:59', strtotime($inicioMes));
+
+    $yaExiste = Finanza::where('tipo', 'ingreso')
+        ->where('categoria', 'Ventas mensuales')
+        ->whereBetween('fecha', [$inicioMes, $finMes])
+        ->exists();
+
+    if ($yaExiste) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Ya se ha registrado un ingreso por ventas para este mes.'
+        ], 409);
+    }
+
+    Finanza::create([
+        'tipo' => 'ingreso',
+        'monto' => $request->total,
+        'fecha' => now(),
+        'categoria' => 'Ventas mensuales',
+        'descripcion' => $request->descripcion ?: 'Ingreso por ventas del mes ' . $request->mes,
+        'usuario_id' => $usuarioId,
+    ]);
+
+    return response()->json(['success' => true]);
+}
+
+
 }

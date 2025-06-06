@@ -216,6 +216,7 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
+//Rutas fertilizantes
 Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'permission:gestionar productos'])->name('dashboard.fertilizantes');
 Route::get('/dashboard/fertilizantes/create', [FertilizanteController::class, 'create'])->middleware('permission:gestionar productos')->name('fertilizantes.create');
 Route::post('/dashboard/fertilizantes', [FertilizanteController::class, 'store'])->middleware('permission:gestionar productos')->name('fertilizantes.store');
@@ -253,6 +254,7 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
     Route::get('/finanzas/pdf', [FinanzaController::class, 'exportarPDF'])->name('finanzas.exportarPDF');
+    Route::post('/finanzas/reportar-ventas', [FinanzaController::class, 'guardarReporteVentas'])->middleware('auth');
 
 
 });
@@ -307,5 +309,19 @@ Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActi
 // Legal
 Route::view('/politicas-de-privacidad', 'politicas')->name('politicas');
 Route::view('/terminos-y-condiciones', 'terminos')->name('terminos');
+
+//Reportar
+Route::get('/finanzas/reportar', function () {
+    return view('dashboard.finance.create');
+})->middleware('auth')->name('finanzas.reportar');
+
+// web.php
+Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
+    ->middleware('auth');
+
+
+    // web.php
+
+
 
 require __DIR__ . '/auth.php';
