@@ -101,12 +101,12 @@
                         <td class="px-6 py-4 whitespace-normal break-words max-w-[300px]">{{ $item->descripcion ?: '—' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->usuario->name ?? '—' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('finanzas.edit', $item->id) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                            <a href="{{ route('finanzas.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
                             <form action="{{ route('finanzas.destroy', $item->id) }}" method="POST" class="inline-block ml-2"
                                   onsubmit="return confirm('¿Deseas eliminar este movimiento?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Anular</button>
+                                <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">Anular</button>
                             </form>
                         </td>
                     </tr>
