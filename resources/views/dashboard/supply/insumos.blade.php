@@ -46,11 +46,11 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $insumo->descripcion }}</td>
                         <td class="px-6 py-4 whitespace-nowrap flex gap-2">
-                            <a href="{{ route('insumos.edit', $insumo->id) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                            <a href="{{ route('insumos.edit', $insumo->id) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
                             <form action="{{ route('insumos.destroy', $insumo->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">Eliminar</button>
                             </form>
                         </td>
                     </tr>
