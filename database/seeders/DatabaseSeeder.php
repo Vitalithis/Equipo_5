@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
             ProveedorSeeder::class,
             WorkSeeder::class,
             WorkSeeder::class,
-            SoporteSeeder::class
+            SoporteSeeder::class,
+            ProduccionSeeder::class
             
             
         ]);

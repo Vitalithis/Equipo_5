@@ -18,4 +18,20 @@ class Insumo extends Model
     return $this->hasMany(InsumoDetalle::class);
 }
 
+public function productos()
+{
+    return $this->belongsToMany(Producto::class, 'producto_insumo')
+                ->withPivot('cantidad')
+                ->withTimestamps();
+}
+
+public function producciones()
+{
+    return $this->belongsToMany(Produccion::class, 'insumo_produccion')
+                ->withPivot('cantidad_usada')
+                ->withTimestamps();
+}
+
+
+
 }

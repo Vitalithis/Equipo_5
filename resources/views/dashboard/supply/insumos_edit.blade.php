@@ -18,7 +18,11 @@
           method="POST"
           @submit.prevent="validarFormulario"
           x-data="insumoForm()"
-          x-init="initDetalles(@json($insumo->detalles ?? []))">
+          x-init="initDetalles(
+                @json(isset($insumo) ? $insumo->detalles : []),
+                @json(isset($insumo) ? $insumo->productos->pluck('id') : [])
+            )"
+
         @csrf
         @if(isset($insumo->id)) @method('PUT') @endif
 
@@ -50,6 +54,26 @@
                 <textarea name="descripcion" id="descripcion" rows="3"
                           class="mt-1 block w-full border rounded px-3 py-2">{{ old('descripcion', $insumo->descripcion ?? '') }}</textarea>
             </div>
+
+            <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Asociar a productos</label>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto border p-3 rounded-lg">
+        @foreach ($productos as $producto)
+            <label class="flex items-center space-x-2 text-sm text-gray-800">
+                <input type="checkbox"
+                       name="productos[]"
+                       :value="{{ $producto->id }}"
+                       x-model="productosSeleccionados"
+                       class="text-green-600 border-gray-300 rounded focus:ring-green-500">
+                <span>{{ $producto->nombre }}</span>
+            </label>
+        @endforeach
+    </div>
+
+    <p class="text-xs text-gray-500 mt-1">Selecciona los productos donde se usará este insumo.</p>
+</div>
+
         </div>
 
         {{-- Subdetalles --}}
@@ -122,10 +146,12 @@ function insumoForm() {
         cantidadTotal: {{ old('cantidad', $insumo->cantidad ?? 0) }},
         nombreInsumo: '{{ old('nombre', $insumo->nombre ?? '') }}',
         detalles: [],
+        productosSeleccionados: [],
         mensajeError: '',
 
-        initDetalles(iniciales) {
-            this.detalles = iniciales.length ? iniciales : [];
+        initDetalles(detallesIniciales, productosIniciales) {
+            this.detalles = detallesIniciales.length ? detallesIniciales : [];
+            this.productosSeleccionados = productosIniciales.length ? productosIniciales : [];
 
             if (!this.detalles.length && this.cantidadTotal >= 1) {
                 this.agregarDetalleInicial();
@@ -134,7 +160,6 @@ function insumoForm() {
 
         agregarDetalleInicial() {
             let sugerencia = 'Unidad';
-
             const nombre = this.nombreInsumo.toLowerCase();
             if (nombre.includes('fertilizante')) sugerencia = 'Saco de 25 kg';
             else if (nombre.includes('maceta')) sugerencia = 'Maceta plástica';
@@ -151,46 +176,42 @@ function insumoForm() {
 
         recalcularCantidad() {
             const suma = this.detalles.reduce((acc, d) => acc + (parseInt(d.cantidad) || 0), 0);
-            if (suma > this.cantidadTotal) {
-                this.mensajeError = 'La suma de subcantidades no puede superar la cantidad total.';
-            } else {
-                this.mensajeError = '';
-            }
-
+            this.mensajeError = suma > this.cantidadTotal
+                ? 'La suma de subcantidades no puede superar la cantidad total.'
+                : '';
             if (this.detalles.length === 0 && this.cantidadTotal >= 1) {
                 this.agregarDetalleInicial();
             }
         },
 
         calcularCostoTotal() {
-            return this.detalles.reduce((acc, d) => acc + ((parseFloat(d.costo) || 0) * (parseInt(d.cantidad) || 0)), 0);
+            return this.detalles.reduce((acc, d) => acc + ((parseInt(d.costo) || 0) * (parseInt(d.cantidad) || 0)), 0);
         },
 
         validarFormulario() {
-    if (this.cantidadTotal <= 0) {
-        this.mensajeError = 'La cantidad total debe ser mayor que cero.';
-        return;
-    }
+            if (this.cantidadTotal <= 0) {
+                this.mensajeError = 'La cantidad total debe ser mayor que cero.';
+                return;
+            }
 
-    if (this.detalles.length === 0) {
-        this.mensajeError = 'Debes agregar al menos un subdetalle.';
-        return;
-    }
+            if (this.detalles.length === 0) {
+                this.mensajeError = 'Debes agregar al menos un subdetalle.';
+                return;
+            }
 
-    let subdetalleValido = this.detalles.some(d =>
-        d.nombre && d.cantidad > 0 && d.costo >= 0
-    );
+            let subdetalleValido = this.detalles.some(d =>
+                d.nombre && d.cantidad > 0 && d.costo >= 0
+            );
 
-    if (!subdetalleValido) {
-        this.mensajeError = 'Debes completar al menos un subdetalle correctamente.';
-        return;
-    }
+            if (!subdetalleValido) {
+                this.mensajeError = 'Debes completar al menos un subdetalle correctamente.';
+                return;
+            }
 
-    if (this.mensajeError) return;
+            if (this.mensajeError) return;
 
-    this.$refs.form.submit();
-}
-
+            this.$refs.form.submit();
+        }
     };
 }
 </script>
