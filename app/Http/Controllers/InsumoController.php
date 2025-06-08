@@ -13,13 +13,17 @@ class InsumoController extends Controller
     public function index()
     {
         $insumos = Insumo::orderBy('created_at', 'desc')->get();
+        $insumos = Insumo::with('productos')->orderBy('created_at', 'desc')->get();
         return view('dashboard.supply.insumos', compact('insumos'));
     }
 
     public function create()
     {
-        $productos = Producto::all();
-        return view('dashboard.supply.insumos_edit', ['insumo' => null, 'productos' => $productos]);
+        $productos = Producto::orderBy('nombre')->get();
+        return view('dashboard.supply.insumos_edit', [
+            'insumo' => null,
+            'productos' => $productos,
+        ]);
     }
 
     public function store(Request $request)
@@ -39,7 +43,7 @@ class InsumoController extends Controller
         $insumo = Insumo::create([
             'nombre' => $request->nombre,
             'cantidad' => $request->cantidad,
-            'costo' => 0, // Se recalcula abajo
+            'costo' => 0, // se recalcula abajo
             'descripcion' => $request->descripcion,
         ]);
 
@@ -63,16 +67,10 @@ class InsumoController extends Controller
             ]);
         }
 
-        // Asociar insumo a productos
-        if ($request->has('productos')) {
-            foreach ($request->productos as $productoId) {
-                $insumo->productos()->attach($productoId, [
-                    'costo_total' => $costoTotal,
-                ]);
-            }
+        if ($request->filled('productos')) {
+            $insumo->productos()->sync($request->productos);
         }
 
-        // Registrar en finanzas si hay costo
         if ($costoTotal > 0) {
             Finanza::create([
                 'fecha' => now(),
@@ -90,7 +88,8 @@ class InsumoController extends Controller
     public function edit($id)
     {
         $insumo = Insumo::with('detalles', 'productos')->findOrFail($id);
-        $productos = Producto::all();
+        $productos = Producto::orderBy('nombre')->get();
+
         return view('dashboard.supply.insumos_edit', compact('insumo', 'productos'));
     }
 
@@ -138,15 +137,8 @@ class InsumoController extends Controller
             ]);
         }
 
-        // Actualizar asociación a productos
-        $insumo->productos()->detach();
-
-        if ($request->has('productos')) {
-            foreach ($request->productos as $productoId) {
-                $insumo->productos()->attach($productoId, [
-                    'costo_total' => $costoTotal,
-                ]);
-            }
+        if ($request->filled('productos')) {
+            $insumo->productos()->sync($request->productos);
         }
 
         return redirect()->route('dashboard.insumos')->with('success', 'Insumo actualizado correctamente.');

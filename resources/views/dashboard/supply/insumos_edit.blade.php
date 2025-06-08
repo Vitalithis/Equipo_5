@@ -21,8 +21,8 @@
           x-init="initDetalles(
                 @json(isset($insumo) ? $insumo->detalles : []),
                 @json(isset($insumo) ? $insumo->productos->pluck('id') : [])
-            )"
-
+            )">
+        
         @csrf
         @if(isset($insumo->id)) @method('PUT') @endif
 
@@ -56,24 +56,21 @@
             </div>
 
             <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Asociar a productos</label>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto border p-3 rounded-lg">
-        @foreach ($productos as $producto)
-            <label class="flex items-center space-x-2 text-sm text-gray-800">
-                <input type="checkbox"
-                       name="productos[]"
-                       :value="{{ $producto->id }}"
-                       x-model="productosSeleccionados"
-                       class="text-green-600 border-gray-300 rounded focus:ring-green-500">
-                <span>{{ $producto->nombre }}</span>
-            </label>
-        @endforeach
-    </div>
-
-    <p class="text-xs text-gray-500 mt-1">Selecciona los productos donde se usará este insumo.</p>
-</div>
-
+                <label class="block text-sm font-medium text-gray-700 mb-2">Asociar a productos</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto border p-3 rounded-lg">
+                    @foreach ($productos as $producto)
+                        <label class="flex items-center space-x-2 text-sm text-gray-800">
+                            <input type="checkbox"
+                                   name="productos[]"
+                                   :value="{{ $producto->id }}"
+                                   x-model="productosSeleccionados"
+                                   class="text-green-600 border-gray-300 rounded focus:ring-green-500">
+                            <span>{{ $producto->nombre }}</span>
+                        </label>
+                    @endforeach
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Selecciona los productos donde se usará este insumo.</p>
+            </div>
         </div>
 
         {{-- Subdetalles --}}
@@ -208,7 +205,13 @@ function insumoForm() {
                 return;
             }
 
-            if (this.mensajeError) return;
+            if (!document.querySelector('input[name="_token"]')) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '_token';
+                input.value = '{{ csrf_token() }}';
+                this.$refs.form.appendChild(input);
+            }
 
             this.$refs.form.submit();
         }
