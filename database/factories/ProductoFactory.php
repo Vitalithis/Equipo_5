@@ -31,7 +31,7 @@ class ProductoFactory extends Factory
             'origen' => $this->faker->country(),
             'tamano' => $this->faker->numberBetween(5, 200), // En cm para más realismo
             'activo' => $this->faker->boolean(90),
-            'categoria' => Categoria::inRandomOrder()->first()?->id
+            'categoria_id' => Categoria::inRandomOrder()->first()?->id
         ];
     }
 

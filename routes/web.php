@@ -30,6 +30,7 @@ use App\Http\Controllers\FinanzaController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\FertilizationController;
 
+
 use App\Models\ProductCategory;
 
 use App\Http\Controllers\AdminClienteController;
@@ -190,6 +191,7 @@ Route::prefix('dashboard')->middleware(['auth', 'can:ver dashboard'])->group(fun
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
 
+// Productos
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
 Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
@@ -203,15 +205,15 @@ Route::get(
         'ordenar_ascendente' => 'true|false'
     ])
     ->name('productos.filter');
-Route::get('/sobre-nosotros', function () {
-    return view('about');
-})->name('about');
-Route::get('/contacto', function () {
-    return view('contact');
-})->name('contact');
-Route::get('/faq', function () {
-    return view('faq');
-})->name('faq');
+//Categorias
+Route::prefix('dashboard/categorias')->name('categorias.')->controller(CategoriaController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::get('/add', 'add')->name('add');
+    Route::get('/{categoria}/edit', 'edit')->name('edit');
+    Route::put('/{categoria}', 'update')->name('update');
+    Route::delete('/{categoria}', 'destroy')->name('destroy');
+});
 
 Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'permission:gestionar productos'])->name('dashboard.fertilizantes');
 Route::get('/dashboard/fertilizantes/create', [FertilizanteController::class, 'create'])->middleware('permission:gestionar productos')->name('fertilizantes.create');

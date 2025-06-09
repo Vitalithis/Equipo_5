@@ -53,6 +53,12 @@
               <span>Catálogo</span>
             </a>
           </li>
+          <li class="mb-1">
+            <a href="{{ route('categorias.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-tags"></i>
+              <span>Categorías</span>
+            </a>
+          </li>
           @endcan
 
           @can('ver roles')
