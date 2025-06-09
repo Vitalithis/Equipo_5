@@ -21,25 +21,26 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\IdentifyTenant::class,
+    
+            // Middleware de Tenancy
+            \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+            \Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains::class,
+    
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\RedirectIfMustChangePassword::class,
         ],
-
+    
         'api' => [
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-
-        // Grupo tenant (para uso exclusivo con Route::middleware('tenant'))
+    
         'tenant' => [
-        \App\Http\Middleware\IdentifyTenant::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \App\Http\Middleware\Authenticate::class,
+            // Si tienes middlewares extra que quieres ejecutar para tenant, puedes dejarlo vacío o quitarlo si no lo usas.
         ],
     ];
+    
 
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
