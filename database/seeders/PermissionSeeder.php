@@ -81,6 +81,7 @@ class PermissionSeeder extends Seeder
             'gestionar descuentos',
             'ver reportes',
             'gestionar tareas',
+            'gestionar produccion',
             
         ];
 
@@ -165,6 +166,7 @@ class PermissionSeeder extends Seeder
             'gestionar descuentos',
             'ver reportes',
             'gestionar tareas',
+            'gestionar produccion',
 
 
         ]);

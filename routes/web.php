@@ -29,6 +29,7 @@ use App\Http\Controllers\CuidadoController;
 use App\Http\Controllers\FinanzaController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\FertilizationController;
+use App\Http\Controllers\ProductionController;
 
 use App\Models\ProductCategory;
 
@@ -319,9 +320,20 @@ Route::get('/finanzas/reportar', function () {
 Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
     ->middleware('auth');
 
+// Rutas produccion
+Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+    Route::get('/produccion', [ProductionController::class, 'index'])->name('produccion.index');
+    Route::get('/produccion/create', [ProductionController::class, 'create'])->name('produccion.create');
+    Route::post('/produccion', [ProductionController::class, 'producir'])->name('produccion.store');
 
-    // web.php
+    Route::get('/produccion/{id}/edit', [ProductionController::class, 'edit'])->name('produccion.edit');
+    Route::put('/produccion/{id}', [ProductionController::class, 'update'])->name('produccion.update');
+    Route::delete('/produccion/{id}', [ProductionController::class, 'destroy'])->name('produccion.destroy');
+});
+
+
 
 
 
 require __DIR__ . '/auth.php';
+ 

@@ -15,7 +15,7 @@
 
 </head>
 <body class="bg-gray-100 font-sans" x-data="dashboard">
-  <div class="flex h-screen">
+  <div class="flex min-h-screen">
 
     @php
         $color = 'green';
@@ -163,6 +163,16 @@
         </a>
       </li>
     @endcan
+
+
+      @can('ver dashboard')
+      <li>
+          <a href="{{ route('produccion.index') }}"
+            class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
+              <i class="fas fa-industry mr-2"></i> Producción
+          </a>
+      </li>
+      @endcan
 
   </ul>
 </nav>
