@@ -255,8 +255,9 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::put('/{id}', [FinanzaController::class, 'update'])->name('finanzas.update');
     Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
     Route::get('/finanzas/pdf', [FinanzaController::class, 'exportarPDF'])->name('finanzas.exportarPDF');
-    Route::post('/finanzas/reportar-ventas', [FinanzaController::class, 'guardarReporteVentas'])->middleware('auth');
-
+    Route::post('/reportar-ventas', [FinanzaController::class, 'guardarReporteVentas'])->name('finanzas.reportar');
+    Route::get('/ventas/pdf', [FinanzaController::class, 'exportarVentasMensualesPDF'])->name('finanzas.ventas.pdf');
+    
 
 });
 //ruta tareas

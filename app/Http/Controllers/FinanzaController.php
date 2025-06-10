@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use App\Models\Finanza;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -127,42 +128,69 @@ class FinanzaController extends Controller
 
 public function guardarReporteVentas(Request $request)
 {
-
-    Log::info('Datos recibidos en guardarReporteVentas', $request->all());
     $request->validate([
         'mes' => 'required|date_format:Y-m',
         'descripcion' => 'nullable|string|max:255',
         'total' => 'required|numeric|min:0',
-        'cantidad' => 'required|integer|min:0',
     ]);
 
     $usuarioId = auth()->id();
 
+    try {
+        $inicioMes = $request->mes . '-01 00:00:00';
+        $finMes = date('Y-m-t 23:59:59', strtotime($inicioMes));
+
+        $yaExiste = Finanza::where('tipo', 'ingreso')
+            ->where('categoria', 'Ventas mensuales')
+            ->whereBetween('fecha', [$inicioMes, $finMes])
+            ->exists();
+
+        if ($yaExiste) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya se ha registrado un ingreso por ventas para este mes.'
+            ], 409);
+        }
+
+        Finanza::create([
+            'tipo' => 'ingreso',
+            'monto' => $request->total,
+            'fecha' => now(),
+            'categoria' => 'Ventas mensuales',
+            'descripcion' => $request->descripcion ?: 'Ingreso por ventas del mes ' . $request->mes,
+            'created_by' => $usuarioId,
+        ]);
+
+        return response()->json(['success' => true]);
+
+    } catch (\Throwable $e) {
+        Log::error('❌ Error al guardar ingreso: ' . $e->getMessage());
+        return response()->json(['error' => 'Error del servidor'], 500);
+    }
+}
+
+public function exportarVentasMensualesPDF(Request $request)
+{
+    $request->validate([
+        'mes' => 'required|date_format:Y-m',
+    ]);
+
     $inicioMes = $request->mes . '-01 00:00:00';
     $finMes = date('Y-m-t 23:59:59', strtotime($inicioMes));
 
-    $yaExiste = Finanza::where('tipo', 'ingreso')
-        ->where('categoria', 'Ventas mensuales')
-        ->whereBetween('fecha', [$inicioMes, $finMes])
-        ->exists();
+    $pedidos = Pedido::whereBetween('created_at', [$inicioMes, $finMes])->with('usuario')->get();
+    $total = $pedidos->sum('total');
+    $cantidad = $pedidos->count();
 
-    if ($yaExiste) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Ya se ha registrado un ingreso por ventas para este mes.'
-        ], 409);
-    }
+    $data = [
+        'mes' => $request->mes,
+        'total' => $total,
+        'cantidad' => $cantidad,
+        'pedidos' => $pedidos,
+    ];
 
-    Finanza::create([
-        'tipo' => 'ingreso',
-        'monto' => $request->total,
-        'fecha' => now(),
-        'categoria' => 'Ventas mensuales',
-        'descripcion' => $request->descripcion ?: 'Ingreso por ventas del mes ' . $request->mes,
-        'usuario_id' => $usuarioId,
-    ]);
-
-    return response()->json(['success' => true]);
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('dashboard.finance.ventas_mensuales_pdf', $data);
+    return $pdf->download('ventas_' . $request->mes . '.pdf');
 }
 
 
