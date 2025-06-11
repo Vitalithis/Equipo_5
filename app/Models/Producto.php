@@ -28,7 +28,7 @@ class Producto extends Model
         'origen',
         'tamano',
         'activo',
-        'categoria',
+        'categoria_id',
         'codigo_barras'
     ];
 
@@ -37,14 +37,9 @@ class Producto extends Model
         'activo' => 'boolean',
     ];
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsTo(Categoria::class, 'producto_categoria');
-    }
-
-    public function getCategoriaAttribute()
-    {
-        return $this->categorias()->first()?->nombre;
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
     public function descuentos()
@@ -61,8 +56,7 @@ class Producto extends Model
             ->get();
     }
     public function fertilizaciones()
-{
-    return $this->hasMany(Fertilization::class);
-}
-
+    {
+        return $this->hasMany(Fertilization::class);
+    }
 }

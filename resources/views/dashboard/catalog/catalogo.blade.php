@@ -61,7 +61,7 @@
                                 </td>
                                 <td class="px-4 py-2">{{ $product->nombre }}</td>
                                 <td class="px-4 py-2">{{ $product->precio }}</td>
-                                <td class="px-4 py-2">{{ $product->categoria }}</td>
+                                <td class="px-4 py-2">{{ $product->categoria_id }}</td>
                                 <td class="px-4 py-2">{{ $product->activo ? 'Sí' : 'No' }}</td>
                                 <td class="px-4 py-2">{{ $product->stock }}</td>
                                 <td class="px-4 py-2">

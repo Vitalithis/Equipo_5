@@ -34,7 +34,7 @@
                                 <input type="checkbox"
                                     name="categorias[]"
                                     id="categoria_{{ $categoria->id }}"
-                                    value="{{ $categoria->nombre }}"
+                                    value="{{ $categoria->id }}"
                                     class="mr-2 h-4 w-4 text-greenPrimary rounded border-gray-300 focus:ring-greenPrimary transition"
                                     {{ $categoria->selected ? 'checked' : '' }}
                                     data-category-id="{{ $categoria->id }}">
@@ -104,80 +104,98 @@
             @if($productos->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($productos as $producto)
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-    <a href="{{ route('products.show', $producto->slug) }}" class="block">
-        <div class="h-48 overflow-hidden">
-            <img src="{{ asset('storage/images/product' . $producto->imagen_principal) }}"
-                onerror="this.onerror=null;this.src='storage/images/default-logo.png';this.className='w-3/5 h-full justify-self-center align-self-center scale-95 opacity-50 hover:scale-100 transition-transform duration-300';"
-                alt="{{ $producto->nombre }}"
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-        </div>
-    </a>
+                                    <!-- Tarjeta de producto -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
+                    <a href="{{ route('products.show', $producto->slug) }}" class="block">
+                        <div class="h-48 overflow-hidden">
+                            <img src="{{ asset('storage/images/product' . $producto->imagen_principal) }}"
+                                onerror="this.onerror=null;this.src='storage/images/default-logo.png';this.className='w-3/5 h-full justify-self-center align-self-center scale-95 opacity-50 hover:scale-100 transition-transform duration-300';"
+                                alt="{{ $producto->nombre }}"
+                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                        </div>
+                    </a>
 
-    <div class="p-4">
-        <div class="flex justify-between items-start">
-            <h3 class="text-lg font-semibold text-blueDark py-2">{{ $producto->nombre }}</h3>
-            <span class="text-greenPrimary font-bold py-2">{{ number_format($producto->precio, 0, ',', '.') }} CLP</span>
-        </div>
+                    <!-- Contenido principal con botones al fondo -->
+                    <div class="p-4 flex flex-col justify-between flex-grow">
+                        <!-- Nombre y precio -->
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-semibold text-blueDark py-2">{{ $producto->nombre }}</h3>
+                                <span class="text-greenPrimary font-bold py-2">{{ number_format($producto->precio, 0, ',', '.') }} CLP</span>
+                            </div>
 
-        <div class="flex items-center mt-2">
-            <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded mr-2">
-                {{ $producto->nivel_dificultad }}
-            </span>
-            <span class="text-sm text-blueDark">{{ $producto->tamano }}cm</span>
-        </div>
+                            <div class="flex items-center mt-2">
+                                <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded mr-2">
+                                    {{ $producto->nivel_dificultad }}
+                                </span>
+                                <span class="text-sm text-blueDark">{{ $producto->tamano }}cm</span>
+                            </div>
 
-        <p class="text-blueDark mt-2 line-clamp-2">{{ $producto->descripcion_corta }}</p>
+                            <p class="text-blueDark mt-2 line-clamp-2">{{ $producto->descripcion_corta }}</p>
+                        </div>
 
-        <a href="{{ route('products.show', $producto->slug) }}">
-            <button class="mt-4 w-full py-2 bg-greenPrimary text-white rounded-lg hover:bg-greenDark transition-colors">
-                Ver detalles
-            </button>
-        </a>
-
-        <!-- Cantidad y Agregar al carrito en una fila -->
-        <div class="flex items-center justify-between mt-4 space-x-2">
-            <div class="flex items-center border border-greenMid rounded-lg overflow-hidden bg-blueLight ">
-                <button type="button"
-                    class="px-2 py-1 text-greenPrimary hover:bg-greenPrimary hover:text-white transition"
-                    onclick="this.nextElementSibling.stepDown()">
-                    −
-                </button>
-                <input type="number"
-                    id="cantidad_{{ $producto->id }}"
-                    min="1"
-                    max="99"
-                    value="1"
-                    class="w-12 text-center bg-white text-blueDark border-0 focus:ring-0 focus:outline-none appearance-none"
-                    aria-label="Cantidad">
-                <button type="button"
-                    class="px-2 py-1 text-greenPrimary hover:bg-greenPrimary hover:text-white transition"
-                    onclick="this.previousElementSibling.stepUp()">
-                    +
-                </button>
-            </div>
-                        @auth
-                            <button
-                                class="flex-1 py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors"
-                                onclick="agregarAlCarrito({{ $producto->id }})">
-                                Agregar al carrito
-                            </button>
-                             <button
-                                class=" py-2 bg-yellow-300 text-blueDark rounded-lg hover:bg-yellow-400 transition-colors"
-                                onclick="agregarACotizacion({{ $producto->id }})">
-                                <i class="fas fa-file-invoice-dollar p-2 ">Cotizar</i>
-                            </button>
-                        @endauth
-                        @guest
-                            <a href="{{ route('login') }}"
-                            class="flex-1 block text-center py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors">
-                                Agregar al carrito
+                        <!-- Botones -->
+                        <div class="mt-4">
+                            <a href="{{ route('products.show', $producto->slug) }}">
+                                <button class="w-full py-2 bg-greenPrimary text-white rounded-lg hover:bg-greenDark transition-colors">
+                                    Ver detalles
+                                </button>
                             </a>
-                        @endguest
+
+                            <div class="flex items-center justify-between mt-4 space-x-2 flex-wrap">
+                                @if($producto->stock > 0)
+                                    <div class="flex items-center border border-greenMid rounded-lg overflow-hidden bg-blueLight">
+                                        <button type="button"
+                                            class="px-2 py-1 text-greenPrimary hover:bg-greenPrimary hover:text-white transition"
+                                            onclick="this.nextElementSibling.stepDown()">
+                                            −
+                                        </button>
+                                        <input type="number"
+                                            id="cantidad_{{ $producto->id }}"
+                                            min="1"
+                                            max="99"
+                                            value="1"
+                                            class="w-12 text-center bg-white text-blueDark border-0 focus:ring-0 focus:outline-none appearance-none"
+                                            aria-label="Cantidad">
+                                        <button type="button"
+                                            class="px-2 py-1 text-greenPrimary hover:bg-greenPrimary hover:text-white transition"
+                                            onclick="this.previousElementSibling.stepUp()">
+                                            +
+                                        </button>
+                                    </div>
+                                @endif
+
+                                @auth
+                                    @if($producto->stock == 0)
+                                        <button
+                                            class="flex-1 py-2 bg-red-500 text-white rounded-lg cursor-not-allowed"
+                                            disabled>
+                                            Producto sin Stock
+                                        </button>
+                                    @else
+                                        <button
+                                            class="flex-1 py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors"
+                                            onclick="agregarAlCarrito({{ $producto->id }})">
+                                            Agregar al carrito
+                                        </button>
+                                    @endif
+                                    <button
+                                        class="py-2 bg-yellow-300 text-blueDark rounded-lg hover:bg-yellow-400 transition-colors"
+                                        onclick="agregarACotizacion({{ $producto->id }})">
+                                        <i class="fas fa-file-invoice-dollar p-2">Cotizar</i>
+                                    </button>
+                                @endauth
+
+                                @guest
+                                    <a href="{{ route('login') }}"
+                                        class="flex-1 block text-center py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors">
+                                        Agregar al carrito
+                                    </a>
+                                @endguest
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
                 @endforeach
             </div>
 
