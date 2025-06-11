@@ -147,6 +147,15 @@
       </li>
     @endcan
 
+    @can('gestionar tratamientos')
+      <li>
+        <a href="{{ route('dashboard.treatments') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
+          <i class="fa-solid fa-droplet"></i>
+          <span>Gestionar aplicacion</span>
+        </a>
+      </li>
+    @endcan
+
     @can('ver dashboard')
       <li>
         <a href="{{ route('maintenance.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
@@ -161,6 +170,7 @@
         </a>
       </li>
     @endcan
+
 
   </ul>
 </nav>

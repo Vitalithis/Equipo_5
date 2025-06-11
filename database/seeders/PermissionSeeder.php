@@ -49,6 +49,7 @@ class PermissionSeeder extends Seeder
             'ver reportes',
             'gestionar tareas',
             'gestionar fertilizantes',
+            'gestionar tratamientos',
             'gestionar cuidados',
             'gestionar finanzas',
             'gestionar insumos',
@@ -136,6 +137,7 @@ class PermissionSeeder extends Seeder
             'gestionar cuidados',
             'gestionar finanzas',
             'gestionar insumos',
+            'gestionar tratamientos',
 
             // Cotizaciones
             'gestionar cotizaciones',       

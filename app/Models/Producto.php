@@ -61,8 +61,13 @@ class Producto extends Model
             ->get();
     }
     public function fertilizaciones()
-{
-    return $this->hasMany(Fertilization::class);
-}
+    {
+        return $this->hasMany(Fertilization::class);
+    }
+
+    public function aplicacionesTratamientos()
+    {
+        return $this->hasMany(TreatmentApplication::class);
+    }
 
 }
