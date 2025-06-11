@@ -89,6 +89,10 @@
         Route::put('/treatments/{id}', [TreatmentController::class, 'update'])->name('dashboard.treatments.update');
         Route::delete('/treatments/{id}', [TreatmentController::class, 'destroy'])->name('dashboard.treatments.destroy');
         
+        Route::get('/treatment-applications/search', [TreatmentApplicationController::class, 'search'])->name('treatment_applications.search');
+        Route::get('/plant-treatments/search', [TreatmentController::class, 'search'])->name('plant_treatments.search');
+
+
         Route::get('/treatment-applications', [TreatmentApplicationController::class, 'index'])->name('treatment_applications.index');
         Route::get('/treatment-applications/create', [TreatmentApplicationController::class, 'create'])->name('treatment_applications.create');
         Route::post('/treatment-applications', [TreatmentApplicationController::class, 'store'])->name('treatment_applications.store');

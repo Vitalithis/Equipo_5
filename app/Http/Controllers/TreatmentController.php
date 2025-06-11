@@ -7,15 +7,44 @@ use Illuminate\Http\Request;
 
 class TreatmentController extends Controller
 {
-    public function index()
-    {
-        $treatments = PlantTreatment::all();
-        return view('dashboard.treatments.treatment', compact('treatments'));
+public function index(Request $request)
+{
+    $query = PlantTreatment::query();
+
+    if ($request->filled('nombre')) {
+        $query->where('nombre', 'like', '%' . $request->nombre . '%');
     }
 
+    if ($request->filled('tipo')) {
+        $query->where('tipo', $request->tipo);
+    }
+
+    $treatments = $query->latest()->get();
+
+    return view('dashboard.treatments.treatment', compact('treatments'));
+}
     public function create()
     {
         return view('dashboard.treatments.treatment_edit');
+    }
+
+    public function search(Request $request)
+    {
+        $query = PlantTreatment::query();
+
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        $treatments = $query->latest()->get();
+
+        return response()->json([
+            'data' => $treatments
+        ]);
     }
 
     public function store(Request $request)

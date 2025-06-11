@@ -17,6 +17,33 @@
         </a>
     </div>
 
+    <form method="GET" action="{{ route('treatment_applications.index') }}" class="flex flex-wrap gap-2 items-center w-full md:max-w-3xl mb-4">
+    
+        <input type="text" name="tratamiento" value="{{ request('tratamiento') }}" placeholder="Buscar por tratamiento..."
+            class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+
+        <select name="tipo" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+            <option value="">Todos los tipos</option>
+            <option value="Fertilizante" {{ request('tipo') === 'Fertilizante' ? 'selected' : '' }}>Fertilizante</option>
+            <option value="Fungicida" {{ request('tipo') === 'Fungicida' ? 'selected' : '' }}>Fungicida</option>
+            <option value="Insecticida" {{ request('tipo') === 'Insecticida' ? 'selected' : '' }}>Insecticida</option>
+            <option value="Herbicida" {{ request('tipo') === 'Herbicida' ? 'selected' : '' }}>Herbicida</option>
+            <option value="Acaricida" {{ request('tipo') === 'Acaricida' ? 'selected' : '' }}>Acaricida</option>
+            <option value="Otro" {{ request('tipo') === 'Otro' ? 'selected' : '' }}>Otro</option>
+        </select>
+
+        <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
+            Buscar
+        </button>
+
+        @if(request('tratamiento') || request('tipo'))
+            <a href="{{ route('treatment_applications.index') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
+                Limpiar
+            </a>
+        @endif
+    </form>
+
+
     @if($applications->count())
         <div class="overflow-x-auto bg-white shadow sm:rounded-lg border border-eaccent2">
             <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">

@@ -9,9 +9,25 @@ use Illuminate\Http\Request;
 
 class TreatmentApplicationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $applications = TreatmentApplication::with('treatment', 'producto')->latest()->get();
+        $query = TreatmentApplication::with('treatment', 'producto');
+
+
+           if ($request->filled('tratamiento')) {
+            $query->whereHas('treatment', function($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->tratamiento . '%');
+                });
+            }
+
+            if ($request->filled('tipo')) {
+                $query->whereHas('treatment', function($q) use ($request) {
+                    $q->where('tipo', $request->tipo);
+                });
+            }
+
+            $applications = $query->latest()->get();
+        
         return view('dashboard.treatments.historial', compact('applications'));
     }
 
@@ -54,6 +70,29 @@ class TreatmentApplicationController extends Controller
             'latestApplications'
         ));
     }
+
+    public function search(Request $request)
+{
+    $query = TreatmentApplication::with('treatment', 'producto');
+
+    if ($request->filled('tratamiento')) {
+        $query->whereHas('treatment', function($q) use ($request) {
+            $q->where('nombre', 'like', '%' . $request->tratamiento . '%');
+        });
+    }
+
+    if ($request->filled('tipo')) {
+        $query->whereHas('treatment', function($q) use ($request) {
+            $q->where('tipo', $request->tipo);
+        });
+    }
+
+    $applications = $query->latest()->get();
+
+    return response()->json([
+        'data' => $applications
+    ]);
+}
 
     public function store(Request $request)
     {

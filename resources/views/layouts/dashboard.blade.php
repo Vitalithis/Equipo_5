@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- Para que no pestañee la pagina al cargar buscadores  -->
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title', 'Plantas Editha | Dashboard')</title>
