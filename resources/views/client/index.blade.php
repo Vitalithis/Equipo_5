@@ -3,63 +3,62 @@
 @section('title', 'Clientes')
 
 @section('content')
-<div x-data="{ modalCliente: null }" class="py-8 px-4 font-['Roboto'] text-gray-800">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Clientes Registrados</h1>
-        <a href="{{ route('clients.create') }}" class="text-green-600 hover:text-green-800 flex items-center">
-            <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4" />
-            </svg>
-            Nuevo Cliente
-        </a>
-    </div>
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Clientes</h1>
 
-    <div class="overflow-x-auto bg-white shadow rounded-lg">
-        <table class="min-w-full divide-y divide-gray-200">
+    <a href="{{ route('clients.create') }}" class="inline-block mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        + Nuevo Cliente
+    </a>
+
+    @if (session('success'))
+        <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="overflow-x-auto bg-white shadow rounded">
+        <table class="min-w-full text-left text-sm">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Subdominio</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Activo</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Acciones</th>
+                    <th class="px-4 py-2">Nombre</th>
+                    <th class="px-4 py-2">Subdominio</th>
+                    <th class="px-4 py-2">Estado</th>
+                    <th class="px-4 py-2">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody>
                 @foreach ($clientes as $cliente)
-                    <tr>
-                        <td class="px-6 py-4">{{ $cliente->nombre }}</td>
-                        <td class="px-6 py-4">{{ $cliente->subdominio }}</td>
-                        <td class="px-6 py-4">{{ $cliente->activo ? 'Sí' : 'No' }}</td>
-                        <td class="px-6 py-4 flex space-x-2">
-                            <button @click="modalCliente = {{ $cliente->id }}" class="text-blue-600 hover:text-blue-800">Ver</button>
-                            <form action="{{ route('clients.toggle', $cliente->id) }}" method="POST">
+                    <tr class="border-t">
+                        <td class="px-4 py-2">
+                            {{ $cliente->data['nombre'] ?? 'Sin nombre' }}
+                        </td>
+                        <td class="px-4 py-2">
+                            {{ $cliente->domains->first()->domain ?? 'No definido' }}
+                        </td>
+                        <td class="px-4 py-2">
+                            @if ($cliente->data['activo'] ?? false)
+                                <span class="text-green-600 font-semibold">Activo</span>
+                            @else
+                                <span class="text-red-600 font-semibold">Inactivo</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-2 space-x-2">
+                            <form method="POST" action="{{ route('clients.toggle', $cliente) }}" class="inline">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit"
-                                    class="text-sm {{ $cliente->activo ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800' }}">
-                                    {{ $cliente->activo ? 'Desactivar' : 'Activar' }}
+                                <button type="submit" class="text-blue-600 hover:underline">
+                                    {{ ($cliente->data['activo'] ?? false) ? 'Desactivar' : 'Activar' }}
                                 </button>
                             </form>
+                            <a href="{{ route('clients.show', $cliente) }}" class="text-blue-600 hover:underline">Ver</a>
+
+                            @if ($cliente->domains->first())
+                                <a href="http://{{ $cliente->domains->first()->domain }}" target="_blank" class="text-green-600 hover:underline">
+                                    Ir al sitio
+                                </a>
+                            @endif
                         </td>
                     </tr>
-
-                    <!-- Modal -->
-                    <div x-show="modalCliente === {{ $cliente->id }}"
-                         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                         style="display: none;">
-                        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                            <h2 class="text-xl font-semibold mb-4">Detalle del Cliente</h2>
-                            <p><strong>Nombre:</strong> {{ $cliente->nombre }}</p>
-                            <p><strong>Subdominio:</strong> {{ $cliente->subdominio }}</p>
-                            <p><strong>Slug:</strong> {{ $cliente->slug }}</p>
-                            <p><strong>Activo:</strong> {{ $cliente->activo ? 'Sí' : 'No' }}</p>
-
-                            <div class="mt-4 text-right">
-                                <button @click="modalCliente = null" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>

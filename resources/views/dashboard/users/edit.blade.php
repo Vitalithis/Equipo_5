@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Nuevo Usuario')
+@section('title', 'Editar Usuario')
 
 @section('content')
 <div class="py-8 px-4 md:px-8 max-w-xl mx-auto font-['Roboto'] text-gray-800">
@@ -14,7 +14,7 @@
         Volver a la lista
     </a>
 
-    {{-- Errores generales --}}
+    {{-- Errores --}}
     @if ($errors->any())
         <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             <ul class="list-disc pl-5 text-sm">
@@ -25,14 +25,14 @@
         </div>
     @endif
 
-    <form action="{{ route('users.store') }}" method="POST" class="space-y-4 bg-white p-6 rounded shadow">
+    <form action="{{ route('users.update', $user) }}" method="POST" class="space-y-4 bg-white p-6 rounded shadow">
         @csrf
+        @method('PUT')
 
         {{-- Nombre --}}
         <div>
             <label class="block text-sm font-medium mb-1">Nombre</label>
-            <input type="text" name="name" value="{{ old('name') }}"
-                   class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-green-500" required>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full border px-3 py-2 rounded" required>
             @error('name')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -41,38 +41,19 @@
         {{-- Correo --}}
         <div>
             <label class="block text-sm font-medium mb-1">Correo</label>
-            <input type="email" name="email" value="{{ old('email') }}"
-                   class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-green-500" required>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full border px-3 py-2 rounded" required>
             @error('email')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 
-        {{-- Contraseña --}}
-        <div>
-            <label class="block text-sm font-medium mb-1">Contraseña</label>
-            <input type="password" name="password"
-                   class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-green-500" required>
-            @error('password')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        {{-- Confirmar contraseña --}}
-        <div>
-            <label class="block text-sm font-medium mb-1">Confirmar contraseña</label>
-            <input type="password" name="password_confirmation"
-                   class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-green-500" required>
-        </div>
-
         {{-- Rol --}}
         <div>
             <label class="block text-sm font-medium mb-1">Rol</label>
-            <select name="role" class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-green-500" required>
-                <option value="" disabled {{ old('role') ? '' : 'selected' }}>Seleccione un rol</option>
+            <select name="role" class="w-full border px-3 py-2 rounded" required>
                 @foreach ($roles as $role)
-                    <option value="{{ $role->name }}" {{ old('role') === $role->name ? 'selected' : '' }}>
-                        {{ ucwords($role->name) }}
+                    <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                        {{ ucfirst($role->name) }}
                     </option>
                 @endforeach
             </select>
@@ -85,7 +66,7 @@
         <div class="flex items-center justify-end space-x-4 mt-6">
             <a href="{{ route('users.index') }}" class="text-gray-600 hover:underline">Cancelar</a>
             <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700">
-                Crear
+                Actualizar
             </button>
         </div>
     </form>

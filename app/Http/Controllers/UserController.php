@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,8 +11,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $clienteId = app('clienteActual')->id;
-
         $query = User::query()->with('roles');
 
         if ($request->filled('email')) {
@@ -20,23 +18,19 @@ class UserController extends Controller
         }
 
         $users = $query->get();
-        $roles = Role::where('cliente_id', $clienteId)->get();
+        $roles = Role::all();
 
         return view('dashboard.users.index', compact('users', 'roles'));
     }
 
     public function create()
     {
-        $clienteId = app('clienteActual')->id;
-        $roles = Role::where('cliente_id', $clienteId)->get();
-
+        $roles = Role::all();
         return view('dashboard.users.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-        $clienteId = app('clienteActual')->id;
-
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
@@ -44,12 +38,10 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        $role = Role::where('name', $request->role)
-                    ->where('cliente_id', $clienteId)
-                    ->first();
+        $role = Role::where('name', $request->role)->first();
 
         if (!$role) {
-            return redirect()->back()->with('error', 'El rol no pertenece a este cliente.');
+            return redirect()->back()->with('error', 'El rol no existe.');
         }
 
         $user = User::create([
@@ -64,10 +56,44 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
     }
 
+    public function edit(User $user)
+    {
+        $roles = Role::all();
+        return view('dashboard.users.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6|confirmed',
+            'role' => 'required|exists:roles,name',
+        ]);
+
+        if ($user->email === 'admin@editha.com') {
+            return back()->with('error', 'No puedes modificar este usuario protegido.');
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        $role = Role::where('name', $request->role)->first();
+        if ($role) {
+            $user->syncRoles([$role]);
+        }
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
+    }
+
     public function updateRole(Request $request, User $user)
     {
-        $clienteId = app('clienteActual')->id;
-
         $request->validate([
             'role' => 'required|exists:roles,name',
         ]);
@@ -76,12 +102,10 @@ class UserController extends Controller
             return back()->with('error', 'No puedes modificar este usuario protegido.');
         }
 
-        $role = Role::where('name', $request->role)
-                    ->where('cliente_id', $clienteId)
-                    ->first();
+        $role = Role::where('name', $request->role)->first();
 
         if (!$role) {
-            return back()->with('error', 'El rol no pertenece a este cliente.');
+            return back()->with('error', 'El rol no existe.');
         }
 
         $user->syncRoles([$role]);

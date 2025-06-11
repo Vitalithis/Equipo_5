@@ -3,13 +3,11 @@
 @section('title', 'Gestión de Usuarios')
 
 @section('content')
-{{-- Tipografías --}}
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
 <div class="py-8 px-4 md:px-8 max-w-7xl mx-auto font-['Roboto'] text-gray-800">
     {{-- Encabezado con buscador y botón --}}
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-        {{-- Filtro por email --}}
         <form method="GET" action="{{ route('users.index') }}" class="flex flex-grow items-center space-x-3">
             <input type="text" name="email" value="{{ request('email') }}"
                    class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-green-500"

@@ -1,69 +1,71 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
-// Controllers generales
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\DescuentoController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\PedidoController;
-use App\Http\Controllers\BoletaController;
-use App\Http\Controllers\WebpayController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserRoleController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\FertilizanteController;
-use App\Http\Controllers\OrdenProduccionController;
-use App\Http\Controllers\CuidadoController;
-use App\Http\Controllers\FinanzaController;
-use App\Http\Controllers\InsumoController;
-use App\Http\Controllers\WorkController;
-use App\Http\Controllers\PasswordController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\ClientController;
+use App\Http\Controllers\{
+    HomeController, ProfileController, ProductoController, DescuentoController, CartController,
+    PedidoController, BoletaController, WebpayController, CheckoutController, UserController,
+    RoleController, UserRoleController, PermissionController, FertilizanteController,
+    OrdenProduccionController, CuidadoController, FinanzaController, InsumoController,
+    WorkController, PasswordController, ContactController, ClientController
+};
 
-// Rutas públicas
-Route::get('/', [HomeController::class, 'index']);
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Debug de dominio
+Route::get('/debug-domain', fn() => 'Dominio actual: ' . request()->getHost());
+Route::get('/test-soporte', fn() => 'Estoy en el dominio de soporte: ' . request()->getHost());
 
+// ====================
+// 🌐 Rutas públicas
+// ====================
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
 Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
 Route::get('/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}', [ProductoController::class, 'filter'])
-    ->where([
-        'tamano' => '\d+',
-        'ordenar_ascendente' => 'true|false'
-    ])->name('productos.filter');
+    ->where(['tamano' => '\d+', 'ordenar_ascendente' => 'true|false'])
+    ->name('productos.filter');
 
-Route::get('/sobre-nosotros', fn() => view('about'))->name('about');
-Route::get('/contacto', fn() => view('contact'))->name('contact');
-Route::get('/faq', fn() => view('faq'))->name('faq');
+Route::view('/sobre-nosotros', 'about')->name('about');
+Route::view('/contacto', 'contact')->name('contact');
+Route::view('/faq', 'faq')->name('faq');
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
+// ====================
+// 🔐 Autenticación
+// ====================
 require __DIR__ . '/auth.php';
 
-// Agrupación de rutas tenant por path
-Route::middleware(['web', InitializeTenancyByPath::class, 'auth'])->group(function () {
+// ====================
+// 🛠️ Rutas centrales (soporte)
+// ====================
+Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
+    Route::get('/', fn() => redirect()->route('clients.index'));
+    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+    Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
+});
 
-    // Dashboard principal
+// ====================
+// 🏘️ Rutas tenant
+// ====================
+Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(function () {
+
+    // Dashboard
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-    // Usuarios
+    // Usuarios y roles
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
     Route::get('/users/create', [UserController::class, 'create'])->middleware('permission:gestionar usuarios')->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->middleware('permission:gestionar usuarios')->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->middleware('permission:gestionar usuarios')->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->middleware('permission:gestionar usuarios')->name('users.update');
 
-    // Roles
+    // Roles y permisos
     Route::resource('/roles', RoleController::class)->middleware('permission:ver roles');
-
-    // Permisos
     Route::resource('/permissions', PermissionController::class)->middleware('permission:gestionar permisos');
 
     // Perfil
@@ -71,7 +73,7 @@ Route::middleware(['web', InitializeTenancyByPath::class, 'auth'])->group(functi
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Cambio de contraseña
+    // Cambio contraseña
     Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form');
     Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change');
 
@@ -109,11 +111,9 @@ Route::middleware(['web', InitializeTenancyByPath::class, 'auth'])->group(functi
         Route::post('/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
     });
 
-    // Webpay
+    // Pagos
     Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
-
-    // Checkout
     Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
     Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
@@ -155,12 +155,4 @@ Route::middleware(['web', InitializeTenancyByPath::class, 'auth'])->group(functi
     // Tareas del vivero
     Route::resource('/works', WorkController::class);
     Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
-
-    // Panel de soporte: gestión de clientes
-    Route::middleware(['permission:gestionar clientes'])->group(function () {
-        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-        Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
-    });
 });

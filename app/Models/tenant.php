@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
-use Stancl\Tenancy\Database\Concerns\HasDomains;
+use Stancl\Tenancy\Database\Models\Domain;
 
 class Tenant extends BaseTenant
 {
-    use HasDomains;
+    public function domains()
+    {
+        return $this->hasMany(Domain::class);
+    }
 }

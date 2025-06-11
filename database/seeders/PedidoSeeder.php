@@ -4,16 +4,22 @@ namespace Database\Seeders;
 
 use App\Models\Pedido;
 use App\Models\DetallePedido;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PedidoSeeder extends Seeder
 {
     public function run(): void
     {
+        // ✅ Crear un usuario si no existe
+        $usuario = User::first() ?? User::factory()->create();
+
         Pedido::factory()
             ->count(10)
-            ->create()
-            ->each(function ($pedido) use (&$totalSubtotal) {
+            ->create([
+                'usuario_id' => $usuario->id // asignar usuario válido
+            ])
+            ->each(function ($pedido) {
                 $totalSubtotal = 0;
 
                 DetallePedido::factory()

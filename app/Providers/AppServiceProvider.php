@@ -18,17 +18,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->app->booted(function () {
-            if (Auth::check()) {
-                $clienteId = Auth::user()->cliente_id;
 
-                // Configurar Spatie para multitenancy por cliente
-                app(PermissionRegistrar::class)->setPermissionsTeamId($clienteId);
-
-                // Agregar scopes globales para filtrar Roles y Permisos por cliente_id
-                $this->addExplicitGlobalScopes($clienteId);
-            }
-        });
     }
 
     protected function addExplicitGlobalScopes($clienteId)

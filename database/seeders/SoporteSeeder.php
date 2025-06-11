@@ -12,27 +12,32 @@ class SoporteSeeder extends Seeder
 {
     public function run(): void
     {
-        $soporte = User::firstOrCreate([
-            'email' => 'admin@dan.cl',
-        ], [
-            'name' => 'Dan Ocampo',
-            'password' => Hash::make('12345678'),
-            'cliente_id' => null,
-        ]);
-
-        $rolSoporte = Role::firstOrCreate([
+        // 1. Crear rol soporte
+        $role = Role::firstOrCreate([
             'name' => 'soporte',
             'guard_name' => 'web',
-            'cliente_id' => null,
         ]);
 
-        $rolSoporte->syncPermissions([
+        // 2. Crear usuario soporte
+        $user = User::firstOrCreate([
+            'email' => 'soporte@plantaseditha.me',
+        ], [
+            'name' => 'Soporte',
+            'password' => Hash::make('soporte'),
+        ]);
+
+        // 3. Asignar rol
+        $user->assignRole($role);
+
+        // 4. Asignar permisos (opcional, si usas control por permisos)
+        $permisos = [
             'ver panel soporte',
-            'crear cliente',
-            'ver dashboard',
-            'gestionar clientes'
-        ]);
+            'gestionar clientes',
+        ];
 
-        $soporte->assignRole($rolSoporte);
+        foreach ($permisos as $perm) {
+            $permiso = Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
+            $role->givePermissionTo($permiso);
+        }
     }
 }

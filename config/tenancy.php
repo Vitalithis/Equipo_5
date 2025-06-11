@@ -17,10 +17,12 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-    '127.0.0.1',
     'localhost',
-    'plantaseditha.me', 
-    ],
+    '127.0.0.1',
+    'plantaseditha.me',
+    'soporte.plantaseditha.me',
+],
+
 
     /**
      * Tenancy bootstrappers are executed when tenancy is initialized.

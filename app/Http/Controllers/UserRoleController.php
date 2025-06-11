@@ -16,7 +16,7 @@ class UserRoleController extends Controller
             ? Role::all()
             : Role::where('name', '!=', 'admin')->get();
 
-        $layout = 'layouts.dashboard'; //  Aquí se define
+        $layout = 'layouts.dashboard';
 
         return view('dashboard.users.index', compact('users', 'roles', 'layout'));
     }
@@ -29,10 +29,11 @@ class UserRoleController extends Controller
             ? Role::all()
             : Role::where('name', '!=', 'admin')->get();
 
-        $layout = 'layouts.dashboard'; // <- aquí defines el layout
+        $layout = 'layouts.dashboard';
 
         return view('dashboard.users.index', compact('users', 'roles', 'layout'));
     }
+
     public function updateRole(Request $request, User $user)
     {
         $request->validate([
@@ -41,20 +42,20 @@ class UserRoleController extends Controller
 
         $authUser = auth()->user();
 
+        // ⚠️ Validaciones de seguridad
         if ($user->email === 'admin@editha.com') {
             return redirect()->back()->with('error', 'No puedes modificar el rol del administrador principal.');
         }
 
-        if ($request->role === 'admin' && $user->id === $authUser->id) {
-            return redirect()->back()->with('error', 'No puedes darte a ti mismo el rol admin.');
-        }
-
-        if ($request->role === 'admin' && !$authUser->hasRole('admin')) {
-            abort(403, 'No tienes permiso para asignar el rol admin.');
+        if (
+            $request->role === 'admin' &&
+            (!$authUser->hasRole('admin') || $user->id === $authUser->id)
+        ) {
+            return redirect()->back()->with('error', 'No tienes permiso para asignar o autoasignarte el rol admin.');
         }
 
         if ($user->hasRole('admin') && !$authUser->hasRole('admin')) {
-            abort(403, 'No puedes modificar a un administrador.');
+            return redirect()->back()->with('error', 'No puedes modificar a un administrador.');
         }
 
         $user->syncRoles([$request->role]);
