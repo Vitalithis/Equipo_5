@@ -20,13 +20,13 @@
         @csrf
 
         <div>
-            <label class="block mb-1 font-medium">Nombre del Cliente</label>
-            <input type="text" name="nombre" class="w-full border p-2 rounded" required>
+            <label for="nombre" class="block mb-1 font-medium">Nombre del Cliente</label>
+            <input type="text" id="nombre" name="nombre" class="w-full border p-2 rounded" value="{{ old('nombre') }}" required>
         </div>
 
         <div>
-            <label class="block mb-1 font-medium">Subdominio</label>
-            <input type="text" name="subdominio" class="w-full border p-2 rounded" required>
+            <label for="subdominio" class="block mb-1 font-medium">Subdominio</label>
+            <input type="text" id="subdominio" name="subdominio" class="w-full border p-2 rounded" value="{{ old('subdominio') }}" required>
             <p class="text-sm text-gray-500">Ejemplo: vivero → vivero.plantaseditha.me</p>
         </div>
 
@@ -35,21 +35,25 @@
         <h3 class="text-lg font-semibold">Usuario Administrador</h3>
 
         <div>
-            <label class="block mb-1 font-medium">Correo electrónico</label>
-            <input type="email" name="admin_email" class="w-full border p-2 rounded" required>
+            <label for="admin_email" class="block mb-1 font-medium">Correo electrónico</label>
+            <input type="email" id="admin_email" name="admin_email" class="w-full border p-2 rounded" value="{{ old('admin_email') }}" required>
         </div>
 
         <div>
-            <label class="block mb-1 font-medium">Contraseña</label>
-            <input type="password" name="admin_password" class="w-full border p-2 rounded" required>
+            <label for="admin_password" class="block mb-1 font-medium">Contraseña</label>
+            <input type="password" id="admin_password" name="admin_password" class="w-full border p-2 rounded" required>
         </div>
 
         <div>
-            <label class="block mb-1 font-medium">Confirmar contraseña</label>
-            <input type="password" name="admin_password_confirmation" class="w-full border p-2 rounded" required>
+            <label for="admin_password_confirmation" class="block mb-1 font-medium">Confirmar contraseña</label>
+            <input type="password" id="admin_password_confirmation" name="admin_password_confirmation" class="w-full border p-2 rounded" required>
         </div>
 
-        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Crear Cliente</button>
+        <div class="pt-4">
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Crear Cliente
+            </button>
+        </div>
     </form>
 </div>
 @endsection

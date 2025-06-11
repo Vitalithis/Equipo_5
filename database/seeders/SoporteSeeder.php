@@ -33,6 +33,7 @@ class SoporteSeeder extends Seeder
         $permisos = [
             'ver panel soporte',
             'gestionar clientes',
+            'crear cliente'
         ];
 
         foreach ($permisos as $perm) {

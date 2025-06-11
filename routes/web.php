@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-
 use App\Http\Controllers\{
     HomeController, ProfileController, ProductoController, DescuentoController, CartController,
     PedidoController, BoletaController, WebpayController, CheckoutController, UserController,
@@ -11,9 +9,9 @@ use App\Http\Controllers\{
     WorkController, PasswordController, ContactController, ClientController
 };
 
-// Debug de dominio
-Route::get('/debug-domain', fn() => 'Dominio actual: ' . request()->getHost());
-Route::get('/test-soporte', fn() => 'Estoy en el dominio de soporte: ' . request()->getHost());
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
 // ====================
 // 🌐 Rutas públicas
@@ -40,50 +38,55 @@ require __DIR__ . '/auth.php';
 // 🛠️ Rutas centrales (soporte)
 // ====================
 Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
-    Route::get('/', fn() => redirect()->route('clients.index'));
-    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
-    Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
+    Route::get('/soporte', fn() => redirect()->route('clients.index'));
+    Route::get('/soporte/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/soporte/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/soporte/clientes', [ClientController::class, 'store'])->name('clients.store');
+    Route::patch('/soporte/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+    Route::get('/soporte/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
 });
 
 // ====================
-// 🏘️ Rutas tenant
+// 🏘️ Rutas tenant (vía path o subdominio según entorno)
 // ====================
-Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(function () {
+$tenantMiddleware = [
+    'web',
+    app()->environment('local')
+        ? InitializeTenancyByPath::class
+        : InitializeTenancyByDomain::class,
+    PreventAccessFromCentralDomains::class,
+    'auth',
+];
 
+Route::middleware($tenantMiddleware)->group(function () {
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
     // Usuarios y roles
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
-    Route::get('/users/create', [UserController::class, 'create'])->middleware('permission:gestionar usuarios')->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->middleware('permission:gestionar usuarios')->name('users.store');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->middleware('permission:gestionar usuarios')->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->middleware('permission:gestionar usuarios')->name('users.update');
+    Route::resource('/users', UserController::class)->middleware('permission:gestionar usuarios');
 
     // Roles y permisos
     Route::resource('/roles', RoleController::class)->middleware('permission:ver roles');
     Route::resource('/permissions', PermissionController::class)->middleware('permission:gestionar permisos');
 
-    // Perfil
+    // Perfil y contraseña
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Cambio contraseña
     Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form');
     Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change');
 
     // Catálogo
-    Route::get('/dashboard/catalogo', [ProductoController::class, 'dashboard_show'])->middleware('permission:gestionar catálogo')->name('dashboard.catalogo');
-    Route::get('/dashboard/catalogo/create', [ProductoController::class, 'create'])->middleware('permission:gestionar catálogo')->name('catalogo.create');
-    Route::post('/dashboard/catalogo', [ProductoController::class, 'store'])->middleware('permission:gestionar catálogo')->name('catalogo.store');
-    Route::get('/dashboard/catalogo/{id}/edit', [ProductoController::class, 'edit'])->middleware('permission:gestionar catálogo')->name('catalogo_edit');
-    Route::put('/dashboard/catalogo/{id}', [ProductoController::class, 'update'])->middleware('permission:gestionar catálogo')->name('catalogo.update');
-    Route::delete('/dashboard/catalogo/{id}', [ProductoController::class, 'destroy'])->middleware('permission:gestionar catálogo')->name('catalogo.destroy');
+    Route::prefix('/dashboard/catalogo')->middleware('permission:gestionar catálogo')->group(function () {
+        Route::get('/', [ProductoController::class, 'dashboard_show'])->name('dashboard.catalogo');
+        Route::get('/create', [ProductoController::class, 'create'])->name('catalogo.create');
+        Route::post('/', [ProductoController::class, 'store'])->name('catalogo.store');
+        Route::get('/{id}/edit', [ProductoController::class, 'edit'])->name('catalogo_edit');
+        Route::put('/{id}', [ProductoController::class, 'update'])->name('catalogo.update');
+        Route::delete('/{id}', [ProductoController::class, 'destroy'])->name('catalogo.destroy');
+    });
 
     // Descuentos
     Route::resource('/dashboard/descuentos', DescuentoController::class)->except(['show'])->middleware('permission:gestionar descuentos');
@@ -92,9 +95,11 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
     Route::resource('/pedidos', PedidoController::class)->middleware('permission:gestionar pedidos');
 
     // Boletas
-    Route::get('/boletas/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
-    Route::get('/boletas/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
-    Route::post('/boletas/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
+    Route::prefix('/boletas')->group(function () {
+        Route::get('/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
+        Route::get('/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
+        Route::post('/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
+    });
 
     // Carrito
     Route::prefix('/cart')->group(function () {
@@ -122,7 +127,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
     Route::resource('/dashboard/fertilizantes', FertilizanteController::class)->middleware('permission:gestionar productos');
 
     // Cuidados
-    Route::prefix('/dashboard/cuidados')->group(function () {
+    Route::prefix('/dashboard/cuidados')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [CuidadoController::class, 'index'])->name('dashboard.cuidados');
         Route::get('/create', [CuidadoController::class, 'create'])->name('dashboard.cuidados.create');
         Route::post('/', [CuidadoController::class, 'store'])->name('dashboard.cuidados.store');
@@ -133,7 +138,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
     });
 
     // Finanzas
-    Route::prefix('/finanzas')->group(function () {
+    Route::prefix('/finanzas')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [FinanzaController::class, 'index'])->name('dashboard.finanzas');
         Route::get('/crear', [FinanzaController::class, 'create'])->name('finanzas.create');
         Route::post('/', [FinanzaController::class, 'store'])->name('finanzas.store');
@@ -143,7 +148,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
     });
 
     // Insumos
-    Route::prefix('/insumos')->group(function () {
+    Route::prefix('/insumos')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [InsumoController::class, 'index'])->name('dashboard.insumos');
         Route::get('/crear', [InsumoController::class, 'create'])->name('insumos.create');
         Route::post('/', [InsumoController::class, 'store'])->name('insumos.store');
