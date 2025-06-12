@@ -11,35 +11,31 @@ use App\Http\Controllers\{
     WorkController, PasswordController, ContactController, ClientController
 };
 
-// Debug de dominio
-Route::get('/debug-domain', fn() => 'Dominio actual: ' . request()->getHost());
-Route::get('/test-soporte', fn() => 'Estoy en el dominio de soporte: ' . request()->getHost());
+// ====================
+// 🌍 RUTAS DE LA APP CENTRAL
+// ====================
 
-// ====================
-// 🌐 Rutas públicas
-// ====================
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
-Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
-Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
-Route::get('/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}', [ProductoController::class, 'filter'])
-    ->where(['tamano' => '\d+', 'ordenar_ascendente' => 'true|false'])
-    ->name('productos.filter');
+// Dominio principal (plantaseditha.me): landing y catálogo público
+Route::domain('plantaseditha.me')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
+    Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
+    Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
+    Route::get('/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}', [ProductoController::class, 'filter'])
+        ->where(['tamano' => '\d+', 'ordenar_ascendente' => 'true|false'])
+        ->name('productos.filter');
 
-Route::view('/sobre-nosotros', 'about')->name('about');
-Route::view('/contacto', 'contact')->name('contact');
-Route::view('/faq', 'faq')->name('faq');
-Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+    Route::view('/sobre-nosotros', 'about')->name('about');
+    Route::view('/contacto', 'contact')->name('contact');
+    Route::view('/faq', 'faq')->name('faq');
+    Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
-// ====================
-// 🔐 Autenticación
-// ====================
-require __DIR__ . '/auth.php';
+    // Autenticación central
+    require __DIR__ . '/auth.php';
+});
 
-// ====================
-// 🛠️ Rutas centrales (soporte)
-// ====================
-Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
+// Dominio soporte (soporte.plantaseditha.me): gestión de tenants
+Route::domain('soporte.plantaseditha.me')->middleware(['web', 'auth', 'role:soporte'])->group(function () {
     Route::get('/', fn() => redirect()->route('clients.index'));
     Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
@@ -49,8 +45,9 @@ Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
 });
 
 // ====================
-// 🏘️ Rutas tenant
+// 🏘️ RUTAS DE TENANTS
 // ====================
+
 Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(function () {
 
     // Dashboard
@@ -78,12 +75,14 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
     Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change');
 
     // Catálogo
-    Route::get('/dashboard/catalogo', [ProductoController::class, 'dashboard_show'])->middleware('permission:gestionar catálogo')->name('dashboard.catalogo');
-    Route::get('/dashboard/catalogo/create', [ProductoController::class, 'create'])->middleware('permission:gestionar catálogo')->name('catalogo.create');
-    Route::post('/dashboard/catalogo', [ProductoController::class, 'store'])->middleware('permission:gestionar catálogo')->name('catalogo.store');
-    Route::get('/dashboard/catalogo/{id}/edit', [ProductoController::class, 'edit'])->middleware('permission:gestionar catálogo')->name('catalogo_edit');
-    Route::put('/dashboard/catalogo/{id}', [ProductoController::class, 'update'])->middleware('permission:gestionar catálogo')->name('catalogo.update');
-    Route::delete('/dashboard/catalogo/{id}', [ProductoController::class, 'destroy'])->middleware('permission:gestionar catálogo')->name('catalogo.destroy');
+    Route::prefix('/dashboard/catalogo')->middleware('permission:gestionar catálogo')->group(function () {
+        Route::get('/', [ProductoController::class, 'dashboard_show'])->name('dashboard.catalogo');
+        Route::get('/create', [ProductoController::class, 'create'])->name('catalogo.create');
+        Route::post('/', [ProductoController::class, 'store'])->name('catalogo.store');
+        Route::get('/{id}/edit', [ProductoController::class, 'edit'])->name('catalogo_edit');
+        Route::put('/{id}', [ProductoController::class, 'update'])->name('catalogo.update');
+        Route::delete('/{id}', [ProductoController::class, 'destroy'])->name('catalogo.destroy');
+    });
 
     // Descuentos
     Route::resource('/dashboard/descuentos', DescuentoController::class)->except(['show'])->middleware('permission:gestionar descuentos');
@@ -152,7 +151,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
     });
 
-    // Tareas del vivero
+    // Tareas
     Route::resource('/works', WorkController::class);
     Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 });
