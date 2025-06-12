@@ -57,7 +57,5 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
 
-        // Alias tenant (para usarlo combinado: ['auth', 'tenant'])
-        'tenant' => \App\Http\Middleware\IdentifyTenant::class, // para usarlo individual
     ];
 }

@@ -29,9 +29,7 @@
             <tbody>
                 @foreach ($clientes as $cliente)
                     <tr class="border-t">
-                        <td class="px-4 py-2">
-                            {{ $cliente->data['nombre'] ?? 'Sin nombre' }}
-                        </td>
+                        <td class="px-4 py-2">{{ $cliente->data['nombre'] ?? 'Sin nombre' }}</td>
                         <td class="px-4 py-2">
                             {{ $cliente->domains->first()->domain ?? 'No definido' }}
                         </td>
