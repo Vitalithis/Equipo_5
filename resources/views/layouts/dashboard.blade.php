@@ -161,6 +161,15 @@
       </li>
     @endcan
 
+        @can('gestionar transporte')
+      <li>
+        <a href="{{ route('dashboard.transports.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
+          <i class="fa-solid fa-droplet"></i>
+          <span>Gestionar Transporte</span>
+        </a>
+      </li>
+    @endcan
+
     @can('ver dashboard')
       <li>
         <a href="{{ route('maintenance.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">

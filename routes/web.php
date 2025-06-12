@@ -31,6 +31,8 @@
     use App\Http\Controllers\FertilizationController;
     use App\Http\Controllers\TreatmentController;
     use App\Http\Controllers\TreatmentApplicationController;
+    use App\Http\Controllers\TransportController;
+
 
 
 
@@ -96,6 +98,12 @@
         Route::get('/treatment-applications', [TreatmentApplicationController::class, 'index'])->name('treatment_applications.index');
         Route::get('/treatment-applications/create', [TreatmentApplicationController::class, 'create'])->name('treatment_applications.create');
         Route::post('/treatment-applications', [TreatmentApplicationController::class, 'store'])->name('treatment_applications.store');
+    });
+
+    //Transporte
+
+    Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+        Route::resource('transports', TransportController::class)->names('dashboard.transports');
     });
 
 

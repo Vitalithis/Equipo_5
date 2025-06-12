@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             'gestionar productos',
             'gestionar proveedores',
             'gestionar catálogo',
+            'gestionar transporte',
             // Pedidos y descuentos
 
             'gestionar pedidos',
@@ -117,6 +118,7 @@ class PermissionSeeder extends Seeder
             'gestionar productos',
             'gestionar proveedores',
             'gestionar catálogo',
+            'gestionar transporte',
             // Pedidos y descuentos
 
             'gestionar pedidos',
