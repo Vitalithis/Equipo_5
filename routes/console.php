@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,21 +19,46 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('negrea_al_dan',function(){
-    $this->comment('¿Que hacemos? Tlabaja, tiene que tlabajal. Mañana ocho mañana. No,no,no. Levántate. Mañana tienes que trabajar.Plata tú no plata');
-})->purpose('TLABAJA');
+Artisan::command('setup', function () {
+    $this->comment('🔧 Ejecutando composer install...');
+    passthru('composer install', $code);
+    if ($code !== 0) return $this->error('❌ Composer falló.');
 
+    $this->comment('📦 Ejecutando npm install...');
+    passthru('npm install', $code);
+    if ($code !== 0) return $this->error('❌ NPM falló.');
 
-Artisan::command('negrea_al_pipe',function(){
-    $this->comment('¿Que hacemos? Tlabaja, tiene que tlabajal. Mañana ocho mañana. No,no,no. Levántate. Mañana tienes que trabajar.Plata tú no plata');
-})->purpose('TLABAJA');
+    $this->comment('🎨 Ejecutando npm run build...');
+    passthru('npm run build', $code);
+    if ($code !== 0) return $this->error('❌ Build falló.');
 
+    $this->comment('🗃️ Ejecutando migraciones...');
+    Artisan::call('migrate', ['--force' => true]);
 
-Artisan::command('negrea_a_sele',function(){
-    $this->comment('¿Que hacemos? Tlabaja, tiene que tlabajal. Mañana ocho mañana. No,no,no. Levántate. Mañana tienes que trabajar.Plata tú no plata');
-})->purpose('TLABAJA');
+    if (app()->isProduction()) {
+        if ($this->confirm('⚠️ Estás en producción. ¿Ejecutar db:seed?')) {
+            Artisan::call('db:seed', ['--force' => true]);
+        }
+    } else {
+        $this->comment('🌱 Ejecutando seeds...');
+        Artisan::call('db:seed', ['--force' => true]);
+    }
 
+    if (app()->isProduction()) {
+        $this->comment('🧹 Limpiando y cacheando...');
+        Artisan::call('optimize:clear');
+        Artisan::call('config:cache');
+        Artisan::call('route:cache');
+        Artisan::call('view:cache');
+    }
+    $this->comment('🔗 Verificando symlink public/storage...');
+    $publicStorage = public_path('public/storage');
+    if (File::exists($publicStorage)) {
+        File::deleteDirectory($publicStorage); // elimina si es una carpeta
+        $this->comment('📁 Eliminado public/storage existente.');
+    }
+    Artisan::call('storage:link');
+    $this->comment('🔗 Symlink creado.');
 
-Artisan::command('negrea_al_lucas',function(){
-    $this->comment('Deja que los otros hagan todo, tu descansa mi rei 😎👌');
-})->purpose('TLABAJA');
+    $this->info('✅ Setup completo.');
+})->purpose('Configuración completa del sistema (composer, npm, migraciones, seed, cache)');
