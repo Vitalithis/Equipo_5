@@ -35,28 +35,28 @@
         </div>
     </div>
 
-    {{-- Gráficos compactos con filtros --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {{-- Gráfico de Ventas Diarias --}}
-        <div class="bg-white shadow rounded-lg p-4">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-sm font-semibold text-gray-800">📊 Ventas Diarias</h3>
-                <input type="month" id="mesVentasSelector"
-                       class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500">
-            </div>
-            <canvas id="graficoVentas" class="w-full h-48"></canvas>
+    {{-- Gráficos compactos: Ventas diarias y Finanzas --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    {{-- Gráfico de Ventas Diarias con filtro --}}
+    <div class="bg-white shadow rounded-lg p-4">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-sm font-semibold text-gray-800">📊 Ventas Diarias</h3>
+            <input type="month" id="mesVentasSelector"
+                   class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500">
         </div>
-
-        {{-- Gráfico de Ingresos vs Egresos con selector --}}
-        <div class="bg-white shadow rounded-lg p-4">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-sm font-semibold text-gray-800">🥧 Ingresos vs Egresos</h3>
-                <input type="month" id="mesSelector"
-                       class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500">
-            </div>
-            <canvas id="graficoTorta" class="w-full h-48"></canvas>
-        </div>
+        <canvas id="graficoVentas" class="w-full h-36"></canvas>
     </div>
+
+    {{-- Gráfico de Ingresos vs Egresos con filtro --}}
+    <div class="bg-white shadow rounded-lg p-4">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-sm font-semibold text-gray-800">🥧 Ingresos vs Egresos</h3>
+            <input type="month" id="mesSelector"
+                   class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500">
+        </div>
+        <canvas id="graficoTorta" class="w-full h-36"></canvas>
+    </div>
+</div>
 
     {{-- Tablas de Tareas --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,75 +115,67 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Gráfico de barras (ventas por día)
+    // ===================== GRAFICO DE VENTAS =====================
     const ctxVentas = document.getElementById('graficoVentas').getContext('2d');
     let chartVentas = new Chart(ctxVentas, {
-    type: 'bar',
-    data: {
-        labels: [],
-        datasets: [{
-            label: 'Ventas diarias ($)',
-            data: [],
-            backgroundColor: 'rgba(59, 130, 246, 0.5)',
-            borderColor: 'rgba(59, 130, 246, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 500000,
-                    callback: function(value) {
-                        return '$' + value.toLocaleString('es-CL');
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Ventas diarias ($)',
+                data: [],
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => '$' + value.toLocaleString('es-CL')
                     }
                 }
-            }
-        },
-        plugins: {
-            legend: {
-                display: true
+            },
+            plugins: {
+                legend: { display: true }
             }
         }
-    }
-});
-
+    });
 
     document.getElementById('mesVentasSelector').addEventListener('change', async function () {
-    const mes = this.value;
-    if (!mes) return;
+        const mes = this.value;
+        if (!mes) return;
 
-    try {
-        const response = await fetch(`/api/ventas/por-dia?mes=${mes}`);
-        const data = await response.json();
+        try {
+            const response = await fetch(`/api/ventas/por-dia?mes=${mes}`);
+            const data = await response.json();
 
-        const labels = data.labels;
-        const valores = data.valores;
+            const labels = data.labels;
+            const valores = data.valores;
 
-        chartVentas.data.labels = labels;
-        chartVentas.data.datasets[0].data = valores;
+            chartVentas.data.labels = labels;
+            chartVentas.data.datasets[0].data = valores;
 
-        // Detectar valor máximo y ajustar escala Y
-        const maxValor = Math.max(...valores, 0);
-        const escalaMax = Math.ceil(maxValor / 500000) * 500000 || 500000;
+            const maxValor = Math.max(...valores, 0);
+            const escalaMax = Math.ceil(maxValor / 500000) * 500000 || 500000;
 
-        chartVentas.options.scales.y.max = escalaMax;
-        chartVentas.options.scales.y.ticks.stepSize = 500000;
+            chartVentas.options.scales.y.max = escalaMax;
+            chartVentas.options.scales.y.ticks.stepSize = 500000;
 
-        chartVentas.update();
-    } catch (error) {
-        console.error('Error al obtener ventas:', error);
-        alert('No se pudieron cargar las ventas del mes.');
-    }
-});
-
+            chartVentas.update();
+        } catch (error) {
+            console.error('Error al cargar ventas:', error);
+            alert('No se pudieron cargar las ventas del mes.');
+        }
+    });
 
     document.getElementById('mesVentasSelector').value = new Date().toISOString().slice(0, 7);
     document.getElementById('mesVentasSelector').dispatchEvent(new Event('change'));
 
-    // Gráfico de torta
+    // ===================== GRAFICO DE TORTA =====================
     const ctxTorta = document.getElementById('graficoTorta').getContext('2d');
     let chartTorta = new Chart(ctxTorta, {
         type: 'pie',
@@ -199,9 +191,7 @@
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'bottom'
-                }
+                legend: { position: 'bottom' }
             }
         }
     });
@@ -217,7 +207,7 @@
             chartTorta.data.datasets[0].data = [data.ingresos, data.egresos];
             chartTorta.update();
         } catch (error) {
-            console.error('Error al cargar datos:', error);
+            console.error('Error al cargar datos financieros:', error);
             alert('No se pudo obtener la información financiera del mes.');
         }
     });
