@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Merma;
 use App\Models\Producto;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\Storage;
@@ -320,5 +320,31 @@ public function update(Request $request, $id)
         $producto->delete();
         return redirect()->route('dashboard.catalog.catalogo')->with('success', 'Producto eliminado correctamente.');
     }
+    public function registrarMerma(Request $request, $id)
+{
+    $request->validate([
+        'cantidad' => 'required|integer|min:1',
+        'descripcion' => 'required|string|max:255',
+    ]);
+
+    $producto = Producto::findOrFail($id);
+
+    if ($producto->stock < $request->cantidad) {
+        return back()->with('error', 'La cantidad ingresada excede el stock disponible.');
+    }
+
+    // Registrar la merma
+    Merma::create([
+        'producto_id' => $producto->id,
+        'cantidad' => $request->cantidad,
+        'motivo' => $request->descripcion,
+    ]);
+
+    // Descontar del stock
+    $producto->stock -= $request->cantidad;
+    $producto->save();
+
+    return back()->with('success', 'Merma registrada y stock actualizado correctamente.');
+}
 
 }

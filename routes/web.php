@@ -88,6 +88,8 @@ Route::post('/dashboard/catalogo', [ProductoController::class, 'store'])->middle
 Route::get('/dashboard/catalogo/{id}/edit', [ProductoController::class, 'edit'])->middleware('permission:gestionar catálogo')->name('catalogo_edit');
 Route::put('/dashboard/catalogo/{id}', [ProductoController::class, 'update'])->middleware('permission:gestionar catálogo')->name('catalogo.update');
 Route::delete('/dashboard/catalogo/{id}', [ProductoController::class, 'destroy'])->middleware('permission:gestionar catálogo')->name('catalogo.destroy');
+Route::post('/dashboard/catalogo/{id}/merma', [ProductoController::class, 'registrarMerma'])->middleware('permission:gestionar catálogo')->name('catalogo.merma');
+Route::get('/dashboard/catalogo/mermas', [ProductoController::class, 'verMermas'])->middleware('permission:gestionar catálogo')->name('catalogo.mermas');
 
 Route::get('/dashboard/descuentos', [DescuentoController::class, 'mostrarTodos'])->middleware(['auth', 'permission:gestionar descuentos'])->name('dashboard.descuentos');
 Route::get('dashboard/descuentos/create', [DescuentoController::class, 'create'])->middleware('permission:gestionar descuentos')->name('descuentos.create');
