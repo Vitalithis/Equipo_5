@@ -6,9 +6,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
 <div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800" x-data="{ abierto: null }">
-    <div class="flex items-center mb-6">
+    {{-- Filtros y botón --}}
+    <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <form method="GET" action="{{ route('dashboard.insumos') }}" class="flex flex-wrap gap-2 items-end md:items-center w-full md:max-w-md">
+            <input type="text" name="nombre" value="{{ request('nombre') }}" placeholder="Buscar por nombre..."
+                   class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+
+            <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto">
+                Buscar
+            </button>
+
+            @if(request('nombre'))
+                <a href="{{ route('dashboard.insumos') }}"
+                   class="text-sm text-gray-600 hover:text-gray-800 underline w-full md:w-auto">
+                    Limpiar
+                </a>
+            @endif
+        </form>
+
         <a href="{{ route('insumos.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
+           class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
@@ -17,6 +34,7 @@
         </a>
     </div>
 
+    {{-- Tabla --}}
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
             <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
@@ -112,5 +130,63 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Paginación --}}
+    @if ($insumos->count())
+        <div class="mt-6 flex flex-col items-center text-center gap-2">
+            <div class="text-sm text-gray-600">
+                Mostrando {{ $insumos->firstItem() ?? 0 }} a {{ $insumos->lastItem() ?? 0 }} de {{ $insumos->total() }} resultados
+            </div>
+
+            @if ($insumos->hasPages())
+                <div class="flex items-center space-x-1 text-sm text-gray-700">
+                    {{-- Anterior --}}
+                    @if ($insumos->onFirstPage())
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </span>
+                    @else
+                        <a href="{{ $insumos->previousPageUrl() }}"
+                           class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </a>
+                    @endif
+
+                    {{-- Páginas --}}
+                    @foreach ($insumos->getUrlRange(1, $insumos->lastPage()) as $page => $url)
+                        @if ($page == $insumos->currentPage())
+                            <span class="px-3 py-2 rounded bg-green-600 text-white font-semibold">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="px-3 py-2 rounded hover:bg-green-100 text-green-700">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    {{-- Siguiente --}}
+                    @if ($insumos->hasMorePages())
+                        <a href="{{ $insumos->nextPageUrl() }}"
+                           class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    @else
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    @endif
+                </div>
+            @endif
+        </div>
+    @endif
 </div>
 @endsection

@@ -43,6 +43,10 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
+    Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+
+
 
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');

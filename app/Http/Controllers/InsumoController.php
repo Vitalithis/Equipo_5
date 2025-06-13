@@ -10,12 +10,18 @@ use Illuminate\Http\Request;
 
 class InsumoController extends Controller
 {
-    public function index()
-    {
-        $insumos = Insumo::orderBy('created_at', 'desc')->get();
-        $insumos = Insumo::with('productos')->orderBy('created_at', 'desc')->get();
-        return view('dashboard.supply.insumos', compact('insumos'));
+    public function index(Request $request)
+{
+    $query = Insumo::with(['productos', 'detalles'])->orderBy('created_at', 'desc');
+
+    if ($request->filled('nombre')) {
+        $query->where('nombre', 'like', '%' . $request->nombre . '%');
     }
+
+    $insumos = $query->paginate(10)->withQueryString();
+
+    return view('dashboard.supply.insumos', compact('insumos'));
+}
 
     public function create()
     {

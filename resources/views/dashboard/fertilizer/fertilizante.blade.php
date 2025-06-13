@@ -6,26 +6,56 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
 <div x-data="{ modalFert: null }" class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
-    <div class="flex items-center justify-end space-x-4 mb-6">
-    <a href="{{ route('fertilizantes.create') }}"
-   class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 4v16m8-8H4"/>
-    </svg>
-    Agregar Fertilizante
-</a>
+    {{-- Filtros y botones --}}
+    <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        {{-- Formulario de filtros --}}
+        <form method="GET" action="{{ route('dashboard.fertilizantes') }}" class="flex flex-wrap gap-2 items-end md:items-center w-full md:max-w-2xl">
+            <input type="text" name="nombre" value="{{ request('nombre') }}"
+                   placeholder="Buscar por nombre..."
+                   class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
 
-<a href="{{ route('fertilizations.historial') }}"
-   class="flex items-center text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 3h18M3 7h18M3 11h12M3 15h12M3 19h12"/>
-    </svg>
-    Ver Historial
-</a>
-</div>
+            <select name="tipo" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+                <option value="">Todos los tipos</option>
+                <option value="orgánico" {{ request('tipo') === 'orgánico' ? 'selected' : '' }}>Orgánico</option>
+                <option value="químico" {{ request('tipo') === 'químico' ? 'selected' : '' }}>Químico</option>
+                <option value="otro" {{ request('tipo') === 'otro' ? 'selected' : '' }}>Otro</option>
+            </select>
 
+            <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto">
+                Buscar
+            </button>
+
+            @if(request('nombre') || request('tipo'))
+                <a href="{{ route('dashboard.fertilizantes') }}"
+                   class="text-sm text-gray-600 hover:text-gray-800 underline w-full md:w-auto">
+                    Limpiar
+                </a>
+            @endif
+        </form>
+
+        {{-- Botones de acción --}}
+        <div class="flex items-center gap-4">
+            <a href="{{ route('fertilizantes.create') }}"
+               class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors font-medium whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+                Agregar Fertilizante
+            </a>
+
+            <a href="{{ route('fertilizations.historial') }}"
+               class="flex items-center text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors font-medium whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3h18M3 7h18M3 11h12M3 15h12M3 19h12"/>
+                </svg>
+                Ver Historial
+            </a>
+        </div>
+    </div>
+
+    {{-- Tabla de fertilizantes --}}
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
             <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
@@ -37,38 +67,43 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-eaccent2 font-['Roboto'] text-gray-800">
-                @foreach($fertilizantes as $fertilizante)
+                @forelse($fertilizantes as $fertilizante)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->nombre }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->tipo }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->stock }}</td>
                         <td class="px-6 py-4 whitespace-nowrap space-y-1 space-x-2">
-    <button @click="modalFert = {{ $fertilizante->id }}"
-            class="text-green-600 hover:text-green-700 border border-green-600 hover:border-green-800 px-3 py-1 rounded transition-colors">
-        Ver detalles
-    </button>
+                            <button @click="modalFert = {{ $fertilizante->id }}"
+                                    class="text-green-600 hover:text-green-700 border border-green-600 hover:border-green-800 px-3 py-1 rounded transition-colors">
+                                Ver detalles
+                            </button>
 
-    <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}"
-       class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
+                            <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}"
+                               class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
+                                Editar
+                            </a>
 
-    <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">Eliminar</button>
-    </form>
+                            <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">
+                                    Eliminar
+                                </button>
+                            </form>
 
-    {{-- Botón para aplicar fertilizante --}}
-    <a href="{{ route('fertilizations.create', ['fertilizante_id' => $fertilizante->id]) }}"
-       class="text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors">
-        Aplicar
-    </a>
-</td>
-
+                            <a href="{{ route('fertilizations.create', ['fertilizante_id' => $fertilizante->id]) }}"
+                               class="text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors">
+                                Aplicar
+                            </a>
+                        </td>
                     </tr>
 
-                    <!-- Modal -->
-                    <div x-cloak x-show="modalFert === {{ $fertilizante->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div @click.away="modalFert = null" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl font-['Roboto'] text-gray-800">
+                    {{-- Modal --}}
+                    <div x-cloak x-show="modalFert === {{ $fertilizante->id }}"
+                         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div @click.away="modalFert = null"
+                             class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl font-['Roboto'] text-gray-800">
                             <div class="flex justify-between items-center mb-4">
                                 <h2 class="text-xl font-bold">{{ $fertilizante->nombre }}</h2>
                                 <button @click="modalFert = null" class="text-gray-600 hover:text-gray-800">
@@ -87,15 +122,85 @@
                                 <div><span class="font-semibold">Activo:</span> {{ $fertilizante->activo ? 'Sí' : 'No' }}</div>
                             </div>
                             <div class="mt-6 text-right">
-                                <button @click="modalFert = null" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                <button @click="modalFert = null"
+                                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                                     Cerrar
                                 </button>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center px-6 py-4 text-gray-500">No se encontraron fertilizantes.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+
+    @if ($fertilizantes->count())
+    <div class="mt-6 flex flex-col items-center text-center gap-2">
+        {{-- Resumen --}}
+        <div class="text-sm text-gray-600">
+            Mostrando {{ $fertilizantes->firstItem() ?? 0 }} a {{ $fertilizantes->lastItem() ?? 0 }} de {{ $fertilizantes->total() }} resultados
+        </div>
+
+        {{-- Paginador personalizado --}}
+        @if ($fertilizantes->hasPages())
+            <div class="flex items-center space-x-1 text-sm text-gray-700">
+                {{-- Página anterior --}}
+                @if ($fertilizantes->onFirstPage())
+                    <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </span>
+                @else
+                    <a href="{{ $fertilizantes->previousPageUrl() }}"
+                       class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                @endif
+
+                {{-- Números de página --}}
+                @foreach ($fertilizantes->getUrlRange(1, $fertilizantes->lastPage()) as $page => $url)
+                    @if ($page == $fertilizantes->currentPage())
+                        <span class="px-3 py-2 rounded bg-green-600 text-white font-semibold">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="px-3 py-2 rounded hover:bg-green-100 text-green-700">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                {{-- Página siguiente --}}
+                @if ($fertilizantes->hasMorePages())
+                    <a href="{{ $fertilizantes->nextPageUrl() }}"
+                       class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                @else
+                    <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                @endif
+            </div>
+        @endif
+    </div>
+@else
+    <div class="mt-6 text-center text-gray-500">
+        No se encontraron fertilizantes con los filtros aplicados.
+    </div>
+@endif
+
+
 </div>
 @endsection

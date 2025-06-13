@@ -8,11 +8,20 @@ use Illuminate\Http\Request;
 
 class ProductionController extends Controller
 {
-    public function index()
-    {
-        $producciones = Produccion::with(['producto', 'insumos'])->get();
-        return view('dashboard.produccion.produccion', compact('producciones'));
+    public function index(Request $request)
+{
+    $query = Produccion::with(['producto', 'insumos']);
+
+    if ($request->filled('producto')) {
+        $query->whereHas('producto', function ($q) use ($request) {
+            $q->where('nombre', 'like', '%' . $request->producto . '%');
+        });
     }
+
+    $producciones = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    return view('dashboard.produccion.produccion', compact('producciones'));
+}
 
     public function producir(Request $request)
 {
