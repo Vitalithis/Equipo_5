@@ -6,7 +6,7 @@
 
     <div class="py-8 px-4 md:px-8 max-w-3xl mx-auto">
         <div class="flex items-center mb-6">
-            <a href="{{ route('dashboard') }}"
+            <a href="{{ route('categorias.index') }}"
                 class="flex items-center text-green-700 hover:text-green-800 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

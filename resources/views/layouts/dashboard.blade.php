@@ -53,24 +53,6 @@
       </li>
     @endcan
 
-    @can('ver dashboard')
-      <li>
-        <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-house"></i>
-          <span>Home</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar catálogo')
-      <li>
-        <a href="{{ route('dashboard.catalogo') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-seedling"></i>
-          <span>Catálogo</span>
-        </a>
-      </li>
-    @endcan
-
     @can('ver roles')
       <li>
         <a href="{{ route('roles.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
@@ -203,6 +185,11 @@
               <div x-show="open" @click.away="open = false"
                   class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                    @can('ver dashboard')
+                            <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Home
+                            </a>
+                    @endcan
                   @can('ver dashboard')
                       <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           Panel Admin
