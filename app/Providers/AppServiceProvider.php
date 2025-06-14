@@ -8,6 +8,8 @@ use Spatie\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Mail;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
                 $this->addExplicitGlobalScopes($clienteId);
             }
         });
+
+        if (app()->environment('local')) { // Solo para entorno local
+        Mail::alwaysTo('scarrascos@ing.ucsc.cl');
+    }
     }
 
     protected function addExplicitGlobalScopes($clienteId)

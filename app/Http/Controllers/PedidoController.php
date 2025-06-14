@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Producto;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EstadoPedidoActualizado;
+
+
 
 use Illuminate\Support\Facades\Auth; ///??
 
@@ -111,6 +115,12 @@ class PedidoController extends Controller
         'impuesto' => $impuesto,
         'total' => $total,
         ]);
+
+        // Enviar correo solo si el usuario tiene email válido
+        if ($pedido->usuario && $pedido->usuario->email) {
+            Mail::to($pedido->usuario->email)->send(new EstadoPedidoActualizado($pedido));
+        }
+
 
         return redirect()->route('pedidos.index')->with('success', 'Pedido guardado correctamente.');
     }
@@ -279,6 +289,23 @@ public function show(Pedido $pedido)
 
         return redirect()->route('pedidos.index')->with('success', 'Pedido actualizado correctamente.');
     }
+
+    public function actualizarEstado(Request $request, Pedido $pedido)
+{
+    $request->validate([
+        'estado_pedido' => 'required|string',
+    ]);
+
+    $pedido->estado_pedido = $request->estado_pedido;
+    $pedido->save();
+
+    // Enviar correo al usuario
+    if ($pedido->usuario && $pedido->usuario->email) {
+        Mail::to($pedido->usuario->email)->send(new EstadoPedidoActualizado($pedido));
+    }
+
+    return redirect()->route('pedidos.index')->with('success', 'Estado actualizado y correo enviado.');
+}
 
 }
          

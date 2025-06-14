@@ -34,6 +34,9 @@
     use App\Http\Controllers\TransportController;
 
 
+//Mails
+    use Illuminate\Support\Facades\Mail;
+    use App\Mail\PruebaMailgun;
 
 
     use App\Models\ProductCategory;
@@ -42,6 +45,15 @@
     use App\Http\Controllers\ClienteController;
 
     use App\Http\Controllers\WorkController;
+
+    //Mail
+
+    Route::get('/probar-mailgun', function () {
+        Mail::to('scarrascos@ing.ucsc.cl')->send(new PruebaMailgun());
+        return 'Correo enviado';
+    });
+    Route::put('/pedidos/{pedido}/estado', [PedidoController::class, 'actualizarEstado'])->name('pedidos.actualizarEstado');
+
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/', [HomeController::class, 'index']);
