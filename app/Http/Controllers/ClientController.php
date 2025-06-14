@@ -30,7 +30,6 @@ class ClientController extends Controller
     {
         $this->authorize('crear cliente');
 
-        // Validación con verificación de slug único
         $request->validate([
             'nombre' => 'required|string',
             'subdominio' => [
@@ -50,51 +49,44 @@ class ClientController extends Controller
         DB::transaction(function () use ($request) {
             $slug = Str::slug($request->subdominio);
 
-            // 1. Crear tenant
-            $tenant = Tenant::create([
-                'id' => $slug,
-                'data' => [
-                    'nombre' => $request->nombre,
-                    'activo' => false,
-                ],
-            ]);
+            // Crear tenant con columnas reales
+            $tenant = new Tenant();
+            $tenant->id = $slug;
+            $tenant->data = [
+                'nombre' => $request->nombre,
+                'activo' => false,
+            ];
+            $tenant->save();
+
 
             $tenant->domains()->create([
                 'domain' => $slug . '.plantaseditha.me',
             ]);
 
-            // 2. Ejecutar lógica dentro del nuevo tenant
+            // Configurar dentro del contexto del nuevo tenant
             $tenant->run(function () use ($request, $slug) {
-                // Clonar permisos globales sin duplicar
                 $globalPermissions = Permission::all();
                 $newPermissions = [];
 
                 foreach ($globalPermissions as $permiso) {
-                    $yaExiste = Permission::where('name', $permiso->name)
-                        ->where('guard_name', $permiso->guard_name)
-                        ->exists();
-
-                    if (!$yaExiste) {
+                    if (!Permission::where('name', $permiso->name)->where('guard_name', $permiso->guard_name)->exists()) {
                         $clonado = $permiso->replicate();
                         $clonado->save();
                         $newPermissions[] = $clonado;
                     }
                 }
 
-                // Crear o usar rol admin
                 $adminRole = Role::firstOrCreate([
                     'name' => 'admin',
                     'guard_name' => 'web',
                 ]);
 
-                // Asignar permisos al rol admin
                 foreach ($newPermissions as $permiso) {
                     if (!$adminRole->hasPermissionTo($permiso)) {
                         $adminRole->givePermissionTo($permiso);
                     }
                 }
 
-                // Crear usuario administrador
                 $adminUser = User::create([
                     'name' => 'Administrador ' . $slug,
                     'email' => $request->admin_email,
@@ -111,9 +103,8 @@ class ClientController extends Controller
 
     public function toggleActivo(Tenant $cliente)
     {
-        $data = $cliente->data ?? [];
-        $data['activo'] = !($data['activo'] ?? false);
-        $cliente->update(['data' => $data]);
+        $cliente->activo = !$cliente->activo;
+        $cliente->save();
 
         return redirect()->route('clients.index')->with('success', 'Estado del cliente actualizado.');
     }

@@ -5,21 +5,19 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Tenant;
 
-class ViveroTenantSeeder extends Seeder
+class SoporteTenantSeeder extends Seeder
 {
     public function run(): void
     {
-        $tenantId = 'vivero';
-        $domain = 'vivero.plantaseditha.me';
+        $tenantId = 'soporte';
+        $domain = 'soporte.plantaseditha.me';
 
         if (!Tenant::find($tenantId)) {
-            $tenant = new Tenant();
-            $tenant->id = $tenantId;
-            $tenant->data = [
-                'nombre' => 'Vivero',
-                'activo' => false,
-            ];
-            $tenant->save();
+            $tenant = Tenant::create([
+                'id' => $tenantId,
+                'nombre' => 'Soporte',
+                'activo' => true,
+            ]);
 
             $tenant->domains()->create([
                 'domain' => $domain,

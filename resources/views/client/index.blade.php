@@ -3,7 +3,7 @@
 @section('title', 'Clientes')
 
 @section('content')
-<div class="p-6">
+<div class="p-6 font-['Roboto']">
     <h1 class="text-2xl font-bold mb-4">Clientes</h1>
 
     <a href="{{ route('clients.create') }}" class="inline-block mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
@@ -29,12 +29,12 @@
             <tbody>
                 @foreach ($clientes as $cliente)
                     <tr class="border-t">
-                        <td class="px-4 py-2">{{ $cliente->data['nombre'] ?? 'Sin nombre' }}</td>
+                        <td class="px-4 py-2">{{ $cliente->nombre }}</td>
                         <td class="px-4 py-2">
                             {{ $cliente->domains->first()->domain ?? 'No definido' }}
                         </td>
                         <td class="px-4 py-2">
-                            @if ($cliente->data['activo'] ?? false)
+                            @if ($cliente->activo)
                                 <span class="text-green-600 font-semibold">Activo</span>
                             @else
                                 <span class="text-red-600 font-semibold">Inactivo</span>
@@ -45,16 +45,17 @@
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="text-blue-600 hover:underline">
-                                    {{ ($cliente->data['activo'] ?? false) ? 'Desactivar' : 'Activar' }}
+                                    {{ $cliente->activo ? 'Desactivar' : 'Activar' }}
                                 </button>
                             </form>
                             <a href="{{ route('clients.show', $cliente) }}" class="text-blue-600 hover:underline">Ver</a>
 
-                            @if ($cliente->domains->first())
+                            @if ($cliente->domains->isNotEmpty())
                                 <a href="http://{{ $cliente->domains->first()->domain }}" target="_blank" class="text-green-600 hover:underline">
                                     Ir al sitio
                                 </a>
                             @endif
+
                         </td>
                     </tr>
                 @endforeach

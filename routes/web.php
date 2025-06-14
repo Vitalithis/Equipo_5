@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use App\Http\Controllers\{
     HomeController, ProfileController, ProductoController, DescuentoController, CartController,
     PedidoController, BoletaController, WebpayController, CheckoutController, UserController,
@@ -11,72 +10,57 @@ use App\Http\Controllers\{
 };
 
 // ====================
-// 🌍 RUTAS DE LA APP CENTRAL
+// 🌍 RUTAS DE LA APP
 // ====================
 
-Route::domain('plantaseditha.me')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
-    Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
-    Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
-    Route::get('/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}', [ProductoController::class, 'filter'])
-        ->where(['tamano' => '\d+', 'ordenar_ascendente' => 'true|false'])
-        ->name('productos.filter');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
+Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])->name('producto.filterByCategory');
+Route::get('/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}', [ProductoController::class, 'filter'])
+    ->where(['tamano' => '\d+', 'ordenar_ascendente' => 'true|false'])
+    ->name('productos.filter');
 
-    Route::view('/sobre-nosotros', 'about')->name('about');
-    Route::view('/contacto', 'contact')->name('contact');
-    Route::view('/faq', 'faq')->name('faq');
-    Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+Route::view('/sobre-nosotros', 'about')->name('about');
+Route::view('/contacto', 'contact')->name('contact');
+Route::view('/faq', 'faq')->name('faq');
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
-    require __DIR__ . '/auth.php'; // login y registro
+require __DIR__ . '/auth.php';
+
+// ====================
+// 🛠 SOPORTE (LOCAL)
+// ====================
+
+Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
+    Route::get('/soporte/inicio', fn () => redirect()->route('clients.index'))->name('soporte.inicio');
+    Route::get('/soporte/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/soporte/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/soporte/clientes', [ClientController::class, 'store'])->name('clients.store');
+    Route::patch('/soporte/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+    Route::get('/soporte/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
 });
 
 // ====================
-// 🛠 RUTAS DE SOPORTE
+// 🏘️ FUNCIONES MULTI-TENANT (EN LOCAL)
 // ====================
 
-Route::domain('soporte.plantaseditha.me')->group(function () {
-    // Página pública de bienvenida
-    Route::get('/', function () {
-        return view('welcome-soporte');
-    });
-
-    // Panel privado para soporte
-    Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
-        Route::get('/inicio', fn () => redirect()->route('clients.index'))->name('soporte.inicio');
-        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-        Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
-        Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
-    });
-});
-
-// ====================
-// 🏘️ RUTAS MULTI-TENANT
-// ====================
-
-Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(function () {
-    // Dashboard
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-    // Usuarios y roles
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
     Route::resource('/users', UserController::class)->middleware('permission:gestionar usuarios');
 
-    // Roles y permisos
     Route::resource('/roles', RoleController::class)->middleware('permission:ver roles');
     Route::resource('/permissions', PermissionController::class)->middleware('permission:gestionar permisos');
 
-    // Perfil y contraseña
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change.form');
     Route::post('/password/change', [PasswordController::class, 'change'])->name('password.change');
 
-    // Catálogo
     Route::prefix('/dashboard/catalogo')->middleware('permission:gestionar catálogo')->group(function () {
         Route::get('/', [ProductoController::class, 'dashboard_show'])->name('dashboard.catalogo');
         Route::get('/create', [ProductoController::class, 'create'])->name('catalogo.create');
@@ -86,20 +70,15 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::delete('/{id}', [ProductoController::class, 'destroy'])->name('catalogo.destroy');
     });
 
-    // Descuentos
     Route::resource('/dashboard/descuentos', DescuentoController::class)->except(['show'])->middleware('permission:gestionar descuentos');
-
-    // Pedidos
     Route::resource('/pedidos', PedidoController::class)->middleware('permission:gestionar pedidos');
 
-    // Boletas
     Route::prefix('/boletas')->group(function () {
         Route::get('/{pedido}/provisoria', [BoletaController::class, 'generarProvisoria'])->name('boletas.provisoria');
         Route::get('/{pedido}/pdf', [BoletaController::class, 'generarPDF'])->name('boletas.pdf');
         Route::post('/{pedido}/subir', [BoletaController::class, 'guardar'])->name('boletas.subir');
     });
 
-    // Carrito
     Route::prefix('/cart')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart.index');
         Route::post('/agregar', [CartController::class, 'agregarProducto'])->name('cart.agregar');
@@ -114,17 +93,14 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::post('/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
     });
 
-    // Pagos
     Route::get('/pagar', [WebpayController::class, 'pagar'])->name('webpay.pagar');
     Route::post('/respuesta', [WebpayController::class, 'respuesta'])->name('webpay.respuesta');
     Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
     Route::get('/checkout/response', [CheckoutController::class, 'response'])->name('checkout.response');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 
-    // Fertilizantes
     Route::resource('/dashboard/fertilizantes', FertilizanteController::class)->middleware('permission:gestionar productos');
 
-    // Cuidados
     Route::prefix('/dashboard/cuidados')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [CuidadoController::class, 'index'])->name('dashboard.cuidados');
         Route::get('/create', [CuidadoController::class, 'create'])->name('dashboard.cuidados.create');
@@ -135,7 +111,6 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::get('/{id}/pdf', [CuidadoController::class, 'generarPdf'])->name('dashboard.cuidados.pdf');
     });
 
-    // Finanzas
     Route::prefix('/finanzas')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [FinanzaController::class, 'index'])->name('dashboard.finanzas');
         Route::get('/crear', [FinanzaController::class, 'create'])->name('finanzas.create');
@@ -145,7 +120,6 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::delete('/{id}', [FinanzaController::class, 'destroy'])->name('finanzas.destroy');
     });
 
-    // Insumos
     Route::prefix('/insumos')->middleware('permission:gestionar productos')->group(function () {
         Route::get('/', [InsumoController::class, 'index'])->name('dashboard.insumos');
         Route::get('/crear', [InsumoController::class, 'create'])->name('insumos.create');
@@ -155,7 +129,6 @@ Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(func
         Route::delete('/{id}', [InsumoController::class, 'destroy'])->name('insumos.destroy');
     });
 
-    // Tareas
     Route::resource('/works', WorkController::class);
     Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 });

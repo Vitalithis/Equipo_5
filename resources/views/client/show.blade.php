@@ -6,10 +6,11 @@
 <div class="max-w-2xl mx-auto py-8 font-['Roboto'] text-gray-800">
     <h1 class="text-2xl font-bold mb-4">Cliente:</h1>
 
+    <p><strong>Nombre:</strong> {{ $cliente->nombre }}</p>
     <p><strong>Subdominio:</strong> {{ $cliente->domains->first()->domain ?? '-' }}</p>
     <p><strong>Slug:</strong> {{ $cliente->id }}</p>
     <p><strong>Estado:</strong>
-        @if ($cliente->data['activo'] ?? false)
+        @if ($cliente->activo)
             <span class="text-green-600">Activo</span>
         @else
             <span class="text-red-600">Inactivo</span>
