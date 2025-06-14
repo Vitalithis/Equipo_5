@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use App\Http\Controllers\{
     HomeController, ProfileController, ProductoController, DescuentoController, CartController,
     PedidoController, BoletaController, WebpayController, CheckoutController, UserController,
@@ -13,7 +14,6 @@ use App\Http\Controllers\{
 // 🌍 RUTAS DE LA APP CENTRAL
 // ====================
 
-// Dominio principal (plantaseditha.me): landing y catálogo público
 Route::domain('plantaseditha.me')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
@@ -28,27 +28,35 @@ Route::domain('plantaseditha.me')->group(function () {
     Route::view('/faq', 'faq')->name('faq');
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
-    // Autenticación central
-    require __DIR__ . '/auth.php';
-});
-
-// Dominio soporte (soporte.plantaseditha.me): gestión de tenants
-Route::domain('soporte.plantaseditha.me')->middleware(['web', 'auth', 'role:soporte'])->group(function () {
-    Route::get('/', fn() => redirect()->route('clients.index'));
-    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
-    Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
+    require __DIR__ . '/auth.php'; // login y registro
 });
 
 // ====================
-// 🏘️ RUTAS DE TENANTS
+// 🛠 RUTAS DE SOPORTE
+// ====================
+
+Route::domain('soporte.plantaseditha.me')->group(function () {
+    // Página pública de bienvenida
+    Route::get('/', function () {
+        return view('welcome-soporte');
+    });
+
+    // Panel privado para soporte
+    Route::middleware(['web', 'auth', 'role:soporte'])->group(function () {
+        Route::get('/inicio', fn () => redirect()->route('clients.index'))->name('soporte.inicio');
+        Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+        Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+        Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+        Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+        Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clients.show');
+    });
+});
+
+// ====================
+// 🏘️ RUTAS MULTI-TENANT
 // ====================
 
 Route::middleware(['web', InitializeTenancyByDomain::class, 'auth'])->group(function () {
-
-Route::middleware($tenantMiddleware)->group(function () {
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 

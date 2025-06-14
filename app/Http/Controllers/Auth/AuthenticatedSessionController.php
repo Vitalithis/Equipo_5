@@ -28,12 +28,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        if (Auth::user()->must_change_password) {
+        $user = Auth::user();
+
+        if ($user->must_change_password) {
             return redirect()->route('password.change.form');
+        }
+
+        //  Redirección condicional por dominio o rol
+        if ($user->hasRole('soporte')) {
+            return redirect()->route('soporte.inicio');
         }
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
+
 
     /**
      * Destroy an authenticated session.
