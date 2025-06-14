@@ -10,7 +10,7 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->json('data')->nullable(); // JSON en MariaDB 10.4 es LONGTEXT
+            $table->json('data')->nullable();  // esta línea es clave para guardar arrays/objetos JSON
             $table->timestamps();
         });
     }

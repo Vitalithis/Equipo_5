@@ -10,7 +10,7 @@ class Tenant extends BaseTenant
     protected $fillable = ['id', 'data'];
 
     protected $casts = [
-        'data' => 'array', // Laravel hará JSON encode/decode automático
+        'data' => 'array', // Laravel hace JSON encode/decode automático si la columna es JSON
     ];
 
     public function domains()

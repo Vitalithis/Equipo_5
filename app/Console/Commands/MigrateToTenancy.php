@@ -14,7 +14,7 @@ class MigrateToTenancy extends Command
 {
     protected $signature = 'tenancy:migrate-from-central';
 
-    protected $description = 'Crear tenants y migrar datos desde la base central usando cliente_id';
+    protected $description = 'Crear tenants y migrar datos desde la base central usando arquitectura tenancy';
 
     public function handle()
     {
@@ -25,16 +25,19 @@ class MigrateToTenancy extends Command
 
             $this->info("▶ Creando tenant '$tenantId'...");
 
-            // Crear tenant
+            // Crear tenant si no existe
             if (Tenant::find($tenantId)) {
                 $this->warn("⚠️  El tenant '$tenantId' ya existe. Saltando...");
                 continue;
             }
-            
+
             $tenant = Tenant::create([
                 'id' => $tenantId,
+                'data' => [
+                    'nombre' => $cliente->nombre,
+                    'activo' => $cliente->activo,
+                ],
             ]);
-            
 
             // Crear dominio asociado
             Domain::create([
@@ -55,21 +58,21 @@ class MigrateToTenancy extends Command
                 ]);
             });
 
-            // Copiar datos desde la base central a este tenant
+            // Migrar datos (ahora sin cliente_id)
             $tenant->run(function () use ($cliente) {
-                // Migrar usuarios
-                $usuarios = User::where('cliente_id', $cliente->id)->get();
+                // Migrar usuarios (sin filtro cliente_id)
+                $usuarios = User::all();
                 foreach ($usuarios as $u) {
                     User::create($u->only(['name', 'email', 'password']));
                 }
 
-                // Migrar productos
-                $productos = Producto::where('cliente_id', $cliente->id)->get();
+                // Migrar productos (sin filtro cliente_id)
+                $productos = Producto::all();
                 foreach ($productos as $p) {
                     Producto::create($p->only(['nombre', 'descripcion', 'precio', 'stock']));
                 }
 
-                // Agrega aquí otros modelos como pedidos, insumos, etc.
+                // Agrega aquí otros modelos si necesitas migrar datos globales o iniciales.
             });
 
             $this->info("✅ Datos migrados para '$tenantId'.\n");

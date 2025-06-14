@@ -4,11 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeDataColumnTypeInTenantsTable extends Migration
+class ChangeDataColumnToJsonInTenantsTable extends Migration
 {
     public function up()
     {
         Schema::table('tenants', function (Blueprint $table) {
+            // Convertir columna data de longtext a json
             $table->json('data')->nullable()->change();
         });
     }
@@ -16,6 +17,7 @@ class ChangeDataColumnTypeInTenantsTable extends Migration
     public function down()
     {
         Schema::table('tenants', function (Blueprint $table) {
+            // Revertir a longtext por si necesitas rollback
             $table->longText('data')->nullable()->change();
         });
     }
