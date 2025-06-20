@@ -14,6 +14,38 @@
     @endif
 
     <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+
+    {{-- Buscador y filtro por estado --}}
+    <form method="GET" action="{{ route('pedidos.index') }}" class="flex flex-wrap gap-2 items-center w-full md:max-w-3xl mb-4">
+
+        <input type="text" name="usuario" value="{{ request('usuario') }}" placeholder="Buscar por usuario..."
+            class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+
+        <select name="estado_pedido" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+            <option value="">Todos los estados</option>
+            @foreach($estados as $valor => $etiqueta)
+                <option value="{{ $valor }}" {{ request('estado_pedido') === $valor ? 'selected' : '' }}>
+                    {{ $etiqueta }}
+                </option>
+            @endforeach
+        </select>
+
+
+        <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
+            Buscar
+        </button>
+
+        @if(request('usuario') || request('estado_pedido'))
+            <a href="{{ route('pedidos.index') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
+                Limpiar
+            </a>
+        @endif
+    </form>
+
+</div>
+
+    
         <a href="{{ route('pedidos.create') }}"
            class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -109,10 +141,18 @@
                 </tbody>
             </table>
         </div>
+
+
+
     @else
         <p class="text-center text-lg text-gray-600 mt-10">No hay pedidos registrados.</p>
     @endif
 </div>
+        @if($pedidos instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="mt-6 flex justify-center">
+                {{ $pedidos->withQueryString()->links('components.pagination.custom') }}
+            </div>
+        @endif
 
 {{-- Modales --}}
 @include('pedidos.partials.modals')

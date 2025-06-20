@@ -17,7 +17,7 @@ class ProveedorFactory extends Factory
             'telefono' => $this->faker->e164PhoneNumber,
             'direccion' => $this->faker->address,
             'empresa' => $this->faker->company,
-            'tipo_proveedor' => $this->faker->randomElement(['Insumos médicos', 'Farmacia', 'Servicios externos']),
+            'tipo_proveedor' => $this->faker->randomElement(['Sustratos', 'Productos aplicables', 'Herramientas', 'Servicios Vivero', 'Construccion', 'Plantas', 'Arboles', 'Plasticos/Cerámicas', 'Plantines', 'Varios']),
             'estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
             'notas' => $this->faker->sentence,
         ];

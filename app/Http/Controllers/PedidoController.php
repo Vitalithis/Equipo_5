@@ -142,10 +142,26 @@ public function show(Pedido $pedido)
 
 
 
-    public function index(){
-        $pedidos = Pedido::with(['usuario', 'productos'])->get();
-        return view('pedidos.index', compact('pedidos'));
+public function index(Request $request)
+{
+    $query = Pedido::with(['usuario', 'productos'])->latest();
+
+    if ($request->filled('estado_pedido')) {
+        $query->where('estado_pedido', $request->estado_pedido);
     }
+
+    if ($request->filled('usuario')) {
+        $query->whereHas('usuario', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->usuario . '%');
+        });
+    }
+
+    $pedidos = $query->paginate(10);
+    $estados = Pedido::estadosTraducidos(); // 👈 aquí
+
+    return view('pedidos.index', compact('pedidos', 'estados'));
+}
+
 
     public function create(){
         $productos = Producto::all(); // importante para llenar el select

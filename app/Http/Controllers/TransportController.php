@@ -11,6 +11,8 @@ class TransportController extends Controller
     {
         $query = GastoTransporte::query();
 
+
+
         if ($request->filled('transportista')) {
             $query->where('transportista_nombre', 'like', '%'.$request->transportista.'%');
         }
@@ -19,7 +21,11 @@ class TransportController extends Controller
             $query->where('tipo_gasto', $request->tipo_gasto);
         }
 
-        $gastos = $query->latest()->paginate(10);
+        $gastos = GastoTransporte::query()
+            ->when($request->filled('transportista'), fn($q) => $q->where('transportista_nombre', 'like', '%' . $request->transportista . '%'))
+            ->when($request->filled('tipo_gasto'), fn($q) => $q->where('tipo_gasto', $request->tipo_gasto))
+            ->latest()
+            ->paginate(10); // <<— Aquí está la clave
         return view('dashboard.transports.transports', compact('gastos'));
     }
 

@@ -19,7 +19,7 @@ public function index(Request $request)
         $query->where('tipo', $request->tipo);
     }
 
-    $treatments = $query->latest()->get();
+    $treatments = $query->latest()->paginate(10); // Puedes ajustar el número por página
 
     return view('dashboard.treatments.treatment', compact('treatments'));
 }
@@ -40,7 +40,7 @@ public function index(Request $request)
             $query->where('tipo', $request->tipo);
         }
 
-        $treatments = $query->latest()->get();
+    $treatments = $query->latest()->paginate(10); // Puedes ajustar el número por página
 
         return response()->json([
             'data' => $treatments

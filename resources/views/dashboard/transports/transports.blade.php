@@ -42,7 +42,7 @@
 
 </div>
 
-<div x-data="{ modalGasto: null }" class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+<div x-data="{ modalGasto: null }" class="overflow-x-auto rounded-xl border border-eaccent2">
 
 
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
@@ -136,6 +136,13 @@
             </tbody>
         </table>
     </div>
+
+    @if($gastos instanceof \Illuminate\Pagination\LengthAwarePaginator)
+    <div class="mt-6 flex justify-center">
+        {{ $gastos->withQueryString()->links('components.pagination.custom') }}
+    </div>
+@endif
+
 
 </div>
 @endsection
