@@ -20,8 +20,8 @@ class ProductionController extends Controller
     }
 
     $producciones = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-    return view('dashboard.produccion.produccion', compact('producciones'));
+    $mermas = Merma::with('producto')->latest()->get();
+    return view('dashboard.produccion.produccion', compact('producciones', 'mermas'));
 }
 
     public function producir(Request $request)

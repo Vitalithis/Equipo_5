@@ -25,14 +25,26 @@
             @endif
         </form>
 
-        <a href="{{ route('produccion.create') }}"
-           class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Agregar Producción
-        </a>
+        <div class="flex gap-3">
+    <a href="{{ route('produccion.create') }}"
+       class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v16m8-8H4"/>
+        </svg>
+        Agregar Producción
+    </a>
+
+    <button onclick="openMermasModal()"
+        class="flex items-center text-yellow-700 hover:text-yellow-800 border border-yellow-700 hover:border-yellow-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6h13v6M9 5h13v4H9zM4 12h.01" />
+        </svg>
+        Ver Mermas
+    </button>
+</div>
+
     </div>
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
@@ -88,7 +100,7 @@
                             <button type="button"
                                     onclick="openMermaModal({{ $produccion->id }}, '{{ $produccion->producto->nombre }}')"
                                     class="text-yellow-700 hover:text-yellow-800 border border-yellow-700 hover:border-yellow-800 px-3 py-1 rounded transition-colors">
-                                Registrar Merma
+                                Merma
                             </button>
                         </td>
                     </tr>
@@ -192,6 +204,55 @@
         </form>
     </div>
 </div>
+
+{{-- Al final del archivo después del modal de registrar merma --}}
+
+{{-- Modal de Historial de Mermas --}}
+<div id="mermasModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl font-['Roboto'] max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800 font-['Roboto_Condensed']">Historial de Mermas</h2>
+            <button onclick="closeMermasModal()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+        </div>
+
+        @if($mermas->count())
+            <table class="min-w-full text-sm text-left border border-gray-200">
+                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+                    <tr>
+                        <th class="px-4 py-2">Fecha</th>
+                        <th class="px-4 py-2">Producto</th>
+                        <th class="px-4 py-2">Cantidad</th>
+                        <th class="px-4 py-2">Motivo</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white font-['Roboto'] divide-y divide-gray-100">
+                    @foreach($mermas as $merma)
+                        <tr>
+                            <td class="px-4 py-2">{{ $merma->created_at->format('d-m-Y H:i') }}</td>
+                            <td class="px-4 py-2">{{ $merma->producto->nombre ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $merma->cantidad }}</td>
+                            <td class="px-4 py-2">{{ $merma->motivo }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p class="text-gray-600">No hay registros de mermas disponibles.</p>
+        @endif
+    </div>
+</div>
+
+<script>
+    function openMermasModal() {
+        document.getElementById('mermasModal').classList.remove('hidden');
+        document.getElementById('mermasModal').classList.add('flex');
+    }
+
+    function closeMermasModal() {
+        document.getElementById('mermasModal').classList.add('hidden');
+        document.getElementById('mermasModal').classList.remove('flex');
+    }
+</script>
 
 <script>
     function openMermaModal(id, nombre) {

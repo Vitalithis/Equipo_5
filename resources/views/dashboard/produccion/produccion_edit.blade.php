@@ -13,7 +13,7 @@
         Volver al resumen de producción
     </a>
 
-    <h2 class="text-2xl font-semibold mb-6">Registrar Nueva Producción</h2>
+    
 
     {{-- Alerta JS: producto sin insumos --}}
     <div id="alerta-insumos" class="hidden mb-4 p-4 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded shadow flex items-start space-x-2">
