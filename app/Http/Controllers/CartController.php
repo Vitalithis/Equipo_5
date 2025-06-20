@@ -11,50 +11,86 @@ class CartController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
+        $cart = session()->get('cart', []);
+
+        $descuentoPersonalizado = $user->descuento_personalizado ?? 0;
+
+        if ($descuentoPersonalizado > 0) {
+            foreach ($cart as $id => &$item) {
+                $precioOriginal = $item['precio'];
+                // Aplica descuento porcentual
+                $precioConDescuento = $precioOriginal * (1 - $descuentoPersonalizado / 100);
+                $item['precio_con_descuento'] = $precioConDescuento;
+                $item['descuento_aplicado'] = $precioOriginal - $precioConDescuento;
+            }
+            unset($item);
+
+            session(['cart' => $cart]);
+            session(['descuento_aplicado' => [
+                'codigo' => 'Descuento personalizado',
+                'tipo' => 'porcentaje',
+                'valor' => $descuentoPersonalizado,
+            ]]);
+        } else {
+            // Sin descuento personalizado, limpia el campo descuento_aplicado
+            session()->forget('descuento_aplicado');
+
+            // Igualar precio_con_descuento a precio para evitar errores en vista
+            foreach ($cart as $id => &$item) {
+                $item['precio_con_descuento'] = $item['precio'];
+                $item['descuento_aplicado'] = 0;
+            }
+            unset($item);
+
+            session(['cart' => $cart]);
+        }
+
         return view('cart.index');
     }
 
-   public function guardarCarrito(Request $request)
-{
-    $user = auth()->user();
+    public function guardarCarrito(Request $request)
+    {
+        $user = auth()->user();
 
-    $request->validate([
-        'metodo_entrega' => 'required|in:retiro,domicilio',
-        'direccion_entrega' => 'required_if:metodo_entrega,domicilio|string|nullable',
-        'items' => 'required|array|min:1',
-    ]);
-
-    // Crear nuevo pedido
-    $pedido = Pedido::create([
-        'usuario_id' => $user->id,
-        'total' => 0, // Se actualizará al final
-        'estado_pedido' => 'pendiente',
-        'metodo_entrega' => $request->input('metodo_entrega'),
-        'direccion_entrega' => $request->input('metodo_entrega') === 'domicilio'
-            ? $request->input('direccion_entrega')
-            : null,
-    ]);
-
-    $total = 0;
-
-    foreach ($request->items as $item) {
-        $subtotal = $item['precio'] * $item['cantidad'];
-        $total += $subtotal;
-
-        $pedido->productos()->attach($item['id'], [
-            'cantidad' => $item['cantidad'],
-            'precio_unitario' => $item['precio'],
-            'subtotal' => $subtotal,
-            'nombre_producto_snapshot' => $item['nombre'],
-            'codigo_barras_snapshot' => $item['codigo_barras'] ?? null,
-            'imagen_snapshot' => $item['imagen'] ?? null,
+        $request->validate([
+            'metodo_entrega' => 'required|in:retiro,domicilio',
+            'direccion_entrega' => 'required_if:metodo_entrega,domicilio|string|nullable',
+            'items' => 'required|array|min:1',
         ]);
+
+        // Crear nuevo pedido
+        $pedido = Pedido::create([
+            'usuario_id' => $user->id,
+            'total' => 0, // Se actualizará al final
+            'estado_pedido' => 'pendiente',
+            'metodo_entrega' => $request->input('metodo_entrega'),
+            'direccion_entrega' => $request->input('metodo_entrega') === 'domicilio'
+                ? $request->input('direccion_entrega')
+                : null,
+        ]);
+
+        $total = 0;
+
+        foreach ($request->items as $item) {
+            $subtotal = $item['precio'] * $item['cantidad'];
+            $total += $subtotal;
+
+            $pedido->productos()->attach($item['id'], [
+                'cantidad' => $item['cantidad'],
+                'precio_unitario' => $item['precio'],
+                'subtotal' => $subtotal,
+                'nombre_producto_snapshot' => $item['nombre'],
+                'codigo_barras_snapshot' => $item['codigo_barras'] ?? null,
+                'imagen_snapshot' => $item['imagen'] ?? null,
+            ]);
+        }
+
+        $pedido->update(['total' => $total]);
+
+        return response()->json(['message' => 'Pedido guardado con éxito.']);
     }
-
-    $pedido->update(['total' => $total]);
-
-    return response()->json(['message' => 'Pedido guardado con éxito.']);
-}
 
 
     public function obtenerCarrito()
@@ -67,6 +103,9 @@ class CartController extends Controller
 
     public function añadirCarrito(Request $request, $id)
     {
+        $user = auth()->user();
+        $descuentoPersonalizado = $user->descuento_personalizado ?? 0;
+
         $producto = Producto::findOrFail($id);
         $cantidad = $request->input('cantidad', 1);
 
@@ -84,6 +123,16 @@ class CartController extends Controller
             ];
         }
 
+        if ($descuentoPersonalizado > 0) {
+            $precioOriginal = $cart[$id]['precio'];
+            $precioConDescuento = $precioOriginal * (1 - $descuentoPersonalizado / 100);
+            $cart[$id]['precio_con_descuento'] = $precioConDescuento;
+            $cart[$id]['descuento_aplicado'] = $precioOriginal - $precioConDescuento;
+        } else {
+            $cart[$id]['precio_con_descuento'] = $cart[$id]['precio'];
+            $cart[$id]['descuento_aplicado'] = 0;
+        }
+
         session()->put('cart', $cart);
 
         return redirect()->route('cart.index')->with('success', 'Producto añadido al carrito.');
@@ -91,7 +140,9 @@ class CartController extends Controller
 
     public function ajaxAñadirCarrito(Request $request, $id)
     {
-        // Validación segura
+        $user = auth()->user();
+        $descuentoPersonalizado = $user->descuento_personalizado ?? 0;
+
         $request->validate([
             'cantidad' => 'required|integer|min:1|max:99',
         ]);
@@ -113,9 +164,18 @@ class CartController extends Controller
             ];
         }
 
+        if ($descuentoPersonalizado > 0) {
+            $precioOriginal = $cart[$id]['precio'];
+            $precioConDescuento = $precioOriginal * (1 - $descuentoPersonalizado / 100);
+            $cart[$id]['precio_con_descuento'] = $precioConDescuento;
+            $cart[$id]['descuento_aplicado'] = $precioOriginal - $precioConDescuento;
+        } else {
+            $cart[$id]['precio_con_descuento'] = $cart[$id]['precio'];
+            $cart[$id]['descuento_aplicado'] = 0;
+        }
+
         session()->put('cart', $cart);
 
-        // Debug: registrar información en el log de Laravel
         \Log::debug('Carrito actualizado vía AJAX', [
             'user_id' => auth()->id(),
             'producto_id' => $id,
@@ -131,23 +191,37 @@ class CartController extends Controller
                 'nombre' => $producto->nombre,
                 'cantidad' => $cart[$id]['cantidad'],
             ],
-            // Debug: devolver el carrito completo solo en entorno local
             'debug_cart' => app()->environment('local') ? $cart : null,
         ]);
     }
 
     public function actualizarProducto(Request $request, $id)
     {
+        $user = auth()->user();
+        $descuentoPersonalizado = $user->descuento_personalizado ?? 0;
+
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
             $cart[$id]['cantidad'] = $request->input('cantidad', $cart[$id]['cantidad']);
+
+            if ($descuentoPersonalizado > 0) {
+                $precioOriginal = $cart[$id]['precio'];
+                $precioConDescuento = $precioOriginal * (1 - $descuentoPersonalizado / 100);
+                $cart[$id]['precio_con_descuento'] = $precioConDescuento;
+                $cart[$id]['descuento_aplicado'] = $precioOriginal - $precioConDescuento;
+            } else {
+                $cart[$id]['precio_con_descuento'] = $cart[$id]['precio'];
+                $cart[$id]['descuento_aplicado'] = 0;
+            }
+
             session()->put('cart', $cart);
             return redirect()->route('cart.index')->with('success', 'Carrito actualizado');
         }
 
         return redirect()->route('cart.index')->with('error', 'Producto no encontrado en el carrito');
     }
+
 
     public function remove($id)
     {

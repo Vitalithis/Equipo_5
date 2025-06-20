@@ -48,8 +48,8 @@ class UserController extends Controller
         ]);
 
         $role = Role::where('name', $request->role)
-                    ->where('cliente_id', $clienteId)
-                    ->first();
+            ->where('cliente_id', $clienteId)
+            ->first();
 
         if (!$role) {
             return redirect()->back()->with('error', 'El rol no pertenece a este cliente.');
@@ -69,7 +69,7 @@ class UserController extends Controller
 
     public function updateRole(Request $request, User $user)
     {
-       $clienteId = auth()->user()->cliente_id;
+        $clienteId = auth()->user()->cliente_id;
 
         $request->validate([
             'role' => 'required|exists:roles,name',
@@ -80,8 +80,8 @@ class UserController extends Controller
         }
 
         $role = Role::where('name', $request->role)
-                    ->where('cliente_id', $clienteId)
-                    ->first();
+            ->where('cliente_id', $clienteId)
+            ->first();
 
         if (!$role) {
             return back()->with('error', 'El rol no pertenece a este cliente.');
@@ -90,5 +90,31 @@ class UserController extends Controller
         $user->syncRoles([$role]);
 
         return back()->with('success', 'Rol actualizado correctamente.');
+    }
+    public function frecuentes()
+    {
+        $clienteId = auth()->user()->cliente_id;
+
+        $frequentClients = User::where('cliente_id', $clienteId)
+            ->withCount(['pedidos' => function ($query) {
+                $query->whereNotNull('estado_pedido'); // Opcional: filtra solo pedidos válidos
+            }])
+            ->having('pedidos_count', '>', 5)
+            ->get();
+
+        return view('dashboard.users.frequent', compact('frequentClients'));
+    }
+    public function asignarDescuento(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'descuento' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->descuento_personalizado = $request->descuento;
+        $user->save();
+
+        return response()->json(['message' => 'Descuento asignado con éxito']);
     }
 }

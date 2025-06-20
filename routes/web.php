@@ -290,6 +290,11 @@ Route::post('/password/change', [PasswordController::class, 'change'])->name('pa
 // Listado de usuarios
 Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 
+Route::get('/usuarios/frecuentes', [UserController::class, 'frecuentes'])->name('users.frequent');
+
+Route::post('/usuarios/descuento', [UserController::class, 'asignarDescuento'])->name('users.setDiscount');
+
+
 // Actualización directa del estado de tareas
 Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 Route::resource('works', WorkController::class);
