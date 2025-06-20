@@ -21,4 +21,9 @@ class Produccion extends Model
                     ->withPivot('cantidad_usada')
                     ->withTimestamps();
     }
+   public function mermas()
+{
+    return $this->hasMany(Merma::class);
+}
+
 }

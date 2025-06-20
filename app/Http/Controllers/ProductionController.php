@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produccion;
+use App\Models\Merma;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 
@@ -103,4 +104,34 @@ class ProductionController extends Controller
     $productos = Producto::with('insumos')->get();
     return view('dashboard.produccion.produccion_edit', compact('productos'));
 }
+public function registrarMerma(Request $request)
+{
+    $request->validate([
+        'produccion_id' => 'required|exists:producciones,id',
+        'cantidad' => 'required|integer|min:1',
+        'motivo' => 'required|string|max:255',
+    ]);
+
+    $produccion = Produccion::findOrFail($request->produccion_id);
+
+    // Validar que la cantidad no supere lo producido
+    if ($request->cantidad > $produccion->cantidad_producida) {
+        return back()->with('error', 'La cantidad ingresada es mayor a la cantidad producida.');
+    }
+
+    // Registrar la merma
+    Merma::create([
+        'produccion_id' => $produccion->id,
+        'producto_id' => $produccion->producto_id,
+        'cantidad' => $request->cantidad,
+        'motivo' => $request->motivo,
+    ]);
+
+    // Descontar la cantidad de producción
+    $produccion->cantidad_producida -= $request->cantidad;
+    $produccion->save();
+
+    return back()->with('success', 'Merma registrada correctamente.');
+}
+
 }

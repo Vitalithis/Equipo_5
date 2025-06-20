@@ -58,11 +58,7 @@
                                                 onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria }}')">
                                             Eliminar
                                         </button>
-                                        <button type="button"
-                                                class="text-yellow-600 hover:text-yellow-800 border border-yellow-600 hover:border-yellow-800 px-3 py-1 rounded transition-colors"
-                                                onclick="openMermaModal({{ $product->id }}, '{{ $product->nombre }}')">
-                                            Merma
-                                        </button>
+                                        
                                     </div>
                                 </td>
                             </tr>

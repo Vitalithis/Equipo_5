@@ -336,6 +336,9 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/produccion/{id}/edit', [ProductionController::class, 'edit'])->name('produccion.edit');
     Route::put('/produccion/{id}', [ProductionController::class, 'update'])->name('produccion.update');
     Route::delete('/produccion/{id}', [ProductionController::class, 'destroy'])->name('produccion.destroy');
+    Route::post('/dashboard/produccion/mermas', [ProductionController::class, 'registrarMerma'])
+    ->name('produccion.mermas.store');
+
 });
 
 

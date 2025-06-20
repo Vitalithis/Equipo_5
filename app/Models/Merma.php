@@ -12,5 +12,9 @@ class Merma extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+     public function produccion()
+{
+    return $this->belongsTo(Produccion::class);
+}
 }
 

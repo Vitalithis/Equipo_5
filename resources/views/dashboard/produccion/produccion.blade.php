@@ -85,6 +85,11 @@
                                     Eliminar
                                 </button>
                             </form>
+                            <button type="button"
+                                    onclick="openMermaModal({{ $produccion->id }}, '{{ $produccion->producto->nombre }}')"
+                                    class="text-yellow-700 hover:text-yellow-800 border border-yellow-700 hover:border-yellow-800 px-3 py-1 rounded transition-colors">
+                                Registrar Merma
+                            </button>
                         </td>
                     </tr>
                 @empty
@@ -156,4 +161,50 @@
         </div>
     @endif
 </div>
+
+{{-- Modal Merma --}}
+<div id="mermaModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md font-['Roboto']">
+        <h2 class="text-lg font-bold text-gray-800 mb-4 font-['Roboto_Condensed']">Registrar Merma</h2>
+        <form id="mermaForm" method="POST" action="{{ route('produccion.mermas.store') }}">
+            @csrf
+            <input type="hidden" name="produccion_id" id="modalProduccionId">
+            <div class="mb-4">
+                <label for="cantidad" class="block font-semibold mb-1">Cantidad a descontar</label>
+                <input type="number" name="cantidad" id="modalCantidad" min="1" step="1"
+                       class="w-full border-gray-300 rounded shadow-sm" required>
+            </div>
+            <div class="mb-4">
+                <label for="motivo" class="block font-semibold mb-1">Motivo</label>
+                <textarea name="motivo" id="modalMotivo" rows="3"
+                          class="w-full border-gray-300 rounded shadow-sm" required></textarea>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeMermaModal()"
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                    Guardar Merma
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openMermaModal(id, nombre) {
+        document.getElementById('modalProduccionId').value = id;
+        document.getElementById('modalCantidad').value = '';
+        document.getElementById('modalMotivo').value = '';
+        document.getElementById('mermaModal').classList.remove('hidden');
+        document.getElementById('mermaModal').classList.add('flex');
+    }
+
+    function closeMermaModal() {
+        document.getElementById('mermaModal').classList.add('hidden');
+        document.getElementById('mermaModal').classList.remove('flex');
+    }
+</script>
 @endsection
