@@ -45,6 +45,20 @@
     use App\Http\Controllers\ClienteController;
 
     use App\Http\Controllers\WorkController;
+    use App\Http\Controllers\DeviceController;
+
+    
+use App\Http\Controllers\NotificationTestController;
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
+});
+
+
+Route::get('/notificaciones', function () {
+    return view('push.notificaciones');
+})->middleware(['auth']);
 
     //Mail
 
