@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\PedidoCreado;
 
 use App\Models\Pedido;
 use App\Models\DetallePedido;
@@ -10,6 +11,8 @@ use App\Models\Producto;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EstadoPedidoActualizado;
+use Illuminate\Mail\Mailable;
+
 
 
 
@@ -31,25 +34,12 @@ class PedidoController extends Controller
             'precio_unitario' => 'required|array',
             'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
 
-            // Validación adicional para los campos de dirección cuando método es domicilio
-            'calle' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:100' : 'nullable',
-            'numero' => $request->metodo_entrega === 'domicilio' ? 'required|integer|min:1' : 'nullable',
-            'depto' => 'nullable|string|max:20',
-            'comuna' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
-            'ciudad' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
+            'direccion_entrega' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:255' : 'nullable',
 
         ]);
 
-        $direccionCompleta = null;
-        if ($request->metodo_entrega === 'domicilio') {
-            $direccionCompleta = trim(
-                ($request->calle ?? '') . ' ' .
-                ($request->numero ?? '') .
-                ($request->depto ? ' Depto ' . $request->depto : '') .
-                ($request->comuna ? ', ' . $request->comuna : '') .
-                ($request->ciudad ? ', ' . $request->ciudad : '')
-            );
-        }
+        $direccionCompleta = $request->direccion_entrega;
+
 
 
         $subtotal = 0;
@@ -116,10 +106,19 @@ class PedidoController extends Controller
         'total' => $total,
         ]);
 
+                
+        // Enviar correo de confirmación de pedido
+        if ($pedido->usuario && $pedido->usuario->email) {
+            Mail::to($pedido->usuario->email)->send(new PedidoCreado($pedido));
+        }
+
         // Enviar correo solo si el usuario tiene email válido
         if ($pedido->usuario && $pedido->usuario->email) {
             Mail::to($pedido->usuario->email)->send(new EstadoPedidoActualizado($pedido));
         }
+ 
+
+
 
 
         return redirect()->route('pedidos.index')->with('success', 'Pedido guardado correctamente.');

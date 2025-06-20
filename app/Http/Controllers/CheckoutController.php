@@ -35,7 +35,8 @@ class CheckoutController extends Controller
                 : null,
         ]);
 
-        $transaction = new Transaction();
+        $transaction = new Transaction();   
+
         $response = $transaction->create($buyOrder, $sessionId, $amount, $returnUrl);
 
         return redirect()->away($response->getUrl() . '?token_ws=' . $response->getToken());
