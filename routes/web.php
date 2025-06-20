@@ -23,15 +23,41 @@
     use App\Http\Controllers\UserRoleController;
     use App\Http\Controllers\PermissionController;
 
-    use App\Http\Controllers\FertilizanteController;
-    use App\Http\Controllers\OrdenProduccionController;
-    use App\Http\Controllers\CuidadoController;
-    use App\Http\Controllers\FinanzaController;
-    use App\Http\Controllers\InsumoController;
-    use App\Http\Controllers\FertilizationController;
+
     use App\Http\Controllers\TreatmentController;
     use App\Http\Controllers\TreatmentApplicationController;
     use App\Http\Controllers\TransportController;
+use App\Http\Controllers\FertilizanteController;
+use App\Http\Controllers\OrdenProduccionController;
+use App\Http\Controllers\CuidadoController;
+use App\Http\Controllers\FinanzaController;
+use App\Http\Controllers\InsumoController;
+use App\Http\Controllers\FertilizationController;
+
+
+use App\Models\ProductCategory;
+
+use App\Http\Controllers\AdminClienteController;
+use App\Http\Controllers\ClienteController;
+
+use App\Http\Controllers\WorkController;
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index']);
+
+Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
+    Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
+
+    Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:ver roles')->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->middleware('permission:crear roles')->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:crear roles')->name('roles.store');
+    Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->middleware('permission:editar roles')->name('roles.edit');
+    Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:editar roles')->name('roles.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
+});
 
 
 //Mails
@@ -39,12 +65,6 @@
     use App\Mail\PruebaMailgun;
 
 
-    use App\Models\ProductCategory;
-
-    use App\Http\Controllers\AdminClienteController;
-    use App\Http\Controllers\ClienteController;
-
-    use App\Http\Controllers\WorkController;
     use App\Http\Controllers\DeviceController;
 
     
@@ -236,6 +256,9 @@ Route::get('/notificaciones', function () {
         Route::post('/cotizaciones/{id}/enviar', [CotizacionController::class, 'enviarCotizacion'])->name('cotizacion.enviar');
         Route::post('/cotizacion/ajax/agregar/{id}', [App\Http\Controllers\CotizacionController::class, 'ajaxAgregar'])->middleware('auth');
     });
+    // Ajax para agregar producto al carrito
+    Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
+
 
     // Cotizaciones admin
     use App\Http\Controllers\Admin\CotizacionAdminController;
@@ -251,28 +274,29 @@ Route::get('/notificaciones', function () {
     Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
     Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
 
-    Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
-    Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
-    Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
-        ->name('producto.filterByCategory');
-    Route::get(
-        '/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}',
-        [ProductoController::class, 'filter']
-    )
-        ->where([
-            'tamano' => '\d+',
-            'ordenar_ascendente' => 'true|false'
-        ])
-        ->name('productos.filter');
-    Route::get('/sobre-nosotros', function () {
-        return view('about');
-    })->name('about');
-    Route::get('/contacto', function () {
-        return view('contact');
-    })->name('contact');
-    Route::get('/faq', function () {
-        return view('faq');
-    })->name('faq');
+// Productos
+Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
+Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
+Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
+    ->name('producto.filterByCategory');
+Route::get(
+    '/productos/filtrar/{category?}/{tamano?}/{dificultad?}/{ordenar_por?}/{ordenar_ascendente?}',
+    [ProductoController::class, 'filter']
+)
+    ->where([
+        'tamano' => '\d+',
+        'ordenar_ascendente' => 'true|false'
+    ])
+    ->name('productos.filter');
+//Categorias
+Route::prefix('dashboard/categorias')->name('categorias.')->controller(CategoriaController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::get('/add', 'add')->name('add');
+    Route::get('/{categoria}/edit', 'edit')->name('edit');
+    Route::put('/{categoria}', 'update')->name('update');
+    Route::delete('/{categoria}', 'destroy')->name('destroy');
+});
 
     Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'permission:gestionar productos'])->name('dashboard.fertilizantes');
     Route::get('/dashboard/fertilizantes/create', [FertilizanteController::class, 'create'])->middleware('permission:gestionar productos')->name('fertilizantes.create');

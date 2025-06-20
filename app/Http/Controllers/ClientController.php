@@ -6,6 +6,9 @@ use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Mail\AuditTrailNotification;
+use App\Jobs\SyncUserMetrics;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -85,8 +88,15 @@ class ClientController extends Controller
                 'model_id' => $adminUser->id,
                 'cliente_id' => $cliente->id,
             ]);
+            $details = [
+                'evento' => 'Nuevo cliente creado',
+                'cliente_id' => $cliente->id,
+                'nombre' => $cliente->nombre,
+                'email' => $request->admin_email,
+                'fecha' => now()->toDateTimeString(),
+            ];
+            SyncUserMetrics::dispatch($cliente, $request->admin_email);
         });
-
         return redirect()->route('clients.index')->with('success', 'Cliente creado con su usuario administrador.');
     }
 

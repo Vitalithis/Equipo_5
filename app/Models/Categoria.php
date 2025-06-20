@@ -11,9 +11,8 @@ class Categoria extends Model
 
     protected $fillable = ['nombre'];
     protected $primaryKey = 'id';
-
-    public function producto()
+    public function productos()
     {
-        return $this->belongsToMany(Producto::class, 'producto_categoria');
+        return $this->hasMany(Producto::class, 'categoria');
     }
 }

@@ -35,29 +35,25 @@
       <nav class="p-4 space-y-1">
   <ul class="space-y-1 text-sm font-medium">
 
+          @can('gestionar catálogo')
+          <li class="mb-1">
+            <a href="{{ route('dashboard.catalogo') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-seedling"></i>
+              <span>Catálogo</span>
+            </a>
+          </li>
+          <li class="mb-1">
+            <a href="{{ route('categorias.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-{{ $color }}-700 rounded-md">
+              <i class="fa-solid fa-tags"></i>
+              <span>Categorías</span>
+            </a>
+          </li>
+          @endcan
     @can('ver panel soporte')
       <li>
         <a href="{{ route('clients.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
           <i class="fa-solid fa-building"></i>
           <span>Clientes</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('ver dashboard')
-      <li>
-        <a href="{{ route('home') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-house"></i>
-          <span>Home</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar catálogo')
-      <li>
-        <a href="{{ route('dashboard.catalogo') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-seedling"></i>
-          <span>Catálogo</span>
         </a>
       </li>
     @endcan
@@ -213,6 +209,11 @@
               <div x-show="open" @click.away="open = false"
                   class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                    @can('ver dashboard')
+                            <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Home
+                            </a>
+                    @endcan
                   @can('ver dashboard')
                       <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           Panel Admin

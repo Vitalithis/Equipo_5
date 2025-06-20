@@ -18,8 +18,8 @@
 
 </head>
 
-<body class="0 flex flex-col min-h-screen font-roboto_sans">
-
+<body class="flex flex-col min-h-screen font-roboto_sans
+    {{ request()->routeIs('home') || request()->is('/') ? 'bg-white' : 'bg-gray-100' }}">
     {{-- Navbar --}}
     @include('components.navbar')
     {{-- Contenido principal --}}
