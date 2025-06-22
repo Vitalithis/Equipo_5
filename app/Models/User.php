@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'must_change_password',
         'cliente_id',
+        'descuento_personalizado',
     ];
 
     protected $hidden = [
@@ -58,7 +59,7 @@ class User extends Authenticatable
                 return Role::where('name', $role)
                     ->where(function ($query) {
                         $query->where('cliente_id', $this->cliente_id)
-                              ->orWhereNull('cliente_id');
+                            ->orWhereNull('cliente_id');
                     })
                     ->first();
             }
@@ -117,4 +118,8 @@ class User extends Authenticatable
     }
 
     
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class, 'usuario_id');
+    }
 }

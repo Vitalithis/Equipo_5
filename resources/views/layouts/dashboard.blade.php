@@ -76,6 +76,16 @@
       </li>
     @endcan
 
+    @can('gestionar usuarios')
+      <li>
+        <a href="{{ route('users.frequent') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
+          <i class="fa-solid fa-user"></i>
+          <span>Frecuentes</span>
+        </a>
+      </li>
+
+    @endcan
+
     @can('gestionar pedidos')
       <li>
         <a href="{{ route('pedidos.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">

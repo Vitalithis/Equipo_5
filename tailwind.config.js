@@ -35,6 +35,7 @@ export default {
                 leafs: "url('/public/storage/images/pattern1.png')",
             },
             colors: {
+                greenPastel: '#DFF5E1',
                 greenPrimary: "#40C239",
                 greenDark: "#70A37F",
                 greenMid: "#79B473",

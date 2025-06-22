@@ -409,11 +409,16 @@ Route::prefix('dashboard/categorias')->name('categorias.')->controller(Categoria
     // Listado de usuarios
     Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 
-    // Actualización directa del estado de tareas
-    Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
-    Route::resource('works', WorkController::class);
-    //rutas soporte
-    use App\Http\Controllers\ClientController;
+Route::get('/usuarios/frecuentes', [UserController::class, 'frecuentes'])->name('users.frequent');
+
+Route::post('/usuarios/descuento', [UserController::class, 'asignarDescuento'])->name('users.setDiscount');
+
+
+// Actualización directa del estado de tareas
+Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
+Route::resource('works', WorkController::class);
+//rutas soporte
+use App\Http\Controllers\ClientController;
 
     Route::middleware(['auth', 'tenant', 'permission:gestionar clientes'])->group(function () {
         Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
