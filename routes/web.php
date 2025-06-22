@@ -39,7 +39,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\ThemeController;
 
-
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CalendarController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
@@ -59,16 +60,20 @@ Route::middleware(['auth'])->prefix('calendar')->group(function () {
     Route::post('/store', [CalendarController::class, 'store']);
 });
 
-Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
-    Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
-    Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+Route::middleware(['web', 'auth', 'tenant'])->group(function () {
 
+    // Rutas protegidas por "ver dashboard"
+    Route::middleware(['permission:ver dashboard'])->group(function () {
+        Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+        Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
+        Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+    });
 
-
+    // Gestión de usuarios
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
 
+    // Gestión de roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:ver roles')->name('roles.index');
     Route::get('/roles/create', [RoleController::class, 'create'])->middleware('permission:crear roles')->name('roles.create');
     Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:crear roles')->name('roles.store');
@@ -76,6 +81,7 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
     Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:editar roles')->name('roles.update');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
 });
+
 
 
     Route::middleware(['auth', 'tenant', 'permission:gestionar permisos'])->group(function () {
@@ -99,8 +105,9 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
 
 
     Route::middleware(['auth', 'tenant', 'permission:gestionar egresos'])->group(function () {
-        Route::get('/egresos', [EgresoController::class, 'index'])->name('egresos.index');
+        Route::get('/egresos', [FinanzaController::class, 'index'])->name('egresos.index');
     });
+
 
 
 
@@ -328,15 +335,7 @@ Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 // Actualización directa del estado de tareas
 Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 Route::resource('works', WorkController::class);
-//rutas soporte
-use App\Http\Controllers\ClientController;
 
-Route::prefix('soporte')->middleware(['auth', 'permission:gestionar clientes'])->group(function () {
-    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
-});
 
 
 
@@ -354,7 +353,7 @@ Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
     ->middleware('auth');
 
 // Rutas produccion
-Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+/*Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/produccion', [ProductionController::class, 'index'])->name('produccion.index');
     Route::get('/produccion/create', [ProductionController::class, 'create'])->name('produccion.create');
     Route::post('/produccion', [ProductionController::class, 'producir'])->name('produccion.store');
@@ -367,9 +366,30 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
 
 });
 
+*/
 
+Route::get('/debug-tenant', function () {
+    return response()->json([
+        'tenant' => tenant()?->id,
+        'host' => request()->getHost(),
+        'user' => auth()->user()?->email,
+        'permissions' => auth()->user()?->getAllPermissions()->pluck('name'),
+    ]);
+})->middleware(['web', 'auth', 'tenant']);
+//rutas soporte
 
+Route::domain('soporte.localhost')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
+    Route::get('/', function () {
+        return view('soporte.dashboard');
+    })->name('soporte.dashboard');
 
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+});
 
 require __DIR__ . '/auth.php';
  
