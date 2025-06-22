@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" x-data="themeConfig()" :class="colorMode">
 
 <head>
     <meta charset="UTF-8" />
@@ -13,26 +13,19 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <!-- Tailwind + Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="0 flex flex-col min-h-screen font-roboto_sans">
-
-    {{-- Navbar --}}
+<body :class="[fontFamily, backgroundColor, textColor]" class="transition-all duration-300 flex flex-col min-h-screen">
     @include('components.navbar')
-    {{-- Contenido principal --}}
-    <main>
+
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    {{-- Footer --}}
     @include('components.footer')
 
-
-    <!-- Sección para agregar scripts personalizados -->
     @stack('scripts')
 </body>
-
 </html>

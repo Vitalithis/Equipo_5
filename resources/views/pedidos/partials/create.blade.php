@@ -3,20 +3,21 @@
 @section('title', isset($pedido->id) ? 'Editar Venta' : 'Nueva Venta')
 
 @section('content')
+
 <div class="py-8 px-4 md:px-8 max-w-5xl mx-auto">
 
     <div class="flex items-center mb-6">
-        <a href="{{ route('pedidos.index') }}" class="flex items-center text-green-700 hover:text-green-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-            Volver a la lista
-        </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-            {{ isset($pedido->id) ? 'Editar' : 'Nueva' }} Venta
-        </h1>
-    </div>
+    <a href="{{ route('pedidos.index') }}"
+       class="flex items-center text-black px-3 py-1 rounded transition-colors"
+       style="background-color: var(--table-header-color);">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+        Volver a la lista
+    </a>
+</div>
+
     <form action="{{ isset($pedido->id) ? route('pedidos.update', $pedido->id) : route('pedidos.store') }}"
         method="POST" id="pedido-form" class="space-y-6">
         @csrf
@@ -158,10 +159,18 @@
                 @endif
             </div>
 
-            <div class="text-right mt-6">
+            <div class="flex justify-end mt-6">
                 <button type="button" id="add-detalle"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow">+ Agregar Producto</button>
+                    class="flex items-center text-black px-3 py-1 rounded transition-colors"
+                    style="background-color: var(--table-header-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Agregar producto
+                </button>
             </div>
+
         </div>
         <div class="bg-white rounded-lg shadow-md p-6 space-y-6">
             <div>
@@ -214,7 +223,14 @@
                 Cancelar
             </a>
             <button type="submit"
-                class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                class="flex items-center text-black px-3 py-1 rounded transition-colors"
+                style="background-color: var(--table-header-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
                 {{ isset($pedido->id) ? 'Actualizar' : 'Guardar' }} Pedido
             </button>
         </div>

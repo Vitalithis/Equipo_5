@@ -6,7 +6,8 @@
 <div class="max-w-6xl mx-auto py-8 font-['Roboto'] text-gray-800">
 
     <a href="{{ route('roles.index') }}"
-       class="mb-4 inline-flex items-center text-green-700 hover:text-green-800 transition-colors">
+       class="mb-4 inline-flex items-center text-white transition-colors px-3 py-1 rounded"
+       style="background-color: var(--table-header-color);">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m15 18-6-6 6-6" />
@@ -24,7 +25,7 @@
         </div>
     @endif
 
-    <form action="{{ route('roles.store') }}" method="POST" class="bg-white shadow rounded-lg p-6">
+    <form action="{{ route('roles.store') }}" method="POST" class="bg-white shadow rounded-lg p-6 border" style="border-color: var(--table-header-color);">
         @csrf
 
         {{-- Nombre del Rol --}}
@@ -37,7 +38,8 @@
         {{-- Permisos --}}
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">Permisos</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-eaccent2 rounded overflow-hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border rounded overflow-hidden"
+                 style="border-color: var(--table-header-color);">
 
                 @php
                     $grouped = [
@@ -57,15 +59,15 @@
                 @endphp
 
                 @foreach($grouped as $group => $perms)
-                    <div class="border-t border-eaccent2 border-r p-4">
-                        <h3 class="font-bold text-eprimary mb-2">{{ $group }}</h3>
+                    <div class="border-t border-r p-4" style="border-color: var(--table-header-color);">
+                        <h3 class="font-bold text-black mb-2">{{ $group }}</h3>
                         <div class="grid grid-cols-2 gap-x-6 gap-y-2">
                             @foreach($permissions as $permission)
                                 @if(in_array($permission->name, $perms))
-                                    <label class="inline-flex items-center">
+                                    <label class="inline-flex items-center text-black">
                                         <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
-                                            class="form-checkbox text-eaccent border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">{{ $permission->name }}</span>
+                                               class="form-checkbox text-black border-black rounded focus:ring-black">
+                                        <span class="ml-2 text-sm text-black">{{ $permission->name }}</span>
                                     </label>
                                 @endif
                             @endforeach
@@ -77,7 +79,8 @@
 
         <div class="mt-6">
             <button type="submit"
-                    class="bg-eaccent2 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded shadow">
+                    class="text-white font-semibold px-6 py-2 rounded shadow"
+                    style="background-color: var(--table-header-color);">
                 Guardar
             </button>
         </div>

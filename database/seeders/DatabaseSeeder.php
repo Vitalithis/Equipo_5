@@ -27,9 +27,9 @@ class DatabaseSeeder extends Seeder
             ProveedorSeeder::class,
             WorkSeeder::class,
             WorkSeeder::class,
-            SoporteSeeder::class
-            
-            
+            SoporteSeeder::class,
+            PreferencesSeeder::class,
+            CalendarEventSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();
