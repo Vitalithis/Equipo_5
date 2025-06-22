@@ -12,6 +12,8 @@ use App\Models\Producto;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EstadoPedidoActualizado;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Http;
+
 
 
 
@@ -313,6 +315,22 @@ public function index(Request $request)
 
     $pedido->estado_pedido = $request->estado_pedido;
     $pedido->save();
+
+    // Notificación Push vía OneSignal
+try {
+    Http::withHeaders([
+        'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+        'Content-Type'  => 'application/json',
+    ])->post('https://onesignal.com/api/v1/notifications', [
+        'app_id' => env('ONESIGNAL_APP_ID'),
+        'include_external_user_ids' => [(string) $pedido->usuario_id],
+        'headings' => ['es' => '📦 Pedido actualizado'],
+        'contents' => ['es' => "Tu pedido ahora está en estado: {$pedido->estado_pedido}"],
+    ]);
+} catch (\Exception $e) {
+    \Log::error("Error enviando notificación push: " . $e->getMessage());
+}
+
 
     // Enviar correo al usuario
     if ($pedido->usuario && $pedido->usuario->email) {

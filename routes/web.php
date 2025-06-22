@@ -42,6 +42,42 @@ use App\Http\Controllers\ClienteController;
 
 use App\Http\Controllers\WorkController;
 
+//Ruta de prueba
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
+use App\Models\UserDevice;
+
+Route::post('/device', function (Request $request) {
+    if (auth()->check() && $request->player_id) {
+        UserDevice::updateOrCreate(
+            ['player_id' => $request->player_id],
+            ['user_id' => auth()->id()]
+        );
+    }
+    return response()->noContent();
+});
+
+
+
+Route::get('/notificacion-prueba', function () {
+    $playerId = 'AQUÍ_TU_PLAYER_ID'; // ← pega aquí el que viste en consola
+
+    $response = Http::withHeaders([
+        'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+        'Content-Type'  => 'application/json',
+    ])->post('https://onesignal.com/api/v1/notifications', [
+        'app_id' => env('ONESIGNAL_APP_ID'),
+        'include_player_ids' => [$playerId],
+        'headings' => ['en' => '🎉 Notificación de prueba'],
+        'contents' => ['en' => 'Hola, esto es un mensaje enviado desde Laravel'],
+    ]);
+
+    return $response->json();
+});
+
+
+//////////////
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
 

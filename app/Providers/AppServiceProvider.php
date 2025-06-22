@@ -10,9 +10,12 @@ use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Support\Facades\Mail;
 
+use App\Models\User;
+use App\Observers\UserObserver;
+
 
 class AppServiceProvider extends ServiceProvider
-{
+{   
     public function register(): void
     {
         //
@@ -30,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
                 // Agregar scopes globales para filtrar Roles y Permisos por cliente_id
                 $this->addExplicitGlobalScopes($clienteId);
             }
+            User::observe(UserObserver::class);
+
         });
 
         if (app()->environment('local')) { // Solo para entorno local
