@@ -149,6 +149,9 @@
               </a>
           </li>
           @endcan
+          @can('gestionar produccion')
+            <li><a href="{{ route('produccion.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-droplet mr-2"></i>Producción</a></li>
+          @endcan
         </ul>
       </nav>
     </div>

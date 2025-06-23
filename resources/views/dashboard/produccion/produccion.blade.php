@@ -3,17 +3,52 @@
 @section('title', 'Resumen de Producción de Productos')
 
 @section('content')
-{{-- Tipografías --}}
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+@php
+    $pref = Auth::user()?->preference;
+@endphp
 
-<div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
-    {{-- Filtros y botón --}}
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+
+    .custom-table-header {
+        background-color: var(--table-header-color);
+        color: var(--table-header-text-color) !important;
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
+
+<div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800 max-w-7xl mx-auto">
+    {{-- Filtros y botones --}}
     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <form method="GET" action="{{ route('produccion.index') }}" class="flex flex-wrap gap-2 items-end md:items-center w-full md:max-w-md">
             <input type="text" name="producto" value="{{ request('producto') }}" placeholder="Buscar por producto..."
                    class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
 
-            <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto">
+            <button type="submit"
+                    class="text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto"
+                    style="background-color: var(--table-header-color);">
                 Buscar
             </button>
 
@@ -26,30 +61,31 @@
         </form>
 
         <div class="flex gap-3">
-    <a href="{{ route('produccion.create') }}"
-       class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 4v16m8-8H4"/>
-        </svg>
-        Agregar Producción
-    </a>
+            <a href="{{ route('produccion.create') }}"
+               class="flex items-center text-white px-3 py-2 rounded transition-colors whitespace-nowrap"
+               style="background-color: var(--table-header-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+                Agregar Producción
+            </a>
 
-    <button onclick="openMermasModal()"
-        class="flex items-center text-yellow-700 hover:text-yellow-800 border border-yellow-700 hover:border-yellow-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6h13v6M9 5h13v4H9zM4 12h.01" />
-        </svg>
-        Ver Mermas
-    </button>
-</div>
-
+            <button onclick="openMermasModal()"
+                    class="flex items-center text-yellow-700 hover:text-yellow-800 border border-yellow-700 hover:border-yellow-800 px-3 py-1 rounded transition-colors whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6h13v6M9 5h13v4H9zM4 12h.01" />
+                </svg>
+                Ver Mermas
+            </button>
+        </div>
     </div>
 
-    <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
-        <table class="min-w-full text-sm text-left divide-y divide-eaccent2">
-            <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+    {{-- Tabla --}}
+    <div class="overflow-x-auto bg-white shadow custom-border">
+        <table class="min-w-full text-sm text-left bg-white">
+            <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
                 <tr>
                     <th class="px-6 py-3">Producto</th>
                     <th class="px-6 py-3">Cantidad Producida</th>
@@ -58,31 +94,23 @@
                     <th class="px-6 py-3">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200 font-['Roboto']">
+            <tbody class="font-['Roboto'] text-gray-800">
                 @forelse ($producciones as $produccion)
                     <tr class="hover:bg-gray-100">
-                        <td class="px-6 py-4 font-medium text-gray-900">
-                            {{ $produccion->producto->nombre }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $produccion->cantidad_producida }}
-                        </td>
+                        <td class="px-6 py-4 font-medium text-gray-900">{{ $produccion->producto->nombre }}</td>
+                        <td class="px-6 py-4">{{ $produccion->cantidad_producida }}</td>
                         <td class="px-6 py-4">
                             <ul class="list-disc pl-4 text-gray-700">
                                 @foreach ($produccion->insumos as $insumo)
                                     <li>
-                                        {{ $insumo->nombre }}:
-                                        {{ $insumo->pivot->cantidad_usada }} unidades
+                                        {{ $insumo->nombre }}: {{ $insumo->pivot->cantidad_usada }} unidades
                                         (${{ number_format($insumo->pivot->cantidad_usada * $insumo->costo, 0, ',', '.') }})
                                     </li>
                                 @endforeach
                             </ul>
                         </td>
                         <td class="px-6 py-4 text-green-700 font-semibold">
-                            ${{ number_format(
-                                $produccion->insumos->sum(fn($insumo) => $insumo->pivot->cantidad_usada * $insumo->costo),
-                                0, ',', '.'
-                            ) }}
+                            ${{ number_format($produccion->insumos->sum(fn($insumo) => $insumo->pivot->cantidad_usada * $insumo->costo), 0, ',', '.') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap flex flex-wrap gap-2">
                             <a href="{{ route('produccion.edit', $produccion->id) }}"
@@ -121,25 +149,13 @@
             <div class="text-sm text-gray-600">
                 Mostrando {{ $producciones->firstItem() ?? 0 }} a {{ $producciones->lastItem() ?? 0 }} de {{ $producciones->total() }} resultados
             </div>
-
             @if ($producciones->hasPages())
                 <div class="flex items-center space-x-1 text-sm text-gray-700">
                     {{-- Anterior --}}
                     @if ($producciones->onFirstPage())
-                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </span>
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">«</span>
                     @else
-                        <a href="{{ $producciones->previousPageUrl() }}"
-                           class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </a>
+                        <a href="{{ $producciones->previousPageUrl() }}" class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">«</a>
                     @endif
 
                     {{-- Páginas --}}
@@ -153,20 +169,9 @@
 
                     {{-- Siguiente --}}
                     @if ($producciones->hasMorePages())
-                        <a href="{{ $producciones->nextPageUrl() }}"
-                           class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
+                        <a href="{{ $producciones->nextPageUrl() }}" class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">»</a>
                     @else
-                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </span>
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">»</span>
                     @endif
                 </div>
             @endif
@@ -205,9 +210,7 @@
     </div>
 </div>
 
-{{-- Al final del archivo después del modal de registrar merma --}}
-
-{{-- Modal de Historial de Mermas --}}
+{{-- Modal Historial de Mermas --}}
 <div id="mermasModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl font-['Roboto'] max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
@@ -217,7 +220,7 @@
 
         @if($mermas->count())
             <table class="min-w-full text-sm text-left border border-gray-200">
-                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+                <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-4 py-2">Fecha</th>
                         <th class="px-4 py-2">Producto</th>
@@ -243,18 +246,6 @@
 </div>
 
 <script>
-    function openMermasModal() {
-        document.getElementById('mermasModal').classList.remove('hidden');
-        document.getElementById('mermasModal').classList.add('flex');
-    }
-
-    function closeMermasModal() {
-        document.getElementById('mermasModal').classList.add('hidden');
-        document.getElementById('mermasModal').classList.remove('flex');
-    }
-</script>
-
-<script>
     function openMermaModal(id, nombre) {
         document.getElementById('modalProduccionId').value = id;
         document.getElementById('modalCantidad').value = '';
@@ -266,6 +257,16 @@
     function closeMermaModal() {
         document.getElementById('mermaModal').classList.add('hidden');
         document.getElementById('mermaModal').classList.remove('flex');
+    }
+
+    function openMermasModal() {
+        document.getElementById('mermasModal').classList.remove('hidden');
+        document.getElementById('mermasModal').classList.add('flex');
+    }
+
+    function closeMermasModal() {
+        document.getElementById('mermasModal').classList.add('hidden');
+        document.getElementById('mermasModal').classList.remove('flex');
     }
 </script>
 @endsection

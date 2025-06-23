@@ -43,7 +43,9 @@
             <input type="text" name="nombre" value="{{ request('nombre') }}" placeholder="Buscar por nombre..."
                    class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
 
-            <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto">
+            <button type="submit"
+                    class="text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto"
+                    style="background-color: var(--table-header-color);">
                 Buscar
             </button>
 

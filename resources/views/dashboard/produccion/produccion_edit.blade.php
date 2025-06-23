@@ -3,9 +3,44 @@
 @section('title', 'Nueva Producción')
 
 @section('content')
-<div class="py-8 px-4 md:px-8 max-w-3xl mx-auto font-['Roboto'] text-gray-800">
+@php
+    $pref = Auth::user()?->preference;
+    $headerColor = $pref?->table_header_color ?? '#0a2b59';
+    $fontClass = match($pref?->font ?? 'roboto') {
+        'inter' => 'font-inter',
+        'poppins' => 'font-poppins',
+        'montserrat' => 'font-[Montserrat]',
+        'open-sans' => "font-['Open Sans']",
+        default => 'font-roboto',
+    };
+@endphp
+
+<style>
+    .btn-primary {
+        background-color: {{ $headerColor }};
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0d3a6b;
+    }
+
+    .btn-back {
+        background-color: transparent;
+        color: {{ $headerColor }};
+    }
+    .btn-back:hover {
+        color: #0d3a6b;
+    }
+
+    .box-border {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="py-8 px-4 md:px-8 max-w-3xl mx-auto {{ $fontClass }} text-gray-800">
     <a href="{{ route('produccion.index') }}"
-       class="flex items-center text-green-700 hover:text-green-800 mb-6">
+       class="flex items-center btn-back mb-6 text-sm font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
              stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -13,15 +48,13 @@
         Volver al resumen de producción
     </a>
 
-    
-
     {{-- Alerta JS: producto sin insumos --}}
     <div id="alerta-insumos" class="hidden mb-4 p-4 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded shadow flex items-start space-x-2">
         <i class="fa-solid fa-triangle-exclamation mt-1"></i>
         <span id="alerta-insumos-text"></span>
     </div>
 
-    {{-- Mensaje de error por stock insuficiente --}}
+    {{-- Mensaje de error --}}
     @if(session('error'))
         <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-800 rounded shadow flex items-start space-x-2">
             <i class="fa-solid fa-circle-exclamation mt-1"></i>
@@ -37,7 +70,7 @@
         </div>
     @endif
 
-    <form action="{{ route('produccion.store') }}" method="POST" class="bg-white p-6 rounded shadow space-y-6">
+    <form action="{{ route('produccion.store') }}" method="POST" class="bg-white p-6 rounded shadow space-y-6 box-border">
         @csrf
 
         <div>
@@ -68,17 +101,15 @@
 
         <div class="flex justify-end">
             <button type="submit"
-                    class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition-colors">
+                    class="btn-primary px-4 py-2 rounded transition-colors text-sm">
                 Registrar Producción
             </button>
         </div>
     </form>
 </div>
 
-{{-- Script completo --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Mapear productos con insumos detallados
         const productos = @json($productos->mapWithKeys(fn($p) => [
             $p->id => $p->insumos->map(fn($i) => [
                 'nombre' => $i->nombre,
