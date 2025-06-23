@@ -1,6 +1,6 @@
 @php
     $pref = Auth::check() ? Auth::user()->preference : null;
-    $navbarColor = $pref?->navbar_color ?? '#FFFFF'; // color por defecto: gris oscuro
+    $navbarColor = $pref?->navbar_color ?? '#FFFFFF'; // color por defecto: gris oscuro
 @endphp
 
 <!DOCTYPE html>
