@@ -9,9 +9,11 @@
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800"></h2>
         <a href="{{ route('simple_calendar.create') }}"
-           class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded shadow">
-            + Agregar evento
+        class="inline-flex items-center px-4 py-2 rounded text-white text-sm shadow"
+        style="background-color: var(--table-header-color);">
+        <i class="fas fa-plus mr-2"></i> Agregar evento
         </a>
+
     </div>
 
     @if(session('success'))

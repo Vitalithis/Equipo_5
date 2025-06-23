@@ -9,6 +9,8 @@ use App\Models\Pedido;
 use App\Models\Finanza;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use App\Models\SeedEvent;
+
 
 class HomeController extends Controller
 {
@@ -25,8 +27,25 @@ class HomeController extends Controller
     // Vista protegida del dashboard
    public function dashboard()
 {
-    $tareasPendientes = Work::where('estado', 'pendiente')->get();
-    $tareasEnProgreso = Work::where('estado', 'en progreso')->get();
+    // Tareas
+        $tareasPendientes = Work::where('estado', 'pendiente')->get();
+        $tareasEnProgreso = Work::where('estado', 'en progreso')->get();
+
+        // Solo trasplantes con fecha dentro de los próximos 7 días y máximo 10 registros
+        $hoy = Carbon::today();
+        $sieteDias = $hoy->copy()->addDays(7);
+
+        $trasplantesProximos = SeedEvent::whereNotNull('fecha_trasplante')
+            ->whereBetween('fecha_trasplante', [$hoy, $sieteDias])
+            ->orderBy('fecha_trasplante')
+            ->limit(10) // 👈 límite de 10
+            ->get();
+
+        return view('dashboard', compact(
+            'tareasPendientes',
+            'tareasEnProgreso',
+            'trasplantesProximos'
+        ));
 
     // Ventas mensuales
     $ventasPorMes = Pedido::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, SUM(total) as total")
@@ -110,4 +129,5 @@ public function ventasPorDia(Request $request)
 }
 
 
+   
 }
