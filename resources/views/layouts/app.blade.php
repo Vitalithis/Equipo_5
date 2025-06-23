@@ -55,6 +55,15 @@
         }
     </style>
 </head>
+<body class="font-sans antialiased bg-efore dark:bg-gray-900">
+
+<!-- Pruebas -->
+ <meta name="csrf-token" content="{{ csrf_token() }}">
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+
+    <div class="min-h-screen flex flex-col">
+        @include('layouts.navigation')
 
 <body class="antialiased {{ $fontClass }} {{ $fontSize }} {{ $isDark ? 'dark' : '' }}">
 

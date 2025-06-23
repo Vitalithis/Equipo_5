@@ -7,6 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proveedor extends Model
 {
+
+    public static function tiposDisponibles()
+{
+    return [
+        'Sustratos',
+        'Productos aplicables',
+        'Herramientas',
+        'Servicios Vivero',
+        'Construccion',
+        'Plantas',
+        'Arboles',
+        'Plasticos/Cerámicas',
+        'Plantines',
+        'Varios',
+    ];
+}
+
     use HasFactory;
     protected $table = 'proveedores';  // Cambia 'proveedors' por 'proveedores'
 

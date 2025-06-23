@@ -3,6 +3,16 @@
 @section('title', isset($pedido->id) ? 'Editar Venta' : 'Nueva Venta')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
+
 
 <div class="py-8 px-4 md:px-8 max-w-5xl mx-auto">
 

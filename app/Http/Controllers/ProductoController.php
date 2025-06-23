@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StockBajo;
+use App\Models\User;
+
+
 use Illuminate\Http\Request;
 
 use App\Models\Producto;
@@ -247,6 +252,21 @@ class ProductoController extends Controller
             $producto->fill($request->except(['imagen', 'categoria']));
             $producto->save();
 
+// Verificar si el stock es bajo
+if ($producto->stock < 5) {
+    // Obtener usuarios con rol Admin o Soporte
+    $usuarios = \App\Models\User::whereHas('roles', function ($q) {
+        $q->whereIn('name', ['Admin', 'Soporte']);
+    })->get();
+
+    // Enviar el correo a cada uno
+    foreach ($usuarios as $usuario) {
+        if ($usuario->email) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
+        }
+    }
+}
+
             // Asociar categoría en tabla pivote
             $producto->categorias()->sync([$categoria->id]);
 
@@ -316,6 +336,21 @@ class ProductoController extends Controller
 
         $producto->save();
 
+// Verificar si el stock es bajo
+if ($producto->stock < 5) {
+    // Obtener usuarios con rol Admin o Soporte
+    $usuarios = \App\Models\User::whereHas('roles', function ($q) {
+        $q->whereIn('name', ['Admin', 'Soporte']);
+    })->get();
+
+    // Enviar el correo a cada uno
+    foreach ($usuarios as $usuario) {
+        if ($usuario->email) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
+        }
+    }
+}
+
         return redirect()->route('dashboard.catalogo')->with('success', 'Producto actualizado correctamente.');
     }
 
@@ -325,4 +360,18 @@ class ProductoController extends Controller
         $producto->delete();
         return redirect()->route('dashboard.catalog.catalogo')->with('success', 'Producto eliminado correctamente.');
     }
+
+    private function notificarStockBajo($producto)
+{
+    if ($producto->stock < 5) {
+        $usuarios = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Admin', 'Soporte']);
+        })->get();
+
+        foreach ($usuarios as $usuario) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
+        }
+    }
+}
+
 }

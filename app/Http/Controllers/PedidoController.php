@@ -1,12 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\PedidoCreado;
 
 use App\Models\Pedido;
 use App\Models\DetallePedido;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Producto;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EstadoPedidoActualizado;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Http;
+
+
 
 
 use Illuminate\Support\Facades\Auth; ///??
@@ -27,25 +35,12 @@ class PedidoController extends Controller
             'precio_unitario' => 'required|array',
             'descuento_porcentaje' => 'nullable|numeric|min:0|max:100',
 
-            // Validación adicional para los campos de dirección cuando método es domicilio
-            'calle' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:100' : 'nullable',
-            'numero' => $request->metodo_entrega === 'domicilio' ? 'required|integer|min:1' : 'nullable',
-            'depto' => 'nullable|string|max:20',
-            'comuna' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
-            'ciudad' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:50' : 'nullable',
+            'direccion_entrega' => $request->metodo_entrega === 'domicilio' ? 'required|string|max:255' : 'nullable',
 
         ]);
 
-        $direccionCompleta = null;
-        if ($request->metodo_entrega === 'domicilio') {
-            $direccionCompleta = trim(
-                ($request->calle ?? '') . ' ' .
-                ($request->numero ?? '') .
-                ($request->depto ? ' Depto ' . $request->depto : '') .
-                ($request->comuna ? ', ' . $request->comuna : '') .
-                ($request->ciudad ? ', ' . $request->ciudad : '')
-            );
-        }
+        $direccionCompleta = $request->direccion_entrega;
+
 
 
         $subtotal = 0;
@@ -112,6 +107,21 @@ class PedidoController extends Controller
         'total' => $total,
         ]);
 
+                
+        // Enviar correo de confirmación de pedido
+        if ($pedido->usuario && $pedido->usuario->email) {
+            Mail::to($pedido->usuario->email)->send(new PedidoCreado($pedido));
+        }
+
+        // Enviar correo solo si el usuario tiene email válido
+        if ($pedido->usuario && $pedido->usuario->email) {
+            Mail::to($pedido->usuario->email)->send(new EstadoPedidoActualizado($pedido));
+        }
+ 
+
+
+
+
         return redirect()->route('pedidos.index')->with('success', 'Pedido guardado correctamente.');
     }
 
@@ -132,10 +142,26 @@ public function show(Pedido $pedido)
 
 
 
-    public function index(){
-        $pedidos = Pedido::with(['usuario', 'productos'])->get();
-        return view('pedidos.index', compact('pedidos'));
+public function index(Request $request)
+{
+    $query = Pedido::with(['usuario', 'productos'])->latest();
+
+    if ($request->filled('estado_pedido')) {
+        $query->where('estado_pedido', $request->estado_pedido);
     }
+
+    if ($request->filled('usuario')) {
+        $query->whereHas('usuario', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->usuario . '%');
+        });
+    }
+
+    $pedidos = $query->paginate(10);
+    $estados = Pedido::estadosTraducidos(); // 👈 aquí
+
+    return view('pedidos.index', compact('pedidos', 'estados'));
+}
+
 
     public function create(){
         $productos = Producto::all(); // importante para llenar el select
@@ -277,8 +303,49 @@ public function show(Pedido $pedido)
             'total' => $total,
         ]);
 
-        return redirect()->route('pedidos.index')->with('success', 'Pedido actualizado correctamente.');
+        $pedido->estado_pedido = $request->estado_pedido;
+    $pedido->save();
+
+    if ($pedido->cliente && $pedido->cliente->email) {
+        Mail::to($pedido->cliente->email)->send(new EstadoPedidoActualizado($pedido));
     }
+
+    return redirect()->back()->with('success', 'Pedido actualizado y cliente notificado.');
+
+    }
+
+    public function actualizarEstado(Request $request, Pedido $pedido)
+{
+    $request->validate([
+        'estado_pedido' => 'required|string',
+    ]);
+
+    $pedido->estado_pedido = $request->estado_pedido;
+    $pedido->save();
+
+    // Notificación Push vía OneSignal
+try {
+    Http::withHeaders([
+        'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+        'Content-Type'  => 'application/json',
+    ])->post('https://onesignal.com/api/v1/notifications', [
+        'app_id' => env('ONESIGNAL_APP_ID'),
+        'include_external_user_ids' => [(string) $pedido->usuario_id],
+        'headings' => ['es' => '📦 Pedido actualizado'],
+        'contents' => ['es' => "Tu pedido ahora está en estado: {$pedido->estado_pedido}"],
+    ]);
+} catch (\Exception $e) {
+    \Log::error("Error enviando notificación push: " . $e->getMessage());
+}
+
+
+    // Enviar correo al usuario
+    if ($pedido->usuario && $pedido->usuario->email) {
+        Mail::to($pedido->usuario->email)->send(new EstadoPedidoActualizado($pedido));
+    }
+
+    return redirect()->route('pedidos.index')->with('success', 'Estado actualizado y correo enviado.');
+}
 
     public function resumenMensual(Request $request)
 {

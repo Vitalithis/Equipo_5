@@ -90,6 +90,13 @@ public function descontarInsumosParaProduccion($cantidad)
         $insumo->cantidad -= $cantidadDescontar;
         $insumo->save();
     }
+
+
+
 }
+    public function aplicacionesTratamientos()
+    {
+        return $this->hasMany(TreatmentApplication::class);
+    }
 
 }

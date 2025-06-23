@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.1",
+        "berkayk/onesignal-laravel": "^2.4",
         "doctrine/dbal": "^3.9",
         "guzzlehttp/guzzle": "^7.2",
         "laravel-lang/common": "^6.7",
@@ -14,8 +15,11 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.6",
+        "mailgun/mailgun-php": "^4.3",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.18",
+        "symfony/http-client": "^7.3",
+        "symfony/mailgun-mailer": "^7.1",
         "transbank/transbank-sdk": "2.0"
     },
     "require-dev": {

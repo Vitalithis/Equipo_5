@@ -35,9 +35,9 @@
 
     {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
-
-    {{-- Contenido principal --}}
-    <main class="flex-grow">
+    <div style="height: 100px;"></div>
+    {{-- Contenido principal (ocupa espacio restante) --}}
+    <main class="flex-grow flex flex-col justify-center">
         @yield('content')
     </main>
 
