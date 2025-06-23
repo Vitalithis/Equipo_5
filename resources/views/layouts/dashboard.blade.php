@@ -105,27 +105,31 @@
           <span class="text-lg font-semibold">{{ $seccion }}</span>
         </div>
       </div>
-      <nav class="p-4 space-y-4" x-data="{ 
-        panel: false, 
-        comercial: false, 
-        vivero: false, 
-        admin: false 
+      <nav class="p-4 space-y-4" x-data="{
+        panel: false,
+        comercial: false,
+        vivero: false,
+        admin: false
       }">
-        
+
         {{-- 🔝 Accesos directos fijos --}}
         <ul class="space-y-1 font-medium">
           <li>
-            <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
-              <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard General
-            </a>
+              <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard General
+              </a>
           </li>
           <li>
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
-              <i class="fa-solid fa-house mr-2"></i>Página Principal
-            </a>
+              <a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-house mr-2"></i>Página Principal
+              </a>
           </li>
-        </ul>
-
+          <li>
+              <a href="{{ route('preferences.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-palette mr-2"></i>Personalización
+              </a>
+          </li>
+      </ul>
         {{-- 🔽 Menú agrupado por secciones --}}
         <ul class="space-y-1 font-medium">
 
@@ -139,6 +143,8 @@
               <ul class="ml-4 space-y-1 mt-1">
                 @can('ver dashboard')
                   <li><a href="{{ route('dashboard.cotizaciones.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-cash-register mr-2"></i>Cotizaciones</a></li>
+                @endcan
+                @can('ver dashboard')
                   <li><a href="{{ route('maintenance.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tools mr-2"></i>Mantenimiento</a></li>
                 @endcan
                 @can('ver calendario')
@@ -159,6 +165,9 @@
                 @can('gestionar catálogo')
                   <li><a href="{{ route('dashboard.catalogo') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-seedling mr-2"></i>Catálogo</a></li>
                 @endcan
+                @can('gestionar catálogo')
+                  <li><a href="{{ route('categorias.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tags mr-2"></i>Categoría</a></li>
+                @endcan
                 @can('gestionar pedidos')
                   <li><a href="{{ route('pedidos.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-box-open mr-2"></i>Pedidos</a></li>
                 @endcan
@@ -170,6 +179,9 @@
                 @endcan
                 @can('gestionar finanzas')
                   <li><a href="{{ route('dashboard.finanzas') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-coins mr-2"></i>Finanzas</a></li>
+                @endcan
+                @can('gestionar descuentos')
+                  <li><a href="{{ route('users.frequent') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-user mr-2"></i>Frecuentes</a></li>
                 @endcan
               </ul>
             </div>
@@ -227,142 +239,6 @@
               </ul>
             </div>
           </li>
-          
-
-
-
-
-
-   <!--  @can('ver panel soporte')
-      <li>
-        <a href="{{ route('clients.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-building"></i>
-          <span>Clientes</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('ver roles')
-      <li>
-        <a href="{{ route('roles.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-user-shield"></i>
-          <span>Roles</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar usuarios')
-      <li>
-        <a href="{{ route('users.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-users"></i>
-          <span>Usuarios</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar usuarios')
-      <li>
-        <a href="{{ route('users.frequent') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-user"></i>
-          <span>Frecuentes</span>
-        </a>
-      </li>
-
-    @endcan
-
-    @can('gestionar pedidos')
-      <li>
-        <a href="{{ route('pedidos.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-box-open"></i>
-          <span>Gestión de pedidos</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar descuentos')
-      <li>
-        <a href="{{ route('dashboard.descuentos') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-tags"></i>
-          <span>Descuentos</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar tareas')
-      <li>
-        <a href="{{ route('works.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-list-check"></i>
-          <span>Tareas del Vivero</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar fertilizantes')
-      <li>
-        <a href="{{ route('dashboard.fertilizantes') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-person-digging"></i>
-          <span>Fertilizante</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar proveedores')
-      <li>
-        <a href="{{ route('proveedores.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-truck-field"></i>
-          <span>Proveedores</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar cuidados')
-      <li>
-        <a href="{{ route('dashboard.cuidados') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-sun"></i>
-          <span>Cuidados</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar finanzas')
-      <li>
-        <a href="{{ route('dashboard.finanzas') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-coins"></i>
-          <span>Finanzas</span>
-        </a>
-      </li>
-    @endcan
-
-    @can('gestionar insumos')
-      <li>
-        <a href="{{ route('dashboard.insumos') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-droplet"></i>
-          <span>Insumos</span>
-        </a>
-      </li>
-    @endcan
-
-
-
-
-
-    @can('ver dashboard')
-      <li>
-        <a href="{{ route('maintenance.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-tools"></i>
-          <span>Mantenimiento</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('dashboard.cotizaciones.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-cash-register"></i>
-          <span>Cotizaciones</span>
-        </a>
-      </li>
-    @endcan -->
-
-  </ul>
-</nav>
 
         </ul>
       </nav>
@@ -387,14 +263,9 @@
             </button>
             <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg z-50"
                 style="background-color: {{ $accentColor }};">
-                <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Perfil</a>
-
                 @can('ver dashboard')
                     <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Panel Admin</a>
                 @endcan
-
-                <a href="{{ route('preferences.index') }}" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Personalización</a>
-
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-opacity-90">
