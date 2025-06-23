@@ -40,7 +40,26 @@
 </style>
 
 <div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800 max-w-7xl mx-auto">
-    <div class="flex items-center justify-end space-x-4 mb-6">
+    {{-- Filtro y botón --}}
+    <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <form method="GET" action="{{ route('dashboard.cuidados') }}" class="flex flex-wrap gap-2 items-end md:items-center w-full md:max-w-md">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar por producto..."
+                   class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+
+            <button type="submit"
+                    class="text-white px-4 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto"
+                    style="background-color: var(--table-header-color);">
+                Buscar
+            </button>
+
+            @if(request('search'))
+                <a href="{{ route('dashboard.cuidados.index') }}"
+                   class="text-sm text-gray-600 hover:text-gray-800 underline w-full md:w-auto">
+                    Limpiar
+                </a>
+            @endif
+        </form>
+
         <a href="{{ route('dashboard.cuidados.create') }}"
            class="flex items-center text-white px-3 py-2 rounded transition-colors"
            style="background-color: var(--table-header-color);">
@@ -52,6 +71,7 @@
         </a>
     </div>
 
+    {{-- Tabla --}}
     <div class="overflow-x-auto bg-white shadow custom-border">
         <table class="min-w-full text-sm text-left bg-white">
             <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
@@ -112,5 +132,40 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Paginación --}}
+    @if ($cuidados->count())
+        <div class="mt-6 flex flex-col items-center text-center gap-2">
+            <div class="text-sm text-gray-600">
+                Mostrando {{ $cuidados->firstItem() ?? 0 }} a {{ $cuidados->lastItem() ?? 0 }} de {{ $cuidados->total() }} resultados
+            </div>
+            @if ($cuidados->hasPages())
+                <div class="flex items-center space-x-1 text-sm text-gray-700">
+                    {{-- Anterior --}}
+                    @if ($cuidados->onFirstPage())
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">«</span>
+                    @else
+                        <a href="{{ $cuidados->previousPageUrl() }}" class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">«</a>
+                    @endif
+
+                    {{-- Páginas --}}
+                    @foreach ($cuidados->getUrlRange(1, $cuidados->lastPage()) as $page => $url)
+                        @if ($page == $cuidados->currentPage())
+                            <span class="px-3 py-2 rounded bg-green-600 text-white font-semibold">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="px-3 py-2 rounded hover:bg-green-100 text-green-700">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    {{-- Siguiente --}}
+                    @if ($cuidados->hasMorePages())
+                        <a href="{{ $cuidados->nextPageUrl() }}" class="px-3 py-2 rounded bg-eaccent2 hover:bg-green-700 text-white">»</a>
+                    @else
+                        <span class="px-3 py-2 rounded bg-gray-200 text-gray-500 cursor-not-allowed">»</span>
+                    @endif
+                </div>
+            @endif
+        </div>
+    @endif
 </div>
 @endsection

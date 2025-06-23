@@ -13,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Inter&family=Poppins&family=Montserrat&family=Open+Sans&family=Nunito&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed&family=Inter&family=Poppins&family=Montserrat&family=Open+Sans&display=swap" rel="stylesheet">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -22,12 +23,14 @@
     $tableHeaderColor = $pref?->table_header_color ?? '#A0C185';
     $backgroundColor = $pref?->background_color ?? '#F3F4F6';
     $fontClass = match($pref?->font ?? 'roboto') {
-        'inter' => 'font-inter',
-        'poppins' => 'font-poppins',
-        'montserrat' => 'font-[Montserrat]',
-        'open-sans' => "font-['Open Sans']",
-        default => 'font-roboto',
+        'inter' => "font-['Inter']",
+        'poppins' => "font-['Poppins']",
+        'montserrat' => "font-['Montserrat']",
+        'nunito' => "font-['Nunito']",
+        'opensans' => "font-['Open Sans']",
+        default => "font-['Roboto']",
     };
+
     $bgImage = $pref?->background_image
         ? "background-image: url('" . asset('storage/backgrounds/' . $pref->background_image) . "'); background-size: cover;"
         : "background-color: {$backgroundColor};";
@@ -52,6 +55,7 @@
     :root {
         --table-header-color: {{ $tableHeaderColor }};
         --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+        --navbar-color: {{ $pref?->navbar_color ?? '#1F2937' }};
     }
 
     .custom-table-header {
@@ -101,57 +105,121 @@
           <span class="text-lg font-semibold">{{ $seccion }}</span>
         </div>
       </div>
-      <nav class="p-4 space-y-1">
+      <nav class="p-4 space-y-4" x-data="{ 
+        panel: false, 
+        comercial: false, 
+        vivero: false, 
+        admin: false 
+      }">
+        
+        {{-- 🔝 Accesos directos fijos --}}
         <ul class="space-y-1 font-medium">
-          @can('ver panel soporte')
-            <li><a href="{{ route('clients.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-building mr-2"></i>Clientes</a></li>
-          @endcan
-          @can('ver dashboard')
-            <li><a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-house mr-2"></i>Home</a></li>
-          @endcan
-          @can('gestionar catálogo')
-            <li><a href="{{ route('dashboard.catalogo') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-seedling mr-2"></i>Catálogo</a></li>
-          @endcan
-          @can('ver roles')
-            <li><a href="{{ route('roles.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-user-shield mr-2"></i>Roles</a></li>
-          @endcan
-          @can('gestionar usuarios')
-            <li><a href="{{ route('users.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-users mr-2"></i>Usuarios</a></li>
-          @endcan
-          @can('gestionar pedidos')
-            <li><a href="{{ route('pedidos.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-box-open mr-2"></i>Gestión de pedidos</a></li>
-          @endcan
-          @can('gestionar descuentos')
-            <li><a href="{{ route('dashboard.descuentos') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tags mr-2"></i>Descuentos</a></li>
-          @endcan
-          @can('gestionar tareas')
-            <li><a href="{{ route('works.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-list-check mr-2"></i>Tareas del Vivero</a></li>
-          @endcan
-          @can('gestionar fertilizantes')
-            <li><a href="{{ route('dashboard.fertilizantes') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Fertilizante</a></li>
-          @endcan
-          @can('gestionar proveedores')
-            <li><a href="{{ route('proveedores.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-truck-field mr-2"></i>Proveedores</a></li>
-          @endcan
-          @can('gestionar cuidados')
-            <li><a href="{{ route('dashboard.cuidados') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-sun mr-2"></i>Cuidados</a></li>
-          @endcan
-          @can('gestionar finanzas')
-            <li><a href="{{ route('dashboard.finanzas') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-coins mr-2"></i>Finanzas</a></li>
-          @endcan
-          @can('gestionar insumos')
-            <li><a href="{{ route('dashboard.insumos') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-droplet mr-2"></i>Insumos</a></li>
-          @endcan
-          @can('ver dashboard')
-            <li><a href="{{ route('maintenance.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tools mr-2"></i>Mantenimiento</a></li>
-            <li><a href="{{ route('dashboard.cotizaciones.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-cash-register mr-2"></i>Cotizaciones</a></li>
-          @endcan
-          @can('ver calendario')
           <li>
-              <a href="{{ route('simple_calendar.index') }}" class="text-gray-700 hover:text-green-700">
+            <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard General
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <i class="fa-solid fa-house mr-2"></i>Página Principal
+            </a>
+          </li>
+        </ul>
 
-                  <i class="fa fa-calendar-alt mr-2"></i> Calendario
-              </a>
+        {{-- 🔽 Menú agrupado por secciones --}}
+        <ul class="space-y-1 font-medium">
+
+          {{-- 📊 Panel Principal --}}
+          <li>
+            <button @click="panel = !panel" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <span><i class="fa-solid fa-chart-line mr-2"></i>Panel Principal</span>
+              <i :class="panel ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div x-show="panel" x-collapse>
+              <ul class="ml-4 space-y-1 mt-1">
+                @can('ver dashboard')
+                  <li><a href="{{ route('dashboard.cotizaciones.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-cash-register mr-2"></i>Cotizaciones</a></li>
+                  <li><a href="{{ route('maintenance.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tools mr-2"></i>Mantenimiento</a></li>
+                @endcan
+                @can('ver calendario')
+                  <li><a href="{{ route('simple_calendar.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa fa-calendar-alt mr-2"></i>Calendario</a></li>
+                @endcan
+              </ul>
+            </div>
+          </li>
+
+          {{-- 🛍️ Gestión Comercial --}}
+          <li>
+            <button @click="comercial = !comercial" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <span><i class="fa-solid fa-store mr-2"></i>Gestión Comercial</span>
+              <i :class="comercial ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div x-show="comercial" x-collapse>
+              <ul class="ml-4 space-y-1 mt-1">
+                @can('gestionar catálogo')
+                  <li><a href="{{ route('dashboard.catalogo') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-seedling mr-2"></i>Catálogo</a></li>
+                @endcan
+                @can('gestionar pedidos')
+                  <li><a href="{{ route('pedidos.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-box-open mr-2"></i>Pedidos</a></li>
+                @endcan
+                @can('gestionar descuentos')
+                  <li><a href="{{ route('dashboard.descuentos') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tags mr-2"></i>Descuentos</a></li>
+                @endcan
+                @can('gestionar proveedores')
+                  <li><a href="{{ route('proveedores.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-truck-field mr-2"></i>Proveedores</a></li>
+                @endcan
+                @can('gestionar finanzas')
+                  <li><a href="{{ route('dashboard.finanzas') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-coins mr-2"></i>Finanzas</a></li>
+                @endcan
+              </ul>
+            </div>
+          </li>
+
+          {{-- 🌱 Gestión del Vivero --}}
+          <li>
+            <button @click="vivero = !vivero" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <span><i class="fa-solid fa-leaf mr-2"></i>Gestión del Vivero</span>
+              <i :class="vivero ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div x-show="vivero" x-collapse>
+              <ul class="ml-4 space-y-1 mt-1">
+                @can('gestionar cuidados')
+                  <li><a href="{{ route('dashboard.cuidados') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-sun mr-2"></i>Cuidados</a></li>
+                @endcan
+                @can('gestionar fertilizantes')
+                  <li><a href="{{ route('dashboard.fertilizantes') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Fertilizante</a></li>
+                @endcan
+                @can('gestionar insumos')
+                  <li><a href="{{ route('dashboard.insumos') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-droplet mr-2"></i>Insumos</a></li>
+                @endcan
+                @can('gestionar tareas')
+                  <li><a href="{{ route('works.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-list-check mr-2"></i>Tareas</a></li>
+                @endcan
+                @can('gestionar produccion')
+                  <li><a href="{{ route('produccion.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-seedling mr-2"></i>Producción</a></li>
+                @endcan
+              </ul>
+            </div>
+          </li>
+          {{-- 🧑‍💼 Administración --}}
+          <li>
+            <button @click="admin = !admin" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-white hover:text-black transition">
+              <span><i class="fa-solid fa-user-gear mr-2"></i>Administración</span>
+              <i :class="admin ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+            </button>
+            <div x-show="admin" x-collapse>
+              <ul class="ml-4 space-y-1 mt-1">
+                @can('ver roles')
+                  <li><a href="{{ route('roles.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-user-shield mr-2"></i>Roles</a></li>
+                @endcan
+                @can('gestionar usuarios')
+                  <li><a href="{{ route('users.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-users mr-2"></i>Usuarios</a></li>
+                @endcan
+                @can('ver panel soporte')
+                  <li><a href="{{ route('clients.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-building mr-2"></i>Clientes</a></li>
+                @endcan
+              </ul>
+            </div>
           </li>
           @endcan
           @can('gestionar tratamientos')
@@ -295,11 +363,13 @@
   </ul>
 </nav>
 
+        </ul>
+      </nav>
     </div>
-
     {{-- MAIN --}}
     <div class="flex-1 flex flex-col overflow-hidden">
       <header class="shadow-sm text-white" style="background-color: {{ $accentColor }};">
+
         <div class="flex items-center justify-between px-6 py-3">
           <div class="flex items-center">
             <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 dark:text-gray-100 focus:outline-none lg:hidden">

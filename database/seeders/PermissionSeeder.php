@@ -108,6 +108,7 @@ class PermissionSeeder extends Seeder
         'crear roles',
         'editar roles',
         'eliminar roles',
+        'gestionar produccion',
         ];
 
         foreach ($permisos as $permiso) {

@@ -47,6 +47,9 @@ use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SimpleCalendarController;
 
+use App\Http\Controllers\MaintenanceReportController;
+
+use App\Http\Controllers\ContactController;
 
 //Ruta de prueba
 use Illuminate\Support\Facades\Http;
@@ -94,6 +97,11 @@ Route::middleware(['auth'])->group(function () {
     // Solución: usar POST para evitar colisión con DELETE
     Route::post('/preferencias/eliminar-logo', [ThemeController::class, 'removeLogo'])->name('theme.remove.logo');
     Route::post('/preferencias/eliminar-perfil', [ThemeController::class, 'removeProfile'])->name('theme.remove.profile');
+});
+Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
+    Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
 });
 // calendario simple de siembra y trasplante
 Route::middleware(['auth'])->prefix('simple-calendar')->group(function () {
@@ -185,14 +193,12 @@ Route::post('/dashboard/descuentos', [DescuentoController::class, 'store'])->mid
 Route::get('/dashboard/descuentos/{id}/edit', [DescuentoController::class, 'edit'])->middleware('permission:gestionar descuentos')->name('descuentos_edit');
 Route::put('/dashboard/descuentos/{id}', [DescuentoController::class, 'update'])->middleware('permission:gestionar descuentos')->name('descuentos.update');
 Route::delete('/dashboard/descuentos/{id}', [DescuentoController::class, 'destroy'])->middleware('permission:gestionar descuentos')->name('descuentos.destroy');
-// Ruta Formulario Contacto
-use App\Http\Controllers\ContactController;
+
 
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
-// Ruta para el mantenedor de mantenimientos de infraestructura
-use App\Http\Controllers\MaintenanceReportController;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
@@ -526,7 +532,7 @@ Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
     ->middleware('auth');
 
 // Rutas produccion
-/*Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/produccion', [ProductionController::class, 'index'])->name('produccion.index');
     Route::get('/produccion/create', [ProductionController::class, 'create'])->name('produccion.create');
     Route::post('/produccion', [ProductionController::class, 'producir'])->name('produccion.store');
@@ -538,7 +544,7 @@ Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
     ->name('produccion.mermas.store');
 
 });
-*/
+
 
 Route::get('/debug-tenant', function () {
     return response()->json([

@@ -340,5 +340,51 @@ try {
     return redirect()->route('pedidos.index')->with('success', 'Estado actualizado y correo enviado.');
 }
 
+    public function resumenMensual(Request $request)
+{
+    $mes = $request->get('mes');
+    if (!$mes) {
+        return response()->json(['error' => 'Mes no especificado'], 400);
+    }
+
+    $inicio = $mes . '-01 00:00:00';
+    $fin = date("Y-m-t 23:59:59", strtotime($inicio));
+
+    $pedidos = Pedido::with('detalles.producto') // cargar detalles y productos
+                ->whereBetween('fecha_pedido', [$inicio, $fin])
+                ->get();
+
+    $total = $pedidos->sum('total');
+    $cantidad = $pedidos->count();
+
+    // Agrupar productos
+    $productos = [];
+
+    foreach ($pedidos as $pedido) {
+        foreach ($pedido->detalles as $detalle) {
+            $id = $detalle->producto_id;
+            $nombre = $detalle->producto->nombre ?? 'Producto desconocido';
+
+            if (!isset($productos[$id])) {
+                $productos[$id] = [
+                    'nombre' => $nombre,
+                    'cantidad' => 0,
+                    'total' => 0,
+                ];
+            }
+
+            $productos[$id]['cantidad'] += $detalle->cantidad;
+            $productos[$id]['total'] += $detalle->cantidad * $detalle->precio_unitario;
+        }
+    }
+
+    return response()->json([
+        'cantidad' => $cantidad,
+        'total' => $total,
+        'productos' => array_values($productos), // reindexar
+    ]);
+}
+
+
 }
          
