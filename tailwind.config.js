@@ -3,6 +3,8 @@ import forms from "@tailwindcss/forms";
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
+
     content: [
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./resources/**/*.blade.php",
@@ -10,6 +12,10 @@ export default {
         "./resources/views/**/*.blade.php",
         "./resources/js/**/*.js",
         "./node_modules/flowbite/**/*.js",
+    ],
+
+    safelist: [
+        'bg-[var(--navbar-color)]', // 👈 Necesario para clases dinámicas
     ],
 
     theme: {
@@ -24,10 +30,12 @@ export default {
                 float: "float 3s ease-in-out infinite",
             },
             fontFamily: {
-                roboto_sans: ["Roboto", ...defaultTheme.fontFamily.sans], // Fuente general
-                roboto_condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans], // Para títulos
+                roboto_sans: ["Roboto", ...defaultTheme.fontFamily.sans],
+                roboto_condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans],
+                roboto: ['Roboto', 'sans-serif'],
+                inter: ['Inter', 'sans-serif'],
+                poppins: ['Poppins', 'sans-serif'],
             },
-
             fill: (theme) => ({
                 ...theme("colors"),
             }),
@@ -41,14 +49,13 @@ export default {
                 greenMid: "#79B473",
                 blueLight: "#D4DCFF",
                 blueDark: "#48639C",
-                // Colores base antiguos (Mantener para compatibilidad)
-                efore: "#F8F6F4", // marfil
-                eprimary: "#3E0345", // púrpura
-                esecondary: "#8090BF", // azul grisáceo
-                eaccent: "#F6E867", // amarillo suave
-                eaccent2: "#AEC68D", // verde claro
 
-                // Variaciones de efore
+                efore: "#F8F6F4",
+                eprimary: "#3E0345",
+                esecondary: "#8090BF",
+                eaccent: "#F6E867",
+                eaccent2: "#AEC68D",
+
                 "efore-100": "#F9F7F5",
                 "efore-200": "#F0E9E3",
                 "efore-300": "#E8D9C7",
@@ -59,7 +66,6 @@ export default {
                 "efore-800": "#633419",
                 "efore-900": "#4A260E",
 
-                // Variaciones de eprimary
                 "eprimary-100": "#6A145F",
                 "eprimary-200": "#5B0D59",
                 "eprimary-300": "#4D064F",
@@ -70,7 +76,6 @@ export default {
                 "eprimary-800": "#1A0110",
                 "eprimary-900": "#0F0008",
 
-                // Variaciones de esecondary
                 "esecondary-100": "#AAB8D9",
                 "esecondary-200": "#92A1C7",
                 "esecondary-300": "#7A8AAD",
@@ -81,7 +86,6 @@ export default {
                 "esecondary-800": "#384761",
                 "esecondary-900": "#262F41",
 
-                // Variaciones de eaccent
                 "eaccent-100": "#F8F9A6",
                 "eaccent-200": "#F8F87E",
                 "eaccent-300": "#F8F656",
@@ -92,7 +96,6 @@ export default {
                 "eaccent-800": "#A6941A",
                 "eaccent-900": "#83710F",
 
-                // Variaciones de eaccent2
                 "eaccent2-100": "#B2D7A7",
                 "eaccent2-200": "#A3C98F",
                 "eaccent2-300": "#94BA77",

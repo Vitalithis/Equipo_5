@@ -1,5 +1,10 @@
+@php
+    $pref = Auth::check() ? Auth::user()->preference : null;
+    $navbarColor = $pref?->navbar_color ?? '#1F2937'; // color por defecto: gris oscuro
+@endphp
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" x-data="themeConfig()" :class="colorMode">
 
 <head>
     <meta charset="UTF-8" />
@@ -13,26 +18,32 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <!-- Tailwind + Vite -->
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    {{-- Colores dinámicos --}}
+    <style>
+        :root {
+            --navbar-color: {{ $navbarColor }};
+            --navbar-text-color: {{ $pref?->navbar_text_color ?? '#000000' }};
+
+        }
+    </style>
 </head>
 
-<body class="flex flex-col min-h-screen font-roboto_sans
-    {{ request()->routeIs('home') || request()->is('/') ? 'bg-white' : 'bg-gray-100' }}">
-    {{-- Navbar --}}
+<body :class="[fontFamily, backgroundColor, textColor, 'transition-all', 'duration-300', 'flex', 'flex-col', 'min-h-screen']">
+
+    {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
+
     {{-- Contenido principal --}}
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    {{-- Footer --}}
+    {{-- Footer general --}}
     @include('components.footer')
 
-
-    <!-- Sección para agregar scripts personalizados -->
     @stack('scripts')
 </body>
-
 </html>

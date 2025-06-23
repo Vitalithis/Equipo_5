@@ -3,76 +3,80 @@
 @section('title', 'Editar Rol')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8 font-['Roboto'] text-gray-800">
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
-    <a href="{{ route('roles.index') }}"
-       class="mb-4 inline-flex items-center text-green-700 hover:text-green-800 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m15 18-6-6 6-6" />
-        </svg>
-        Volver a la lista
-    </a>
+<div class="py-8 px-4 md:px-8 max-w-4xl mx-auto font-['Roboto'] text-gray-800">
+    <div class="flex items-center mb-6">
+        <a href="{{ route('roles.index') }}"
+           class="flex items-center px-4 py-2 rounded text-white text-sm shadow transition-colors"
+           style="background-color: var(--table-header-color);">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
+            Volver al listado
+        </a>
+    </div>
 
-    <form action="{{ route('roles.update', $role->id) }}" method="POST" class="bg-white shadow rounded-lg p-6">
-        @csrf
-        @method('PUT')
+    <div class="bg-white border border-[color:var(--table-header-color)] shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Editar Rol: <span class="text-green-700">{{ $role->name }}</span></h2>
 
-        {{-- Nombre del Rol --}}
-        <div class="mb-6">
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Rol</label>
-            <input type="text" name="name" id="name" value="{{ $role->name }}" required
-                   class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-eaccent focus:border-eaccent px-4 py-2">
-        </div>
+        <form method="POST" action="{{ route('roles.update', $role->id) }}">
+            @csrf
+            @method('PUT')
 
-        {{-- Permisos --}}
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Permisos</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-eaccent2 rounded overflow-hidden">
+            {{-- Nombre del rol --}}
+            <div class="mb-4">
+                <label for="name" class="block font-medium text-sm mb-1">Nombre del Rol</label>
+                <input type="text" name="name" id="name"
+                       value="{{ old('name', $role->name) }}"
+                       class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                       required>
+            </div>
 
+            {{-- Permisos agrupados --}}
+            <div class="mb-6">
+                <label class="block font-medium text-sm mb-2">Permisos</label>
                 @php
-                    $grouped = [
-                        'Dashboard' => ['ver dashboard'],
-                        'Usuarios' => ['gestionar usuarios', 'ver usuarios'],
-                        'Permisos' => ['gestionar permisos'],
-                        'Roles' => ['ver roles', 'crear roles', 'editar roles', 'eliminar roles'],
-                        'Órdenes' => ['ver ordenes', 'crear ordenes', 'editar ordenes', 'eliminar ordenes'],
-                        'Ingresos' => ['gestionar ingresos'],
-                        'Egresos' => ['gestionar egresos'],
-                        'Productos' => ['gestionar productos'],
-                        'Catálogo' => ['gestionar catálogo'],
-                        'Descuentos' => ['gestionar descuentos'],
-                        'Reportes' => ['ver reportes'],
-                        'Pedidos' => ['gestionar pedidos']
-                    ];
+                    $grouped = $permissions->groupBy(function ($perm) {
+                        $parts = explode(' ', $perm->name);
+                        return $parts[1] ?? $parts[0];
+                    });
                 @endphp
 
-                @foreach($grouped as $group => $perms)
-                    <div class="border-t border-eaccent2 border-r p-4">
-                        <h3 class="font-bold text-eprimary mb-2">{{ $group }}</h3>
-                        <div class="grid grid-cols-2 gap-x-6 gap-y-2">
-                            @foreach($permissions as $permission)
-                                @if(in_array($permission->name, $perms))
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
-                                            @if($role->permissions->contains($permission)) checked @endif
-                                            class="form-checkbox text-eaccent border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">{{ $permission->name }}</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @foreach($grouped as $modulo => $permisosGrupo)
+                        <div>
+                            <div class="font-semibold text-black mb-2 capitalize">{{ $modulo }}</div>
+                            <div class="space-y-1">
+                                @foreach($permisosGrupo as $perm)
+                                    <label class="flex items-center text-sm text-gray-700">
+                                        <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
+                                               class="mr-2 rounded border-gray-300 text-green-600 shadow-sm"
+                                               {{ $role->permissions->contains('id', $perm->id) ? 'checked' : '' }}>
+                                        {{ $perm->name }}
                                     </label>
-                                @endif
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        </div>
 
-        <div class="mt-6">
-            <button type="submit"
-                    class="bg-eaccent2 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow">
-                Actualizar
-            </button>
-        </div>
-    </form>
+            {{-- Botones --}}
+            <div class="flex justify-end gap-3">
+                <a href="{{ route('roles.index') }}"
+                class="px-4 py-2 rounded border text-sm text-gray-700 hover:text-black transition"
+                style="background-color: white; border-color: var(--table-header-color);">
+                    Cancelar
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 rounded text-white text-sm shadow"
+                        style="background-color: var(--table-header-color);">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection

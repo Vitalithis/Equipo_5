@@ -7,18 +7,15 @@
     <div class="py-8 px-4 md:px-8 max-w-5xl mx-auto">
         <div class="flex items-center mb-6">
             <a href="{{ route('dashboard.descuentos') }}"
-                class="flex items-center text-green-700 hover:text-green-800 transition-colors">
+            class="flex items-center text-white px-3 py-1 rounded transition-colors"
+            style="background-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m15 18-6-6 6-6" />
                 </svg>
                 Volver a la lista
             </a>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto">
-                {{ isset($descuento->id) ? 'Editar' : 'Nuevo' }} descuento
-            </h1>
         </div>
-
         <form action="{{ isset($descuento->id) ? route('descuentos.update', $descuento->id) : route('descuentos.store') }}"
             method="POST" class="space-y-6">
             @csrf
@@ -224,7 +221,8 @@
                     Cancelar
                 </a>
                 <button type="submit"
-                    class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                        class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white"
+                        style="background-color: var(--table-header-color);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 -ml-1" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
@@ -233,6 +231,7 @@
                     </svg>
                     {{ isset($descuento->id) ? 'Actualizar' : 'Guardar' }} descuento
                 </button>
+
             </div>
         </form>
     </div>

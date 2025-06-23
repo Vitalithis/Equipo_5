@@ -7,11 +7,25 @@ use Illuminate\Http\Request;
 
 class FertilizanteController extends Controller
 {
-    public function mostrarTodos()
-    {
-        $fertilizantes = Fertilizante::all();
-        return view('dashboard.fertilizer.fertilizante', compact('fertilizantes'));
+    public function mostrarTodos(Request $request)
+{
+    $query = Fertilizante::query();
+
+    if ($request->filled('nombre')) {
+        $query->where('nombre', 'like', '%' . $request->nombre . '%');
     }
+
+    if ($request->filled('tipo')) {
+        $query->where('tipo', $request->tipo);
+    }
+
+    $fertilizantes = $query->paginate(10)->withQueryString();
+
+
+    return view('dashboard.fertilizer.fertilizante', compact('fertilizantes'));
+}
+
+
 
     public function create()
     {

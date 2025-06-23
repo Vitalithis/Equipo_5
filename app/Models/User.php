@@ -34,19 +34,19 @@ class User extends Authenticatable
         'must_change_password' => 'boolean',
     ];
 
+    public function preference()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
     }
 
-    /**
-     * Roles filtrados por cliente actual.
-     */
-    public function filteredRoles()
+    public function getPermissionsTeamId()
     {
-        return $this->roles
-            ->where('cliente_id', $this->cliente_id)
-            ->values();
+        return $this->cliente_id;
     }
 
     /**
@@ -70,45 +70,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Necesario si usas teams o cliente_id como separación de permisos.
+     * Acceder a roles filtrados (opcional).
      */
-    public function getPermissionsTeamId()
+    public function filteredRoles()
     {
-        return $this->cliente_id;
-    }
-
-    /**
-     * Obtener todos los permisos por roles, filtrados por cliente.
-     */
-    public function getAllPermissions()
-    {
-        $permissions = collect();
-
-        foreach ($this->filteredRoles() as $role) {
-            $permissions = $permissions->merge(
-                $role->permissions()->where('permissions.cliente_id', $this->cliente_id)->get()
-            );
-        }
-
-        return $permissions->unique('id');
-    }
-
-    /**
-     * Validar si tiene el permiso especificado.
-     */
-    public function hasPermissionTo($permission, $guardName = null): bool
-    {
-        $permissions = $this->getAllPermissions();
-
-        if (is_string($permission)) {
-            return $permissions->contains('name', $permission);
-        }
-
-        if ($permission instanceof \Spatie\Permission\Models\Permission) {
-            return $permissions->contains('id', $permission->id);
-        }
-
-        return false;
+        return $this->roles
+            ->where('cliente_id', $this->cliente_id)
+            ->values();
     }
     public function pedidos()
     {
