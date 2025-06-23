@@ -13,11 +13,24 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CuidadoController extends Controller
 {
-    public function index()
-    {
-        $cuidados = Cuidado::with('producto')->orderBy('created_at', 'desc')->get();
-        return view('dashboard.care.cuidados', compact('cuidados'));
+    public function index(Request $request)
+{
+    $query = Cuidado::with('producto')->orderBy('created_at', 'desc');
+
+    if ($request->filled('producto')) {
+        $query->whereHas('producto', function ($q) use ($request) {
+            $q->where('nombre', 'like', '%' . $request->producto . '%');
+        });
     }
+
+    if ($request->filled('tipo_luz')) {
+        $query->where('tipo_luz', $request->tipo_luz);
+    }
+
+    $cuidados = $query->paginate(10)->withQueryString();
+
+    return view('dashboard.care.cuidados', compact('cuidados'));
+}
 
     public function create()
     {

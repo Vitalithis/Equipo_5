@@ -12,7 +12,7 @@
         {{-- 🎨 Estilo de colores --}}
         <div>
             <h2 class="text-lg font-semibold mb-4">Colores del tema</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
                     <label class="block font-semibold mb-1">Color de acento</label>
                     <input type="color" name="accent_color" value="{{ $preferences->accent_color ?? '#10B981' }}" class="w-16 h-10 border rounded">
@@ -26,6 +26,16 @@
                 <div>
                     <label class="block font-semibold mb-1">Color del encabezado de tablas</label>
                     <input type="color" name="table_header_color" value="{{ $preferences->table_header_color ?? '#D1D5DB' }}" class="w-16 h-10 border rounded">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1">Color de la barra de navegación</label>
+                    <input type="color" name="navbar_color" value="{{ $preferences->navbar_color ?? '#1F2937' }}" class="w-16 h-10 border rounded">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1">Color del texto de la navbar</label>
+                    <input type="color" name="navbar_text_color" value="{{ $preferences->navbar_text_color ?? '#FFFFFF' }}" class="w-16 h-10 border rounded">
                 </div>
             </div>
         </div>
