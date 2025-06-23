@@ -8,11 +8,29 @@ use Illuminate\Validation\Rule;
 
 class ProveedorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $proveedores = Proveedor::latest()->get();
-        return view('proveedores.index', compact('proveedores'));
+        $query = Proveedor::query();
+
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+
+        if ($request->filled('tipo_proveedor')) {
+            $query->where('tipo_proveedor', $request->tipo_proveedor);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        $proveedores = $query->latest()->paginate(10);
+        $tipos = Proveedor::tiposDisponibles(); // <- aquí
+
+        return view('proveedores.index', compact('proveedores', 'tipos'));
     }
+
+
 
     public function create()
     {

@@ -47,7 +47,7 @@ class Producto extends Model
         return $this->belongsToMany(Descuento::class, 'descuento_producto')->withTimestamps();
     }
 
-    // En App\Models\Producto.php
+    
     public static function toma4ultimos()
     {
         return self::withoutGlobalScopes()
@@ -56,7 +56,47 @@ class Producto extends Model
             ->get();
     }
     public function fertilizaciones()
-    {
-        return $this->hasMany(Fertilization::class);
+{
+    return $this->hasMany(Fertilization::class);
+}
+
+public function insumos()
+{
+    return $this->belongsToMany(Insumo::class, 'producto_insumo')
+                ->withPivot('cantidad')
+                ->withTimestamps();
+}
+public function calcularPrecioCosto()
+{
+    return $this->insumos->sum(function ($insumo) {
+        return $insumo->costo_unitario * $insumo->pivot->cantidad;
+    });
+}
+public function tieneStockParaProducir($cantidadDeseada)
+{
+    foreach ($this->insumos as $insumo) {
+        $cantidadNecesaria = $insumo->pivot->cantidad * $cantidadDeseada;
+        if ($insumo->cantidad < $cantidadNecesaria) {
+            return false;
+        }
     }
+    return true;
+}
+
+public function descontarInsumosParaProduccion($cantidad)
+{
+    foreach ($this->insumos as $insumo) {
+        $cantidadDescontar = $insumo->pivot->cantidad * $cantidad;
+        $insumo->cantidad -= $cantidadDescontar;
+        $insumo->save();
+    }
+
+
+
+}
+    public function aplicacionesTratamientos()
+    {
+        return $this->hasMany(TreatmentApplication::class);
+    }
+
 }

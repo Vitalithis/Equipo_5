@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PermissionSeeder::class,
+            GastoTransporteSeeder::class,
+            PlantTreatmentSeeder::class,
+            TreatmentApplicationSeeder::class,
+            
             ClienteSeeder::class,
             CategoriaSeeder::class,
             DescuentoSeeder::class,
@@ -27,8 +31,9 @@ class DatabaseSeeder extends Seeder
             WorkSeeder::class,
             WorkSeeder::class,
             SoporteSeeder::class,
+            ProduccionSeeder::class,
             PreferencesSeeder::class,
-            CalendarEventSeeder::class,
+            CalendarEventSeeder::class
         ]);
 
         // \App\Models\User::factory(10)->create();

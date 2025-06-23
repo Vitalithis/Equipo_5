@@ -3,14 +3,26 @@
 @section('title', 'Nuevo proveedor')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
 <div class="py-8 px-4 md:px-8 max-w-4xl mx-auto font-['Roboto'] text-gray-800">
-<a href="{{ route('proveedores.index') }}" class="inline-flex items-center text-black px-3 py-1 rounded "
-    style="background-color: var(--table-header-color); transition: background-color 0.3s;">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m15 18-6-6 6-6"/>
-        </svg>
-        Volver a la lista
-    </a>
+<a href="{{ route('proveedores.index') }}"
+   class="mb-6 inline-flex items-center text-white border px-3 py-1 rounded transition-colors"
+   style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+    </svg>
+    Volver a la lista
+</a>
+
 
     <form method="POST" action="{{ route('proveedores.store') }}" class="space-y-6">
         @csrf

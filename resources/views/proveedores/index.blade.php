@@ -3,6 +3,46 @@
 @section('title', 'Lista de Proveedores')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+
+    .custom-table-header {
+        background-color: var(--table-header-color);
+        color: var(--table-header-text-color) !important;
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
     <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
         @if (session('success'))
             <div id="success-message" class="bg-[#FFF9DB] border-l-4 border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6 shadow">
@@ -11,20 +51,59 @@
         @endif
 
         <div class="rounded-lg shadow-sm p-6">
-            <div class="flex justify-end items-center mb-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+
+                {{-- Buscador y filtro por tipo y estado --}}
+                <form method="GET" action="{{ route('proveedores.index') }}" class="flex flex-wrap gap-2 items-center w-full md:max-w-4xl mb-4">
+
+                    <input type="text" name="nombre" value="{{ request('nombre') }}" placeholder="Buscar por nombre..."
+                        class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+
+                    <select name="tipo_proveedor" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+                        <option value="">Todos los tipos</option>
+                        @foreach($tipos as $tipo)
+                            <option value="{{ $tipo }}" {{ request('tipo_proveedor') === $tipo ? 'selected' : '' }}>
+                                {{ $tipo }}
+                            </option>
+                        @endforeach
+                    </select>
+
+
+                    <select name="estado" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+                        <option value="">Todos los estados</option>
+                        <option value="activo" {{ request('estado') === 'activo' ? 'selected' : '' }}>Activo</option>
+                        <option value="inactivo" {{ request('estado') === 'inactivo' ? 'selected' : '' }}>Inactivo</option>
+                    </select>
+
+                    <button type="submit" class="text-white px-4 py-2 rounded border shadow transition-colors" style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+                        Buscar
+                    </button>
+
+
+                    @if(request('nombre') || request('tipo_proveedor') || request('estado'))
+                        <a href="{{ route('proveedores.index') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
+                            Limpiar
+                        </a>
+                    @endif
+                </form>
+
+                {{-- Botón Añadir Proveedor --}}
                 <a href="{{ route('proveedores.create') }}"
-                   class="flex items-center bg-[var(--table-header-color)] text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                class="flex items-center text-white border px-3 py-1 rounded transition-colors whitespace-nowrap"
+                style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v16m8-8H4"/>
                     </svg>
                     Añadir Proveedor
                 </a>
             </div>
 
-            <div class="overflow-x-auto rounded-xl border-2 border-[var(--table-header-color)]">
-                <table class="min-w-full table-auto text-sm text-left text-gray-800 bg-white rounded-xl">
+
+            <div class="overflow-x-auto rounded-xl border border-eaccent2">
+                <table class="min-w-full table-auto text-sm text-left text-gray-800 bg-white">
                     <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
+
                         <tr>
                             <th class="px-6 py-4 text-center">ID</th>
                             <th class="px-6 py-4">Nombre</th>
@@ -64,6 +143,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($proveedores instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="mt-6 flex justify-center">
+                    {{ $proveedores->withQueryString()->links('components.pagination.custom') }}
+                </div>
+            @endif
 
         </div>
     </div>

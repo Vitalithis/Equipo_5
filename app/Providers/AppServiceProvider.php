@@ -7,11 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Mail;
+
+use App\Models\User;
+use App\Observers\UserObserver;
+
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
-{
+{   
     public function register(): void
     {
         //
@@ -37,6 +42,29 @@ class AppServiceProvider extends ServiceProvider
                 app(\Spatie\Permission\PermissionRegistrar::class)
                     ->setPermissionsTeamId(Auth::user()->cliente_id);
             }
+            User::observe(UserObserver::class);
+
+        };
+
+        if (app()->environment('local')) { // Solo para entorno local
+        Mail::alwaysTo('scarrascos@ing.ucsc.cl');
+    }
+    }
+
+    protected function addExplicitGlobalScopes($clienteId)
+    {
+        // Scope global para Roles
+        Role::addGlobalScope('tenant_roles', function (Builder $builder) use ($clienteId) {
+            $builder->where('roles.cliente_id', $clienteId);
+        });
+
+        // Scope global para Permisos
+        Permission::addGlobalScope('tenant_permissions', function (Builder $builder) use ($clienteId) {
+            $builder->where('permissions.cliente_id', $clienteId);
+        });
+
+        // Nota: No aplicar scopes a tablas pivot (role_has_permissions/model_has_roles),
+        // Spatie no usa modelos para ellas, solo consultas directas.
         }
     }
-}
+

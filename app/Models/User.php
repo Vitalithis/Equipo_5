@@ -78,6 +78,14 @@ class User extends Authenticatable
             ->where('cliente_id', $this->cliente_id)
             ->values();
     }
+
+    
+    public function devices()
+    {
+        return $this->hasMany(UserDevice::class);
+    }
+
+    
     public function pedidos()
     {
         return $this->hasMany(Pedido::class, 'usuario_id');

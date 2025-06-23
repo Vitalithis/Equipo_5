@@ -61,9 +61,11 @@ class ProductoFactory extends Factory
             'De crecimiento lento', 'De crecimiento rápido'
         ];
 
-        return $this->faker->unique()->randomElement($types) . ' ' .
-               $this->faker->randomElement($colors) . ' ' .
-               $this->faker->randomElement($features);
+        return $this->faker->unique()->numerify(
+            $this->faker->randomElement($types) . ' ' .
+            $this->faker->randomElement($colors) . ' ' .
+            $this->faker->randomElement($features) . ' ###'
+        );
     }
 
     private function generateCareInstructions(): string

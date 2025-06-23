@@ -53,10 +53,30 @@ class Pedido extends Model
         ];
     }
 
+        public static function estadosTraducidos()
+    {
+        return [
+            'pendiente' => 'Pendiente',
+            'en_preparacion' => 'En preparación',
+            'en_camino' => 'En camino',
+            'enviado' => 'Enviado',
+            'entregado' => 'Entregado',
+            'listo_para_retiro' => 'Listo para retiro',
+        ];
+    }
+
+
     public function estadosPermitidos()
     {
         $mapa = self::estadosPorMetodo();
         return $mapa[$this->metodo_entrega] ?? [];
+    }
+
+
+    public function estadoFormateado()
+    {
+        $estados = self::estadosTraducidos();
+        return $estados[$this->estado_pedido] ?? ucfirst(str_replace('_', ' ', $this->estado_pedido));
     }
 
     public function detalles()

@@ -1,10 +1,20 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+@php
+    $preferences = auth()->user()?->preference;
+    $logo = $preferences?->logo_image ?? null;
+    $profile = $preferences?->profile_image ?? null;
+@endphp
+
+<nav x-data="{ open: false }" class="border-b border-gray-100 dark:border-gray-700 bg-[var(--navbar-color)] text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center">
-                    <img src="{{ asset('storage/images/logo-removebg.png') }}" alt="Logo" class="h-10 w-auto">
+                    @if ($logo)
+                        <img src="{{ asset('storage/logos/' . $logo) }}" alt="Logo" class="h-10 w-auto object-contain">
+                    @else
+                        <img src="{{ asset('storage/images/logo-removebg.png') }}" alt="Logo" class="h-10 w-auto">
+                    @endif
                 </a>
 
                 <!-- Navigation Links -->
@@ -20,17 +30,21 @@
             <!-- Right Side -->
             <div class="hidden sm:flex sm:items-center">
                 @auth
-                <!-- Shopping Cart Icon -->
-                <a href="{{ route('cart.index') }}" class="mr-4 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="9" cy="21" r="1" />
-                        <circle cx="20" cy="21" r="1" />
-                    </svg>
-                </a>
+                    <!-- Shopping Cart Icon -->
+                    <a href="{{ route('cart.index') }}" class="mr-4 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                        </svg>
+                    </a>
+
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 text-sm rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                                @if ($profile)
+                                    <img src="{{ asset('storage/profiles/' . $profile) }}" alt="Perfil" class="h-8 w-8 rounded-full object-cover mr-2">
+                                @endif
                                 <div>{{ Auth::user()->name }}</div>
                                 <div class="ml-1">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -41,19 +55,17 @@
                         </x-slot>
 
                         <x-slot name="content">
-                    <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
-                    @can('ver dashboard')
-                        <x-dropdown-link :href="route('dashboard')">
-                            Panel Admin
-                        </x-dropdown-link>
-                    @endcan
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                            Cerrar sesión
-                        </x-dropdown-link>
-                    </form>
-                </x-slot>
+                            <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
+                            @can('ver dashboard')
+                                <x-dropdown-link :href="route('dashboard')">Panel Admin</x-dropdown-link>
+                            @endcan
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                                    Cerrar sesión
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
                     </x-dropdown>
                 @else
                     <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline mr-4">Iniciar sesión</a>
@@ -84,7 +96,6 @@
         </div>
 
         @auth
-        
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>

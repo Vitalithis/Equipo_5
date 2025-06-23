@@ -11,7 +11,7 @@ class PedidoSeeder extends Seeder
     public function run(): void
     {
         Pedido::factory()
-            ->count(10)
+            ->count(30)
             ->create()
             ->each(function ($pedido) use (&$totalSubtotal) {
                 $totalSubtotal = 0;

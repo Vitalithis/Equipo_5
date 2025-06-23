@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ClienteCreado;
+
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -63,6 +66,8 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($role);
+        Mail::to($user->email)->send(new ClienteCreado($user));
+
 
         return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
     }
