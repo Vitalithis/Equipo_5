@@ -3,7 +3,45 @@
 @section('title', 'Categorías')
 
 @section('content')
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+
+<style>
+    :root {
+        --table-header-color:
+            {{ $pref?->table_header_color ?? '#0a2b59' }}
+        ;
+        --table-header-text-color:
+            {{ $pref?->table_header_text_color ?? '#FFFFFF' }}
+        ;
+    }
+
+    .custom-table-header {
+        background-color: var(--table-header-color);
+        color: var(--table-header-text-color) !important;
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
 
 <div class="max-w-4xl mx-auto font-['Roboto'] text-gray-800">
     <div class="rounded-lg shadow-sm p-6 bg-white">
@@ -23,16 +61,16 @@
             <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">{{ session('error') }}</div>
         @endif
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto bg-white shadow custom-border">
             <table class="min-w-full table-auto text-sm text-left text-gray-800 bg-white">
-                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+                <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-6 py-3">ID</th>
                         <th class="px-6 py-3">Nombre</th>
                         <th class="px-6 py-3">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 font-['Roboto']">
+                <tbody class="font-['Roboto']">
                     @foreach ($categorias as $categoria)
                         <tr>
                             <td class="px-6 py-3">{{ $categoria->id }}</td>
