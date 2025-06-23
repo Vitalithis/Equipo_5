@@ -17,7 +17,9 @@ class UserPreference extends Model
         'logo_image',
         'profile_image',
         'background_color',     
-        'table_header_color',    
+        'table_header_color',
+        'navbar_color',
+        'navbar_text_color',    
     ];
 
     public function user()

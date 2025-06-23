@@ -1,3 +1,8 @@
+@php
+    $pref = Auth::check() ? Auth::user()->preference : null;
+    $navbarColor = $pref?->navbar_color ?? '#1F2937'; // color por defecto: gris oscuro
+@endphp
+
 <!DOCTYPE html>
 <html lang="es" x-data="themeConfig()" :class="colorMode">
 
@@ -15,15 +20,28 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Colores dinámicos --}}
+    <style>
+        :root {
+            --navbar-color: {{ $navbarColor }};
+            --navbar-text-color: {{ $pref?->navbar_text_color ?? '#000000' }};
+
+        }
+    </style>
 </head>
 
-<body :class="[fontFamily, backgroundColor, textColor]" class="transition-all duration-300 flex flex-col min-h-screen">
+<body :class="[fontFamily, backgroundColor, textColor, 'transition-all', 'duration-300', 'flex', 'flex-col', 'min-h-screen']">
+
+    {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
 
+    {{-- Contenido principal --}}
     <main class="flex-grow">
         @yield('content')
     </main>
 
+    {{-- Footer general --}}
     @include('components.footer')
 
     @stack('scripts')
