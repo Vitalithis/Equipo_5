@@ -575,7 +575,7 @@ Route::get('/debug-tenant', function () {
 })->middleware(['web', 'auth', 'tenant']);
 //rutas soporte
 
-Route::domain('soporte.plantaseditha.me')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
+Route::domain('plantaseditha.me')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
     Route::get('/', function () {
         return view('soporte.dashboard');
     })->name('soporte.dashboard');
