@@ -163,7 +163,7 @@ Route::middleware(['web', 'auth', 'tenant'])->group(function () {
 
     use App\Http\Controllers\DeviceController;
 
-    
+
 use App\Http\Controllers\NotificationTestController;
 
 
@@ -254,7 +254,7 @@ Route::get('/notificaciones', function () {
         Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
     });
 
-    
+
 
 
         Route::middleware(['auth', 'tenant', 'permission:gestionar permisos'])->group(function () {
@@ -284,7 +284,7 @@ Route::get('/notificaciones', function () {
         Route::get('/treatments/{id}/edit', [TreatmentController::class, 'edit'])->name('dashboard.treatments.edit');
         Route::put('/treatments/{id}', [TreatmentController::class, 'update'])->name('dashboard.treatments.update');
         Route::delete('/treatments/{id}', [TreatmentController::class, 'destroy'])->name('dashboard.treatments.destroy');
-        
+
         Route::get('/treatment-applications/search', [TreatmentApplicationController::class, 'search'])->name('treatment_applications.search');
         Route::get('/plant-treatments/search', [TreatmentController::class, 'search'])->name('plant_treatments.search');
 
@@ -483,7 +483,7 @@ Route::prefix('finanzas')->middleware(['auth'])->group(function () {
     Route::get('/finanzas/pdf', [FinanzaController::class, 'exportarPDF'])->name('finanzas.exportarPDF');
     Route::post('/reportar-ventas', [FinanzaController::class, 'guardarReporteVentas'])->name('finanzas.reportar');
     Route::get('/ventas/pdf', [FinanzaController::class, 'exportarVentasMensualesPDF'])->name('finanzas.ventas.pdf');
-    
+
 
     });
     //ruta tareas
@@ -575,7 +575,7 @@ Route::get('/debug-tenant', function () {
 })->middleware(['web', 'auth', 'tenant']);
 //rutas soporte
 
-Route::domain('soporte.localhost')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
+Route::domain('soporte.plantaseditha')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
     Route::get('/', function () {
         return view('soporte.dashboard');
     })->name('soporte.dashboard');
@@ -589,4 +589,4 @@ Route::domain('soporte.localhost')->middleware(['web', 'auth', 'permission:ver d
 });
 
 require __DIR__ . '/auth.php';
- 
+
