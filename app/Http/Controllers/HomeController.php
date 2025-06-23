@@ -41,12 +41,7 @@ class HomeController extends Controller
             ->limit(10) // 👈 límite de 10
             ->get();
 
-        return view('dashboard', compact(
-            'tareasPendientes',
-            'tareasEnProgreso',
-            'trasplantesProximos'
-        ));
-
+        
     // Ventas mensuales
     $ventasPorMes = Pedido::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, SUM(total) as total")
         ->groupBy('mes')
@@ -75,7 +70,8 @@ class HomeController extends Controller
         'ventasMes',
         'pedidosMes',
         'ingresosTotales',
-        'egresosTotales'
+        'egresosTotales',
+        'trasplantesProximos'
     ));
 }
 public function ingresosEgresosPorMes(Request $request)
