@@ -11,6 +11,17 @@
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
+  'berkayk/onesignal-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'OneSignal' => 'Berkayk\\OneSignal\\OneSignalFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Berkayk\\OneSignal\\OneSignalServiceProvider',
+    ),
+  ),
   'laravel-lang/actions' => 
   array (
     'providers' => 

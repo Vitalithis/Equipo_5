@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,13 +43,12 @@ class AppServiceProvider extends ServiceProvider
                 app(\Spatie\Permission\PermissionRegistrar::class)
                     ->setPermissionsTeamId(Auth::user()->cliente_id);
             }
-            User::observe(UserObserver::class);
+            
 
         };
+                    User::observe(UserObserver::class);
 
-        if (app()->environment('local')) { // Solo para entorno local
-        Mail::alwaysTo('scarrascos@ing.ucsc.cl');
-    }
+
     }
 
     protected function addExplicitGlobalScopes($clienteId)

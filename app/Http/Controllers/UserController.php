@@ -66,7 +66,6 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($role);
-        Mail::to($user->email)->send(new ClienteCreado($user));
 
 
         return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');

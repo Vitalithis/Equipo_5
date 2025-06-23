@@ -3,6 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<div class="bg-white shadow rounded-lg p-4 mb-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-1">Bienvenido al Panel Administrativo</h2>
+    <p class="text-sm text-gray-600">Resumen de tareas del vivero.</p>
+</div>
+
 {{-- Tarjetas resumen --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <div class="bg-white shadow rounded-lg p-3">
@@ -42,14 +47,14 @@
     </div>
 
     {{-- Gráfico de Ingresos vs Egresos --}}
-    {{-- Gráfico de Ingresos vs Egresos --}}
-<div class="bg-white shadow rounded-sm p-2 w-full md:w-1/2">
-    <div class="flex justify-between items-center mb-1">
-        <h3 class="text-xs font-semibold text-gray-800">🥧 Ingresos vs Egresos</h3>
-        <input type="month" id="mesSelector"
-               class="border border-gray-300 rounded px-2 py-0.5 text-xs focus:ring-2 focus:ring-blue-500">
+    <div class="bg-white shadow rounded-lg p-2">
+        <div class="flex justify-between items-center mb-1">
+            <h3 class="text-xs font-semibold text-gray-800">🥧 Ingresos vs Egresos</h3>
+            <input type="month" id="mesSelector"
+                   class="border border-gray-300 rounded px-2 py-0.5 text-xs focus:ring-2 focus:ring-blue-500">
+        </div>
+        <canvas id="graficoTorta" class="w-full" style="height: 180px;"></canvas>
     </div>
-    <canvas id="graficoTorta" class="w-full" style="height: 100px; max-width: 100%;"></canvas>
 </div>
 
 {{-- Próximos Trasplantes --}}

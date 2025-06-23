@@ -1,7 +1,8 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-[60vh]">
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <h2 class="text-3xl font-bold mb-8 text-[#486379] text-center">Tu Carrito</h2>
 
     @if (session('cart') && count(session('cart')) > 0)
@@ -74,7 +75,7 @@
             </div>
 
             <!-- Resumen -->
-            <div class="p-6 rounded-lg shadow-md sticky top-10">
+            <div class="p-6 rounded-lg shadow-md sticky top-10" >
                 <h3 class="text-xl font-bold mb-4 border-b pb-2 text-[#486379]">Resumen del Pedido</h3>
                 @php
                     $subtotal = array_sum(array_map(fn($i) => $i['precio'] * $i['cantidad'], session('cart', [])));
@@ -109,30 +110,37 @@
                 <form action="{{ route('cart.vaciar') }}" method="POST" class="mt-6">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90" style="background-color: #e53e3e;">
+                    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90">
                         Vaciar Carrito
                     </button>
                 </form>
 
-                <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro' }">
-                    @csrf
-                    <input type="hidden" name="amount" value="{{ $total }}">
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro' }">
+        @csrf
+        <input type="hidden" name="amount" value="{{ $total }}">
 
-                    <!-- Método de entrega -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">¿Cómo deseas recibir tu pedido?</label>
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="metodo_entrega" value="retiro" x-model="metodo" checked class="text-green-600 focus:ring-green-500 border-gray-300">
-                                <span class="ml-2">Retiro en tienda</span>
-                            </label>
-                        </div>
-                    </div>
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro', guardar: false }">
+    @csrf
+    <input type="hidden" name="amount" value="{{ $total }}">
 
-                    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90" style="background-color: #40C239;">
-                        Proceder al Pago con Webpay
-                    </button>
-                </form>
+    <!-- Método de entrega -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">¿Cómo deseas recibir tu pedido?</label>
+        <div class="flex gap-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="metodo_entrega" value="retiro" x-model="metodo" checked class="text-green-600 focus:ring-green-500 border-gray-300">
+                <span class="ml-2">Retiro en tienda</span>
+            </label>
+        </div>
+    </div>
+
+
+    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90" style="background-color: #40C239;">
+        Proceder al Pago con Webpay
+    </button>
+</form>
+
+
             </div>
         </div>
     @else

@@ -19,7 +19,7 @@ class ClienteSeeder extends Seeder
                 'nombre' => 'Plantas Editha',
                 'subdominio' => 'editha',
                 'slug' => 'plantas-editha',
-                'email' => 'admin@editha.com',
+                'email' => 'plantaseditha.viviero@gmail.com',
                 'password' => 'editha',
             ],
         ];

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Http;
 
 
 
-
 use Illuminate\Support\Facades\Auth; ///??
 
 class PedidoController extends Controller
@@ -304,7 +303,15 @@ public function index(Request $request)
             'total' => $total,
         ]);
 
-        return redirect()->route('pedidos.index')->with('success', 'Pedido actualizado correctamente.');
+        $pedido->estado_pedido = $request->estado_pedido;
+    $pedido->save();
+
+    if ($pedido->cliente && $pedido->cliente->email) {
+        Mail::to($pedido->cliente->email)->send(new EstadoPedidoActualizado($pedido));
+    }
+
+    return redirect()->back()->with('success', 'Pedido actualizado y cliente notificado.');
+
     }
 
     public function actualizarEstado(Request $request, Pedido $pedido)
