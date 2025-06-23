@@ -115,14 +115,32 @@
                     </button>
                 </form>
 
-                <form action="{{ route('checkout.pay') }}" method="POST" class="mt-4">
-                    @csrf
-                    <input type="hidden" name="amount" value="{{ $total }}">
-                    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90"
-                        style="background-color: #40C239;">
-                        Proceder al Pago con Webpay
-                    </button>
-                </form>
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro' }">
+        @csrf
+        <input type="hidden" name="amount" value="{{ $total }}">
+
+        <form action="{{ route('checkout.pay') }}" method="POST" class="mt-6 space-y-4" x-data="{ metodo: 'retiro', guardar: false }">
+    @csrf
+    <input type="hidden" name="amount" value="{{ $total }}">
+
+    <!-- Método de entrega -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">¿Cómo deseas recibir tu pedido?</label>
+        <div class="flex gap-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="metodo_entrega" value="retiro" x-model="metodo" checked class="text-green-600 focus:ring-green-500 border-gray-300">
+                <span class="ml-2">Retiro en tienda</span>
+            </label>
+        </div>
+    </div>
+
+
+    <button type="submit" class="w-full text-white py-2 rounded hover:opacity-90" style="background-color: #40C239;">
+        Proceder al Pago con Webpay
+    </button>
+</form>
+
+
             </div>
         </div>
     @else

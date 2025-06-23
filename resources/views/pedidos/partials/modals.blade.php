@@ -29,3 +29,27 @@
         </form>
     </div>
 </div>
+{{-- Modal Eliminar --}}
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow p-6 max-w-md w-full relative">
+        <button id="delete-modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl">✕</button>
+        <h2 class="text-lg font-bold text-gray-800 mb-4">¿Eliminar pedido?</h2>
+        <p class="text-gray-700 mb-4">
+            ¿Estás seguro que deseas eliminar el <span id="modalProductName" class="font-semibold"></span>?
+        </p>
+        <form id="deleteForm" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeDeleteModal()"
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                    Eliminar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

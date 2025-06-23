@@ -12,10 +12,24 @@ class Producto extends Model
     protected $table = 'productos';
 
     protected $fillable = [
-        'slug', 'nombre', 'nombre_cientifico', 'descripcion',
-        'precio', 'stock', 'imagen', 'cuidados', 'nivel_dificultad',
-        'frecuencia_riego', 'ubicacion_ideal', 'beneficios', 'toxica',
-        'origen', 'tamano', 'activo'
+        'slug',
+        'nombre',
+        'nombre_cientifico',
+        'descripcion',
+        'precio',
+        'stock',
+        'imagen',
+        'cuidados',
+        'nivel_dificultad',
+        'frecuencia_riego',
+        'ubicacion_ideal',
+        'beneficios',
+        'toxica',
+        'origen',
+        'tamano',
+        'activo',
+        'categoria_id',
+        'codigo_barras'
     ];
 
     protected $casts = [
@@ -23,14 +37,9 @@ class Producto extends Model
         'activo' => 'boolean',
     ];
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsToMany(Categoria::class, 'producto_categoria');
-    }
-
-    public function getCategoriaAttribute()
-    {
-        return $this->categorias()->first()?->nombre;
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
     public function descuentos()
@@ -45,5 +54,9 @@ class Producto extends Model
             ->latest()
             ->take(4)
             ->get();
+    }
+    public function fertilizaciones()
+    {
+        return $this->hasMany(Fertilization::class);
     }
 }

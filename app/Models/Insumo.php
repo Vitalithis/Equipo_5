@@ -12,4 +12,10 @@ class Insumo extends Model
         'costo',
         'descripcion',
     ];
+
+    public function detalles()
+{
+    return $this->hasMany(InsumoDetalle::class);
+}
+
 }

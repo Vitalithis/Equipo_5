@@ -7,6 +7,9 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+
 
 class CuidadoController extends Controller
 {
@@ -104,4 +107,19 @@ class CuidadoController extends Controller
 
         return response()->file(storage_path('app/' . $path));
     }
+
+
+
+    public function mostrarQr($id)
+{
+    $cuidado = Cuidado::findOrFail($id);
+
+        $urlPdf = route('dashboard.cuidados.pdf', $cuidado->id);
+        $qr = QrCode::size(250)->generate($urlPdf);
+
+    //dd($urlPdf);
+
+
+    return view('dashboard.care.qr', compact('qr', 'cuidado'));
+}
 }

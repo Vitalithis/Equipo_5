@@ -4,13 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DetallePedido;
 
 class Pedido extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'usuario_id', 'total', 'estado_pedido'
+        'usuario_id',
+        'total',
+        'fecha_pedido',
+        'metodo_entrega',
+        'direccion_entrega',
+        'estado_pedido',
+        'subtotal',
+        'descuento',
+        'impuesto',
+        'total',
+        'forma_pago',
+        'estado_pago',
+        'monto_pagado',
+        'tipo_documento',
+        'documento_generado',
+        'observaciones',
+        'boleta_final_path',
     ];
 
     public function usuario()

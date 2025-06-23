@@ -4,42 +4,31 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Insumo;
+use App\Models\InsumoDetalle;
 
 class InsumoSeeder extends Seeder
 {
     public function run(): void
     {
-        $insumos = [
-            [
-                'nombre' => 'Tierra de hoja',
-                'cantidad' => 100,
-                'costo' => 2500,
-                'descripcion' => 'Sustrato orgánico para maceteros y jardinería.',
-            ],
-            [
-                'nombre' => 'Guano compostado',
-                'cantidad' => 50,
-                'costo' => 0,
-                'descripcion' => 'Abono natural utilizado en cultivos internos del vivero.',
-            ],
-            [
-                'nombre' => 'Macetero plástico 20cm',
-                'cantidad' => 200,
-                'costo' => 1200,
-                'descripcion' => 'Macetero resistente para plantas medianas.',
-            ],
-            [
-                'nombre' => 'Fertilizante líquido (uso interno)',
-                'cantidad' => 80,
-                'costo' => 0,
-                'descripcion' => 'Fertilizante aplicado en producción interna del vivero.',
-            ],
-        ];
+        $insumo = Insumo::first(); // Asegúrate de tener al menos un insumo creado
 
-        foreach ($insumos as $insumo) {
-            Insumo::create($insumo);
+        if ($insumo) {
+            $detalles = [
+                [
+                    'nombre' => 'Pala mango corto',
+                    'cantidad' => 5,
+                    'costo_unitario' => 2500,
+                ],
+                [
+                    'nombre' => 'Pala mango largo',
+                    'cantidad' => 3,
+                    'costo_unitario' => 2800,
+                ],
+            ];
+
+            foreach ($detalles as $detalle) {
+                $insumo->detalles()->create($detalle);
+            }
         }
-
-        $this->command->info('✅ Insumos de ejemplo creados correctamente.');
     }
 }

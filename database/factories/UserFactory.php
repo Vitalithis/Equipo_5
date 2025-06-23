@@ -16,13 +16,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(), // puedes usar ->unique()->userName().'@example.com' si prefieres correos ficticios
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'), // clave conocida para testeo
-            'remember_token' => Str::random(10),
+         
         ];
     }
+
 
     public function unverified(): static
     {

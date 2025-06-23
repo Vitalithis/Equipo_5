@@ -6,17 +6,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
 <div x-data="{ modalFert: null }" class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
-    <div class="flex items-center mb-6">
+    <div class="flex items-center justify-end space-x-4 mb-6">
     <a href="{{ route('fertilizantes.create') }}"
-       class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 4v16m8-8H4"/>
-        </svg>
-        Agregar Fertilizante
-    </a>
-</div>
+   class="flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors font-medium">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 4v16m8-8H4"/>
+    </svg>
+    Agregar Fertilizante
+</a>
 
+<a href="{{ route('fertilizations.historial') }}"
+   class="flex items-center text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors font-medium">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h18M3 7h18M3 11h12M3 15h12M3 19h12"/>
+    </svg>
+    Ver Historial
+</a>
+</div>
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
         <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
@@ -25,7 +33,6 @@
                     <th class="px-6 py-3 whitespace-nowrap">Nombre</th>
                     <th class="px-6 py-3 whitespace-nowrap">Tipo</th>
                     <th class="px-6 py-3 whitespace-nowrap">Stock</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Información</th>
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
@@ -35,22 +42,28 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->nombre }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->tipo }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $fertilizante->stock }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button @click="modalFert = {{ $fertilizante->id }}"
-                                    class="text-green-600 hover:text-green-800 transition font-medium">
-                                Ver detalles
-                            </button>
-                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap space-y-1 space-x-2">
+    <button @click="modalFert = {{ $fertilizante->id }}"
+            class="text-green-600 hover:text-green-700 border border-green-600 hover:border-green-800 px-3 py-1 rounded transition-colors">
+        Ver detalles
+    </button>
 
-                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
-                            <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}"
-                               class="text-blue-600 hover:text-blue-800 font-medium transition">Editar</a>
-                            <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-700 font-medium transition">Eliminar</button>
-                            </form>
-                        </td>
+    <a href="{{ route('fertilizantes.edit', $fertilizante->id) }}"
+       class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
+
+    <form action="{{ route('fertilizantes.destroy', $fertilizante->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este fertilizante?')">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">Eliminar</button>
+    </form>
+
+    {{-- Botón para aplicar fertilizante --}}
+    <a href="{{ route('fertilizations.create', ['fertilizante_id' => $fertilizante->id]) }}"
+       class="text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors">
+        Aplicar
+    </a>
+</td>
+
                     </tr>
 
                     <!-- Modal -->

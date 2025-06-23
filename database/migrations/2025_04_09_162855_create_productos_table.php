@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->integer('precio');
             $table->integer('cantidad')->default(0);
-            $table->string('categoria')->nullable();
+            $table->integer('categoria')->nullable();
             $table->string('imagen')->nullable();
             $table->string('codigo_barras')->unique();
             $table->integer('stock')->default(0);

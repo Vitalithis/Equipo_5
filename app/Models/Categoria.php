@@ -10,9 +10,9 @@ class Categoria extends Model
     protected $table = 'categorias';
 
     protected $fillable = ['nombre'];
-
-    public function producto()
+    protected $primaryKey = 'id';
+    public function productos()
     {
-        return $this->belongsToMany(Producto::class, 'producto_categoria');
+        return $this->hasMany(Producto::class, 'categoria');
     }
 }

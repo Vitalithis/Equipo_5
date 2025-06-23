@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->string('codigo', 20)->unique()->nullable()->comment('Código promocional opcional');
             $table->text('descripcion')->nullable();
-            $table->decimal('porcentaje', 5, 2)->default(0);
+            $table->decimal('porcentaje', 5, 2)->nullable()->default(0)->comment('Descuento en porcentaje, 0 si no aplica');
             $table->decimal('monto_fijo', 10, 2)->nullable()->comment('Descuento fijo en lugar de porcentaje');
             $table->enum('tipo', ['porcentaje', 'monto_fijo', 'envio_gratis'])->default('porcentaje');
             $table->timestamp('valido_desde')->useCurrent();

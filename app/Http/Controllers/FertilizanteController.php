@@ -81,4 +81,9 @@ class FertilizanteController extends Controller
 
         return redirect()->route('dashboard.fertilizantes')->with('success', 'Fertilizante eliminado exitosamente.');
     }
+    public function show($id)
+{
+    $fertilizante = Fertilizante::with('fertilizaciones.producto')->findOrFail($id);
+    return view('dashboard.fertilizer.fertilizante', compact('fertilizante'));
+}
 }
