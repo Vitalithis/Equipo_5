@@ -35,7 +35,7 @@ Artisan::command('setup', function () {
     // copia el .env
     $envPath = base_path('.env');
     if (!File::exists($envPath)) {
-        $this->comment('📄 Copiando .env.example a .env...')
+        $this->comment('📄 Copiando .env.example a .env...');
         File::copy(base_path('.env.example'), $envPath);
         $this->info('✅ .env copiado correctamente.');
     } else {
