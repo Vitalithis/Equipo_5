@@ -1,6 +1,6 @@
 @php
     $pref = Auth::check() ? Auth::user()->preference : null;
-    $navbarColor = $pref?->navbar_color ?? '#FFFFFF'; // color por defecto: gris oscuro
+    $navbarColor = $pref?->navbar_color ?? '#1F2937'; // color por defecto: gris oscuro
 @endphp
 
 <!DOCTYPE html>
@@ -26,21 +26,22 @@
         :root {
             --navbar-color: {{ $navbarColor }};
             --navbar-text-color: {{ $pref?->navbar_text_color ?? '#000000' }};
+
         }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col transition-all duration-300" :class="[fontFamily, backgroundColor, textColor]">
+<body :class="[fontFamily, backgroundColor, textColor, 'transition-all', 'duration-300', 'flex', 'flex-col', 'min-h-screen']">
 
     {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
 
-    {{-- Contenido principal (ocupa espacio restante) --}}
-    <main class="flex-grow flex flex-col justify-center">
+    {{-- Contenido principal --}}
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    {{-- Footer general (siempre abajo) --}}
+    {{-- Footer general --}}
     @include('components.footer')
 
     @stack('scripts')

@@ -184,27 +184,28 @@ class ProductoController extends Controller
     public function dashboard_show(Request $request)
     {
         $query = Producto::query();
-        // Filtro por categoría si está presente
 
+        // Filtro por categoría si está presente
         if ($request->filled('categoria')) {
             $query->where('categoria_id', $request->categoria);
         }
-        // Búsqueda por nombre o descripción si está presente
+
+        // Búsqueda por nombre similar si está presente
         if ($request->filled('busqueda')) {
             $searchTerm = '%' . $request->busqueda . '%';
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('nombre', 'like', $searchTerm)
-                    ->orWhere('descripcion', 'like', $searchTerm);
-            });
+            $query->where('nombre', 'like', $searchTerm)
+                ->orWhere('descripcion', 'like', $searchTerm);
         }
-        // Paginación
-        $productos = $query->paginate(10)->withQueryString();
 
-        // Todas las categorías disponibles
+        // Paginación con 10 elementos por página y conservar parámetros de búsqueda
+        $productos = $query->paginate(10);
+
+        // Obtener lista de categorías distintas
         $categorias = Categoria::all();
 
         return view('dashboard.catalog.catalogo', compact('productos', 'categorias'));
     }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -251,20 +252,20 @@ class ProductoController extends Controller
             $producto->fill($request->except(['imagen', 'categoria']));
             $producto->save();
 
-            // Verificar si el stock es bajo
-            if ($producto->stock < 5) {
-                // Obtener usuarios con rol Admin o Soporte
-                $usuarios = \App\Models\User::whereHas('roles', function ($q) {
-                    $q->whereIn('name', ['Admin', 'Soporte']);
-                })->get();
+// Verificar si el stock es bajo
+if ($producto->stock < 5) {
+    // Obtener usuarios con rol Admin o Soporte
+    $usuarios = \App\Models\User::whereHas('roles', function ($q) {
+        $q->whereIn('name', ['Admin', 'Soporte']);
+    })->get();
 
-                // Enviar el correo a cada uno
-                foreach ($usuarios as $usuario) {
-                    if ($usuario->email) {
-                        Mail::to($usuario->email)->send(new StockBajo($producto));
-                    }
-                }
-            }
+    // Enviar el correo a cada uno
+    foreach ($usuarios as $usuario) {
+        if ($usuario->email) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
+        }
+    }
+}
 
             // Asociar categoría en tabla pivote
             $producto->categorias()->sync([$categoria->id]);
@@ -335,20 +336,20 @@ class ProductoController extends Controller
 
         $producto->save();
 
-        // Verificar si el stock es bajo
-        if ($producto->stock < 5) {
-            // Obtener usuarios con rol Admin o Soporte
-            $usuarios = \App\Models\User::whereHas('roles', function ($q) {
-                $q->whereIn('name', ['Admin', 'Soporte']);
-            })->get();
+// Verificar si el stock es bajo
+if ($producto->stock < 5) {
+    // Obtener usuarios con rol Admin o Soporte
+    $usuarios = \App\Models\User::whereHas('roles', function ($q) {
+        $q->whereIn('name', ['Admin', 'Soporte']);
+    })->get();
 
-            // Enviar el correo a cada uno
-            foreach ($usuarios as $usuario) {
-                if ($usuario->email) {
-                    Mail::to($usuario->email)->send(new StockBajo($producto));
-                }
-            }
+    // Enviar el correo a cada uno
+    foreach ($usuarios as $usuario) {
+        if ($usuario->email) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
         }
+    }
+}
 
         return redirect()->route('dashboard.catalogo')->with('success', 'Producto actualizado correctamente.');
     }
@@ -361,15 +362,16 @@ class ProductoController extends Controller
     }
 
     private function notificarStockBajo($producto)
-    {
-        if ($producto->stock < 5) {
-            $usuarios = User::whereHas('roles', function ($query) {
-                $query->whereIn('name', ['Admin', 'Soporte']);
-            })->get();
+{
+    if ($producto->stock < 5) {
+        $usuarios = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Admin', 'Soporte']);
+        })->get();
 
-            foreach ($usuarios as $usuario) {
-                Mail::to($usuario->email)->send(new StockBajo($producto));
-            }
+        foreach ($usuarios as $usuario) {
+            Mail::to($usuario->email)->send(new StockBajo($producto));
         }
     }
+}
+
 }

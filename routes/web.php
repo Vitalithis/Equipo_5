@@ -575,7 +575,7 @@ Route::get('/debug-tenant', function () {
 })->middleware(['web', 'auth', 'tenant']);
 //rutas soporte
 
-Route::domain(env('CENTRAL_DOMAIN'))->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
+Route::domain('soporte.localhost')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
     Route::get('/', function () {
         return view('soporte.dashboard');
     })->name('soporte.dashboard');
