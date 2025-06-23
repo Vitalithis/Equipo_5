@@ -8,6 +8,8 @@
         <form action="{{ route('contact.send') }}" method="POST" class="space-y-8">
             @csrf
             <div>
+                <input type="hidden" name="cliente_id" value="1">
+
                 <label for="email" class="block mb-2 text-sm font-medium text-blueDark">Tu Correo</label>
                 <input type="email" id="email" name="email" required
                     class="shadow-sm bg-white border border-greenMid text-blueDark text-sm rounded-lg
