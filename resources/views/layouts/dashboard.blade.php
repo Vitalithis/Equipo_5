@@ -198,6 +198,12 @@
                 @can('gestionar produccion')
                   <li><a href="{{ route('produccion.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-seedling mr-2"></i>Producción</a></li>
                 @endcan
+                @can('gestionar tratamientos')
+                  <li><a href="{{ route('dashboard.treatments') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Aplicacion de Trataminetos</a></li>
+                @endcan
+                @can('gestionar transporte')
+                  <li><a href="{{ route('dashboard.transports.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Gestion de Transporte</a></li>
+                @endcan
               </ul>
             </div>
           </li>
@@ -221,13 +227,8 @@
               </ul>
             </div>
           </li>
-          @endcan
-          @can('gestionar tratamientos')
-            <li><a href="{{ route('dashboard.treatments') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Aplicacion de Trataminetos</a></li>
-          @endcan
-          @can('gestionar transporte')
-            <li><a href="{{ route('dashboard.transports.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Gestion de Transporte</a></li>
-          @endcan
+          
+
 
 
 
