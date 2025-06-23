@@ -110,17 +110,21 @@
         {{-- 🔝 Accesos directos fijos --}}
         <ul class="space-y-1 font-medium">
           <li>
-            <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
-              <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard General
-            </a>
+              <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard General
+              </a>
           </li>
           <li>
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
-              <i class="fa-solid fa-house mr-2"></i>Página Principal
-            </a>
+              <a href="{{ route('home') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-house mr-2"></i>Página Principal
+              </a>
           </li>
-        </ul>
-
+          <li>
+              <a href="{{ route('preferences.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition">
+                  <i class="fa-solid fa-palette mr-2"></i>Personalización
+              </a>
+          </li>
+      </ul>
         {{-- 🔽 Menú agrupado por secciones --}}
         <ul class="space-y-1 font-medium">
 
@@ -134,6 +138,8 @@
               <ul class="ml-4 space-y-1 mt-1">
                 @can('ver dashboard')
                   <li><a href="{{ route('dashboard.cotizaciones.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-cash-register mr-2"></i>Cotizaciones</a></li>
+                @endcan
+                @can('ver dashboard')
                   <li><a href="{{ route('maintenance.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-tools mr-2"></i>Mantenimiento</a></li>
                 @endcan
                 @can('ver calendario')
@@ -239,14 +245,9 @@
             </button>
             <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg z-50"
                 style="background-color: {{ $accentColor }};">
-                <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Perfil</a>
-
                 @can('ver dashboard')
                     <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Panel Admin</a>
                 @endcan
-
-                <a href="{{ route('preferences.index') }}" class="block px-4 py-2 text-sm text-white hover:bg-opacity-90">Personalización</a>
-
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-opacity-90">
