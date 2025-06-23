@@ -32,6 +32,20 @@ Artisan::command('setup', function () {
     passthru('npm run build', $code);
     if ($code !== 0) return $this->error('❌ Build falló.');
 
+    // copia el .env
+    $envPath = base_path('.env');
+    if (!File::exists($envPath)) {
+        $this->comment('📄 Copiando .env.example a .env...')
+        File::copy(base_path('.env.example'), $envPath);
+        $this->info('✅ .env copiado correctamente.');
+    } else {
+        $this->comment('📄 .env ya existe, no se copia.');
+    }
+
+    $this->comment('🔑 Generando clave de aplicación...');
+    Artisan::call('key:generate', ['--force' => true]);
+    $this->info('✅ Clave de aplicación generada.');
+
     $this->comment('🗃️ Ejecutando migraciones...');
     Artisan::call('migrate', ['--force' => true]);
 
