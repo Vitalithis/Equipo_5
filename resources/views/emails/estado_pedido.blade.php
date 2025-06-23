@@ -4,69 +4,93 @@
     <meta charset="UTF-8">
     <title>Estado de tu pedido - Plantas Editha</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
         body {
-            background-color: #fdf9f6;
-            font-family: 'Arial', sans-serif;
-            color: #444;
+            background-color: #f0fdf4;
+            font-family: 'Roboto', sans-serif;
+            color: #1f2937;
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 700px;
-            margin: 30px auto;
-            background: #fff;
+            margin: 40px auto;
+            background: #ffffff;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
+
         .header {
             text-align: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #d1fae5;
             padding-bottom: 20px;
         }
-        .header img {
-            max-width: 120px;
-            margin-bottom: 10px;
+
+        .header h1 {
+            color: #047857;
+            font-size: 24px;
+            margin: 10px 0 0;
         }
-        h1 {
-            font-weight: normal;
-            letter-spacing: 1px;
-            color: #555;
+
+        .header h4 {
+            color: #10b981;
+            margin: 0;
+            font-size: 16px;
         }
+
         .status-box {
-            background-color: #faf3e0;
-            border: 1px solid #eedcbd;
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
             padding: 20px;
             text-align: center;
             border-radius: 8px;
             margin: 30px 0;
         }
+
         .status {
-            color: #aa8453;
+            color: #047857;
             font-size: 22px;
             font-weight: bold;
         }
+
+        h3 {
+            color: #065f46;
+            margin-top: 30px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+
+        th {
+            background-color: #d1fae5;
+            color: #065f46;
             text-align: left;
         }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
         .total {
             font-weight: bold;
             font-size: 18px;
-            color: #333;
+            color: #064e3b;
             text-align: right;
             margin-top: 20px;
         }
+
         .footer {
             margin-top: 40px;
             font-size: 12px;
-            color: #888;
+            color: #6b7280;
             text-align: center;
         }
     </style>
@@ -74,8 +98,8 @@
 <body>
 <div class="container">
     <div class="header">
-        <h4>"Plantas Editha"</h1>
-        <h1>Gracias por tu compra</h1>
+        <h4>Plantas Editha</h4>
+        <h1>Gracias por tu compra 🌱</h1>
     </div>
 
     <p>Hola {{ $pedido->usuario->name }},</p>
@@ -97,10 +121,7 @@
         <tbody>
             @foreach ($pedido->detalles as $detalle)
                 <tr>
-                    <td>
-
-                        {{ $detalle->nombre_producto_snapshot }}
-                    </td>
+                    <td>{{ $detalle->nombre_producto_snapshot }}</td>
                     <td>{{ $detalle->cantidad }}</td>
                     <td>${{ number_format($detalle->subtotal, 0, ',', '.') }}</td>
                 </tr>
@@ -113,7 +134,7 @@
     </div>
 
     <div class="footer">
-        <p>Plantas Editha - Este correo es automático, no responder directamente.</p>
+        <p>Este correo es automático, por favor no respondas directamente.</p>
         <p>&copy; {{ date('Y') }} Plantas Editha</p>
     </div>
 </div>
