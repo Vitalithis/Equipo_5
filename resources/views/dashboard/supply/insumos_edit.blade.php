@@ -4,14 +4,18 @@
 
 @section('content')
 <div class="py-8 px-4 md:px-8 max-w-4xl mx-auto font-['Roboto'] text-gray-800">
-    <a href="{{ route('dashboard.insumos') }}"
-       class="flex items-center text-green-700 hover:text-green-800 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m15 18-6-6 6-6"/>
-        </svg>
-        Volver a la lista
-    </a>
+    {{-- Botón volver --}}
+    <div class="mb-6">
+        <a href="{{ route('dashboard.insumos') }}"
+           class="inline-flex items-center text-white px-4 py-2 rounded transition-colors shadow text-sm font-medium"
+           style="background-color: var(--table-header-color);">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
+            Volver a la lista
+        </a>
+    </div>
 
     <form x-ref="form"
           action="{{ isset($insumo->id) ? route('insumos.update', $insumo->id) : route('insumos.store') }}"
@@ -109,7 +113,8 @@
                 Cancelar
             </a>
             <button type="submit"
-                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    class="px-4 py-2 text-white rounded hover:opacity-90 transition-colors shadow text-sm font-medium"
+                    style="background-color: var(--table-header-color);">
                 {{ isset($insumo->id) ? 'Actualizar' : 'Guardar' }} Insumo
             </button>
         </div>
@@ -167,30 +172,29 @@ function insumoForm() {
         },
 
         validarFormulario() {
-    if (this.cantidadTotal <= 0) {
-        this.mensajeError = 'La cantidad total debe ser mayor que cero.';
-        return;
-    }
+            if (this.cantidadTotal <= 0) {
+                this.mensajeError = 'La cantidad total debe ser mayor que cero.';
+                return;
+            }
 
-    if (this.detalles.length === 0) {
-        this.mensajeError = 'Debes agregar al menos un subdetalle.';
-        return;
-    }
+            if (this.detalles.length === 0) {
+                this.mensajeError = 'Debes agregar al menos un subdetalle.';
+                return;
+            }
 
-    let subdetalleValido = this.detalles.some(d =>
-        d.nombre && d.cantidad > 0 && d.costo >= 0
-    );
+            let subdetalleValido = this.detalles.some(d =>
+                d.nombre && d.cantidad > 0 && d.costo >= 0
+            );
 
-    if (!subdetalleValido) {
-        this.mensajeError = 'Debes completar al menos un subdetalle correctamente.';
-        return;
-    }
+            if (!subdetalleValido) {
+                this.mensajeError = 'Debes completar al menos un subdetalle correctamente.';
+                return;
+            }
 
-    if (this.mensajeError) return;
+            if (this.mensajeError) return;
 
-    this.$refs.form.submit();
-}
-
+            this.$refs.form.submit();
+        }
     };
 }
 </script>

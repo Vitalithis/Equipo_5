@@ -4,18 +4,16 @@
 
 @section('content')
     <div class="py-8 px-4 md:px-8 max-w-5xl mx-auto">
-        <div class="flex items-center mb-6">
+        <div class="flex justify-between items-center mb-6">
             <a href="{{ route('maintenance.index') }}"
-                class="flex items-center text-green-700 hover:text-green-800 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6" />
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm transition"
+                style="background-color: var(--table-header-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
                 </svg>
                 Volver a la lista
             </a>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 ml-auto font-['Roboto_Condensed']">
-                Nuevo Reporte de Mantención
-            </h1>
         </div>
 
         <form method="POST" action="{{ route('maintenance.store') }}" enctype="multipart/form-data" class="space-y-6">
@@ -110,7 +108,7 @@
                             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             onchange="previewImage(this)">
 
-                        <div id="image-preview-container" class="{{ isset($maintenance->imagen) ? 'hidden' : 'block' }}">
+                        <div id="image-preview-container">
                             <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
@@ -124,10 +122,9 @@
                             <p class="text-xs text-gray-400">PNG, JPG, GIF hasta 5MB</p>
                         </div>
 
-                        <div id="image-preview" class="{{ isset($maintenance->imagen) ? 'block' : 'hidden' }} relative">
-                            <img id="preview-img"
-                                src="{{ isset($maintenance->imagen) ? asset('storage/' . $maintenance->imagen) : '' }}"
-                                alt="Vista previa" class="mx-auto h-48 object-contain">
+                        <div id="image-preview" class="hidden relative">
+                            <img id="preview-img" src="" alt="Vista previa"
+                                class="mx-auto h-48 object-contain bg-gray-50 p-2">
                             <button type="button" onclick="removeImage()"
                                 class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 hidden group-hover:block transition-all z-20">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -138,26 +135,24 @@
                                 </svg>
                             </button>
                         </div>
-
-                        @if(isset($maintenance->imagen))
-                            <input type="hidden" name="imagen_actual" value="{{ $maintenance->imagen }}">
-                        @endif
                     </div>
                     @error('imagen')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
-            {{-- Botones de acción --}}
+
+            {{-- Botones --}}
             <div class="flex justify-end space-x-4">
                 <a href="{{ route('maintenance.index') }}"
                     class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
                     Cancelar
                 </a>
                 <button type="submit"
-                    class="group relative px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 -ml-1" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm transition"
+                    style="background-color: var(--table-header-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 -ml-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                         <polyline points="17 21 17 13 7 13 7 21"></polyline>
                         <polyline points="7 3 7 8 15 8"></polyline>
@@ -168,7 +163,6 @@
         </form>
     </div>
 
-    {{-- JavaScript for image preview --}}
     <script>
         function previewImage(input) {
             const file = input.files[0];

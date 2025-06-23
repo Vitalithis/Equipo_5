@@ -3,7 +3,8 @@
 @section('title', $role ? 'Editar Rol' : 'Crear Rol')
 
 @section('content')
-<div class="py-8 px-4 md:px-8 max-w-3xl mx-auto">
+<div class="py-8 px-4 md:px-8 max-w-3xl mx-auto font-['Roboto'] text-gray-800">
+
     <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
         {{ $role ? 'Editar Rol' : 'Crear Nuevo Rol' }}
     </h1>
@@ -22,6 +23,8 @@
         ? route('roles.update', ['role' => $role->id, 'source' => $source])
         : route('roles.store', ['source' => $source]) }}"
         method="POST"
+        class="bg-white rounded shadow border p-6"
+        style="border-color: var(--table-header-color);"
     >
         @csrf
         @if($role)
@@ -29,36 +32,41 @@
         @endif
 
         {{-- Nombre del Rol --}}
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700 font-medium">Nombre del Rol:</label>
+        <div class="mb-6">
+            <label for="name" class="block text-sm font-medium text-black mb-1">Nombre del Rol:</label>
             <input type="text" name="name" id="name"
                    value="{{ old('name', $role->name ?? '') }}"
-                   class="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+                   class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-eaccent focus:border-eaccent px-4 py-2"
                    required>
         </div>
 
         {{-- Permisos --}}
         <div class="mb-6">
-            <label class="block text-gray-700 font-medium mb-2">Permisos:</label>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <label class="block text-sm font-medium text-black mb-2">Permisos:</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 @foreach($permissions as $permission)
-                    <label class="inline-flex items-center">
+                    <label class="inline-flex items-center text-black">
                         <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
                             {{ (isset($role) && $role->permissions->contains($permission->id)) || (is_array(old('permissions')) && in_array($permission->id, old('permissions'))) ? 'checked' : '' }}
-                            class="form-checkbox text-indigo-600">
-                        <span class="ml-2 text-gray-700">{{ $permission->name }}</span>
+                            class="form-checkbox text-black border-black focus:ring-black">
+                        <span class="ml-2 text-sm text-black">{{ $permission->name }}</span>
                     </label>
                 @endforeach
             </div>
         </div>
 
         {{-- Botones --}}
-        <div class="flex justify-start">
-            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+        <div class="flex justify-start items-center gap-4 mt-4">
+            <button type="submit"
+                    class="text-white font-semibold px-6 py-2 rounded shadow"
+                    style="background-color: var(--table-header-color);">
                 {{ $role ? 'Actualizar Rol' : 'Crear Rol' }}
             </button>
+
             <a href="{{ route('roles.index', ['source' => $source]) }}"
-               class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+               class="text-sm text-gray-600 hover:text-gray-900 hover:underline">
+                Cancelar
+            </a>
         </div>
     </form>
 </div>

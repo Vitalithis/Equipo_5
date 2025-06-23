@@ -3,15 +3,12 @@
 @section('title', 'Lista de Proveedores')
 
 @section('content')
-    {{-- Google Fonts --}}
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
-
     <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
         @if (session('success'))
-    <div id="success-message" class="bg-[#FFF9DB] border-l-4 border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6 shadow">
-        {{ session('success') }}
-    </div>
-@endif
+            <div id="success-message" class="bg-[#FFF9DB] border-l-4 border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6 shadow">
+                {{ session('success') }}
+            </div>
+        @endif
 
         <div class="rounded-lg shadow-sm p-6">
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
@@ -66,16 +63,16 @@
                     <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
                         <tr>
                             <th class="px-6 py-4 text-center">ID</th>
-                            <th class="px-6 py-4 text-left">Nombre</th>
-                            <th class="px-6 py-4 text-left">Empresa</th>
-                            <th class="px-6 py-4 text-left">Email</th>
-                            <th class="px-6 py-4 text-left">Teléfono</th>
-                            <th class="px-6 py-4 text-left">Tipo</th>
-                            <th class="px-6 py-4 text-left">Estado</th>
-                            <th class="px-6 py-4 text-left">Acciones</th>
+                            <th class="px-6 py-4">Nombre</th>
+                            <th class="px-6 py-4">Empresa</th>
+                            <th class="px-6 py-4">Email</th>
+                            <th class="px-6 py-4">Teléfono</th>
+                            <th class="px-6 py-4">Tipo</th>
+                            <th class="px-6 py-4">Estado</th>
+                            <th class="px-6 py-4">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-eaccent2 font-['Roboto']">
+                    <tbody class="font-['Roboto']">
                         @foreach ($proveedores as $proveedor)
                             <tr>
                                 <td class="px-4 py-2 text-center">{{ $proveedor->id }}</td>
@@ -86,14 +83,18 @@
                                 <td class="px-4 py-2">{{ $proveedor->tipo_proveedor }}</td>
                                 <td class="px-4 py-2">{{ $proveedor->estado }}</td>
                                 <td class="px-4 py-2">
-                                <div class="flex space-x-3">
-                                    <a href="{{ route('proveedores.edit', $proveedor) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
-                                    <button type="button" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
-                                        onclick="openDeleteModal({{ $proveedor->id }}, '{{ $proveedor->nombre }}', '{{ $proveedor->empresa }}')">
-                                        Eliminar
-                                    </button>
-                                </div>
-                            </td>
+                                    <div class="flex space-x-3">
+                                        <a href="{{ route('proveedores.edit', $proveedor) }}"
+                                        class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
+                                            Editar
+                                        </a>
+                                        <button type="button"
+                                                onclick="openDeleteModal({{ $proveedor->id }}, '{{ $proveedor->nombre }}', '{{ $proveedor->empresa }}')"
+                                                class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -113,15 +114,15 @@
         <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md font-['Roboto']">
             <h2 class="text-lg font-bold text-gray-800 mb-4 font-['Roboto_Condensed']">¿Eliminar proveedor?</h2>
             <p class="text-gray-700 mb-4">
-                ¿Estás seguro que deseas eliminar al proveedor <span id="modalProviderName" class="font-semibold"></span>
-                de la empresa <span id="modalProviderCompany" class="font-semibold"></span>?
+                ¿Estás seguro que deseas eliminar al proveedor
+                <span id="modalProviderName" class="font-semibold"></span> de la empresa
+                <span id="modalProviderCompany" class="font-semibold"></span>?
             </p>
             <form id="deleteForm" method="POST" action="">
                 @csrf
                 @method('DELETE')
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeDeleteModal()"
-                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                         Cancelar
                     </button>
                     <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">

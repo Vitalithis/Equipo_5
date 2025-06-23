@@ -3,11 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\Cliente;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Hash;
 
 class ClienteSeeder extends Seeder
 {
@@ -24,23 +25,26 @@ class ClienteSeeder extends Seeder
         ];
 
         foreach ($clientes as $data) {
-            // 1. Crear cliente
-            $cliente = Cliente::firstOrCreate([
-                'nombre' => $data['nombre'],
-            ], [
-                'subdominio' => $data['subdominio'],
-                'slug' => $data['slug'],
-                'activo' => true,
-            ]);
+            $cliente = Cliente::firstOrCreate(
+                ['nombre' => $data['nombre']],
+                [
+                    'subdominio' => $data['subdominio'],
+                    'slug' => $data['slug'],
+                    'activo' => true,
+                ]
+            );
 
-            // 2. Crear rol admin
-            $rolAdmin = Role::firstOrCreate([
-                'name' => 'admin',
-                'guard_name' => 'web',
-                'cliente_id' => $cliente->id,
-            ]);
+            $rolAdmin = Role::updateOrCreate(
+                ['name' => 'admin', 'cliente_id' => $cliente->id],
+                ['guard_name' => 'web']
+            );
 
-            // 3. Clonar permisos globales
+            $rolUser = Role::updateOrCreate(
+                ['name' => 'user', 'cliente_id' => $cliente->id],
+                ['guard_name' => 'web']
+            );
+
+            // Clonar permisos globales
             $permisosGlobales = Permission::whereNull('cliente_id')->get();
             foreach ($permisosGlobales as $permiso) {
                 $nuevo = Permission::firstOrCreate([
@@ -48,23 +52,35 @@ class ClienteSeeder extends Seeder
                     'guard_name' => 'web',
                     'cliente_id' => $cliente->id,
                 ]);
-                $rolAdmin->givePermissionTo($nuevo);
+
+                // Asignar manualmente
+                DB::table('role_has_permissions')->insertOrIgnore([
+                    'permission_id' => $nuevo->id,
+                    'role_id' => $rolAdmin->id,
+                    'cliente_id' => $cliente->id,
+                ]);
             }
 
-            // 4. Crear usuario admin
-            $usuario = User::firstOrCreate([
-                'email' => $data['email'],
-            ], [
-                'name' => 'Admin ' . $data['nombre'],
-                'password' => Hash::make($data['password']),
-                'cliente_id' => $cliente->id,
-                'must_change_password' => true,
-            ]);
+            $usuario = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => 'Admin ' . $data['nombre'],
+                    'password' => Hash::make($data['password']),
+                    'cliente_id' => $cliente->id,
+                    'must_change_password' => true,
+                ]
+            );
 
-            // 5. Asignar rol
-            $usuario->assignRole($rolAdmin);
+            DB::table('model_has_roles')->updateOrInsert(
+                [
+                    'role_id' => $rolAdmin->id,
+                    'model_type' => User::class,
+                    'model_id' => $usuario->id,
+                ],
+                ['cliente_id' => $cliente->id]
+            );
         }
 
-        $this->command->info("Clientes, usuarios admin y permisos creados correctamente.");
+        $this->command->info("✅ Clientes, usuarios admin, roles admin/user y permisos creados correctamente.");
     }
 }

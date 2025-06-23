@@ -9,7 +9,8 @@
     <div class="flex items-center mb-6">
         @can('crear roles')
             <a href="{{ route('roles.create', ['source' => $source]) }}"
-               class="ml-auto flex items-center border border-green-700 hover:border-green-800 text-green-700 hover:text-green-800 px-3 py-1 rounded transition-colors">
+               class="ml-auto flex items-center px-3 py-1 rounded transition-colors text-white"
+               style="background-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 4v16m8-8H4"/>
@@ -19,12 +20,13 @@
         @endcan
     </div>
 
-    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-        @foreach($roles as $role)
-            <div x-data="{ open: false }" class="border-b border-eaccent2">
+    <div class="bg-white shadow sm:rounded-lg overflow-hidden border border-[color:var(--table-header-color)]">
+        @forelse($roles as $role)
+            <div x-data="{ open: false }" class="border-b" style="border-color: var(--table-header-color);">
                 {{-- Cabecera de la fila --}}
                 <button @click="open = !open"
-                        class="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-eaccent2/20 transition">
+                        class="w-full text-left px-4 py-3 flex items-center justify-between transition"
+                        style="background-color: white;">
                     <div class="font-semibold text-black capitalize">{{ $role->name }}</div>
                     <svg :class="{ 'rotate-180': open }" class="h-5 w-5 transform transition-transform duration-200"
                          fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
@@ -66,7 +68,7 @@
                     <div>
                         <strong class="text-black">Acciones:</strong>
                         <div class="mt-2 flex gap-2 flex-wrap">
-                            @if($role->name !== 'admin' && $role->name !== 'user')
+                            @if(!in_array($role->name, [ 'user', 'soporte']))
                                 @can('editar roles')
                                     <a href="{{ route('roles.edit', ['role' => $role->id, 'source' => $source]) }}"
                                        class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">
@@ -92,7 +94,9 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="px-6 py-4 text-gray-500 italic">No hay roles creados aún.</div>
+        @endforelse
     </div>
 </div>
 @endsection

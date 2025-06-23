@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Role;
 use App\Models\Permission;
@@ -13,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Observers\UserObserver;
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {   
@@ -23,19 +24,27 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->app->booted(function () {
-            if (Auth::check()) {
-                $clienteId = Auth::user()->cliente_id;
+        // Evita aplicar scopes en consola o sin sesión iniciada
+        if (!App::runningInConsole() && Auth::check()) {
 
-                // Configurar Spatie para multitenancy por cliente
-                app(PermissionRegistrar::class)->setPermissionsTeamId($clienteId);
+            // Scope global para roles multitenant
+            Role::addGlobalScope('tenant_roles', function (Builder $builder) {
+                $builder->where('roles.cliente_id', Auth::user()->cliente_id);
+            });
 
-                // Agregar scopes globales para filtrar Roles y Permisos por cliente_id
-                $this->addExplicitGlobalScopes($clienteId);
+            // Scope global para permisos multitenant
+            Permission::addGlobalScope('tenant_permissions', function (Builder $builder) {
+                $builder->where('permissions.cliente_id', Auth::user()->cliente_id);
+            });
+
+            // Define teamId para Spatie si existe la columna
+            if (Schema::hasColumn('role_has_permissions', 'cliente_id')) {
+                app(\Spatie\Permission\PermissionRegistrar::class)
+                    ->setPermissionsTeamId(Auth::user()->cliente_id);
             }
             User::observe(UserObserver::class);
 
-        });
+        };
 
         if (app()->environment('local')) { // Solo para entorno local
         Mail::alwaysTo('scarrascos@ing.ucsc.cl');
@@ -56,5 +65,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Nota: No aplicar scopes a tablas pivot (role_has_permissions/model_has_roles),
         // Spatie no usa modelos para ellas, solo consultas directas.
+        }
     }
-}
+

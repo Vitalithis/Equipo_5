@@ -6,6 +6,8 @@
         ['name' => 'Preguntas Frecuentes', 'href' => '/home#faq'],
         ['name' => 'Contacto', 'href' => '/home#contact'],
     ];
+
+    $logo = auth()->user()->logo ?? null;
 @endphp
 <div x-data="{ drawerOpen: false, userdrawerOpen: false }">
 
@@ -128,9 +130,4 @@
 </div>
 <!-- AlpineJS -->
 <script src="//unpkg.com/alpinejs" defer></script>
-
-<style>
-    [x-cloak] {
-        display: none !important;
-    }
-</style>
+<style>[x-cloak] { display: none !important; }</style>

@@ -4,16 +4,11 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // Limpiar cache de permisos
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
-
         $permisos = [
             'ver dashboard',
             'gestionar usuarios',
@@ -86,12 +81,38 @@ class PermissionSeeder extends Seeder
             'ver reportes',
             'gestionar tareas',
             
+        'ver dashboard',
+        'gestionar usuarios',
+        'gestionar roles',
+        'gestionar permisos',
+        'ver reportes',
+        'gestionar productos',
+        'gestionar clientes',
+        'gestionar pedidos',
+        'gestionar fertilizantes',
+        'gestionar insumos',
+        'gestionar trabajadores',
+        'ver calendario',
+        // Permisos adicionales para que el sidebar funcione
+        'ver panel soporte',
+        'gestionar catálogo',
+        'ver roles',
+        'gestionar descuentos',
+        'gestionar tareas',
+        'gestionar proveedores',
+        'gestionar cuidados',
+        'gestionar finanzas',
+        'ver mantenimiento',
+        'crear roles',
+        'editar roles',
+        'eliminar roles',
         ];
 
-        foreach ($permisos as $nombre) {
+        foreach ($permisos as $permiso) {
             Permission::firstOrCreate([
-                'name' => $nombre,
+                'name' => $permiso,
                 'guard_name' => 'web',
+                'cliente_id' => null, // 👈 importante
             ]);
         }
 

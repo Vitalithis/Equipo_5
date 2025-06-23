@@ -1,66 +1,33 @@
-<footer class="{{ request()->routeIs('/') ? 'bg-white' : 'bg-gray-100' }}">
-    <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
-        <div class="md:flex md:justify-between">
-            <div class="mb-6 md:mb-0">
-                <a href="https://plantaseditha.me/" class="flex items-center">
-                    <img src="/storage/images/logo-removebg.png" class="h-24 me-3" alt="Plantas Editha Logo">
-                </a>
+@php
+    $pref = Auth::user()?->preference;
+    $accentColor = $accentColor ?? ($pref?->accent_color ?? '#10B981');
+    $logo = $logo ?? ($pref?->logo_image ? asset('storage/logos/' . $pref->logo_image) : asset('dist/img/logoeditha.png'));
+@endphp
+
+<footer class="text-white" style="background-color: {{ $accentColor }};">
+    <div class="max-w-screen-xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <img src="{{ $logo }}" class="h-20 mb-3" alt="Logo Plantas Editha">
+                <span class="text-sm">Vivero de calidad, naturaleza con amor.</span>
             </div>
-            <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
-                <div>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase ">¿Quienes Somos?</h2>
-                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
-                        <li class="mb-4">
-                            <a href="/home#quienes-somos" class="hover:underline">Nosotros</a>
-                        </li>
-                        <li>
-                            <a href="/home#mision" class="hover:underline">Misión y Visión</a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase ">¡Síguenos!</h2>
-                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
-                        <li class="mb-4">
-                            <a href="https://www.instagram.com/plantaseditha/" class="hover:underline">Instagram</a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/plantasseditha/?locale=es_LA" class="hover:underline">Facebook</a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase ">Legal</h2>
-                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
-                        <li class="mb-4">
-                            <a  href="{{ route('politicas') }}" class="hover:underline">Políticas de Privacidad</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('terminos') }}" class="hover:underline">Términos y Condiciones</a>
-                        </li>
-                    </ul>
-                </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">¿Quiénes Somos?</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><a href="/home#quienes-somos" class="hover:underline">Nosotros</a></li>
+                    <li><a href="/home#mision" class="hover:underline">Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">Legal</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><a href="{{ route('politicas') }}" class="hover:underline">Políticas de Privacidad</a></li>
+                    <li><a href="{{ route('terminos') }}" class="hover:underline">Términos y Condiciones</a></li>
+                </ul>
             </div>
         </div>
-        <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <div class="sm:flex sm:items-center sm:justify-between">
-            <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-                © 2025 <a href="https://plantaseditha.me/" class="hover:underline">Plantas Editha™</a>. Todos los derechos reservados.
-            </span>
-            <div class="flex mt-4 sm:justify-center sm:mt-0">
-                <a href="https://www.facebook.com/plantasseditha/?locale=es_LA" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 19">
-                        <path fill-rule="evenodd" d="M6.135 3H8V0H6.135a4.147 4.147 0 0 0-4.142 4.142V6H0v3h2v9.938h3V9h2.021l.592-3H5V3.591A.6.6 0 0 1 5.592 3h.543Z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="sr-only">Página de Facebook</span>
-                </a>
-                <a href="https://www.instagram.com/plantaseditha/" class="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"/>
-                    </svg>
-                    <span class="sr-only">Perfil de Instagram</span>
-                </a>
-            </div>
+        <div class="text-center text-xs text-gray-100 mt-6 border-t border-white pt-4">
+            © {{ date('Y') }} Plantas Editha. Todos los derechos reservados.
         </div>
     </div>
 </footer>
