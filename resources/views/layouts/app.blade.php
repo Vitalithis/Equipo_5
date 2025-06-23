@@ -20,6 +20,7 @@
         $backgroundColor = $pref?->background_color ?? '#F3F4F6';
         $tableHeaderColor = $pref?->table_header_color ?? '#D1D5DB';
         $navbarColor = $pref?->navbar_color ?? '#1F2937';
+        $navbarTextColor = $pref?->navbar_text_color ?? '#FFFFFF';
         $fontClass = match($pref?->font ?? 'roboto') {
             'inter' => "font-['Inter']",
             'poppins' => "font-['Poppins']",
@@ -48,6 +49,7 @@
             --background-color: {{ $backgroundColor }};
             --table-header-color: {{ $tableHeaderColor }};
             --navbar-color: {{ $navbarColor }};
+            --navbar-text-color: {{ $navbarTextColor }};
         }
 
         body {
@@ -86,10 +88,19 @@
             @yield('content')
         </main>
 
-        {{-- 🔻 Footer --}}
-        <div class="text-center text-xs text-gray-500 py-4 border-t">
-            © {{ date('Y') }} Plantas Editha. Todos los derechos reservados.
-        </div>
+        {{-- 🔻 Footer con logo dinámico --}}
+        <footer class="bg-[var(--accent-color)] text-white">
+            <div class="max-w-screen-xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto">
+                    <span class="text-sm">Plantas Editha – Naturaleza con amor 🌿</span>
+                </div>
+                <div class="text-xs mt-4 md:mt-0 text-white/80">
+                    © {{ date('Y') }} Plantas Editha. Todos los derechos reservados.
+                </div>
+            </div>
+        </footer>
+
     </div>
 
 </body>
