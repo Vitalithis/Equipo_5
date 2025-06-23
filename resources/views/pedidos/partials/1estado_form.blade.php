@@ -7,6 +7,10 @@
         $estadosPermitidos = $pedido->estadosPermitidos();
     @endphp
 
+    @php
+    $pref = Auth::user()?->preference;
+@endphp
+
     <select name="estado_pedido" class="rounded border px-2 py-1 text-sm bg-white text-eprimary focus:ring-2 focus:ring-eaccent2-500">
         @foreach ($estadosPermitidos as $valor)
             <option value="{{ $valor }}" {{ $pedido->estado_pedido === $valor ? 'selected' : '' }}>

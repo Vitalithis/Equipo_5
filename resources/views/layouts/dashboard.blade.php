@@ -154,6 +154,16 @@
               </a>
           </li>
           @endcan
+          @can('gestionar tratamientos')
+            <li><a href="{{ route('dashboard.treatments') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Aplicacion de Trataminetos</a></li>
+          @endcan
+          @can('gestionar transporte')
+            <li><a href="{{ route('dashboard.transports.index') }}" class="block px-3 py-2 rounded hover:bg-white hover:text-black transition"><i class="fa-solid fa-person-digging mr-2"></i>Gestion de Transporte</a></li>
+          @endcan
+
+
+
+
    <!--  @can('ver panel soporte')
       <li>
         <a href="{{ route('clients.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
@@ -263,23 +273,9 @@
       </li>
     @endcan
 
-    @can('gestionar tratamientos')
-      <li>
-        <a href="{{ route('dashboard.treatments') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-droplet"></i>
-          <span>Gestionar aplicacion</span>
-        </a>
-      </li>
-    @endcan
 
-        @can('gestionar transporte')
-      <li>
-        <a href="{{ route('dashboard.transports.index') }}" class="flex items-center space-x-2 px-3 py-2 bg-green-700 rounded-md hover:bg-green-600 transition">
-          <i class="fa-solid fa-droplet"></i>
-          <span>Gestionar Transporte</span>
-        </a>
-      </li>
-    @endcan
+
+
 
     @can('ver dashboard')
       <li>
@@ -295,7 +291,6 @@
         </a>
       </li>
     @endcan -->
-<!--  -->
 
   </ul>
 </nav>

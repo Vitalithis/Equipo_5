@@ -1,6 +1,15 @@
 @php
     $proveedor = $proveedor ?? new \App\Models\Proveedor();
 @endphp
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
 
 <div class="bg-white rounded-lg shadow-md p-6 space-y-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

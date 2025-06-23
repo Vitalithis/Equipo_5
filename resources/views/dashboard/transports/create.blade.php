@@ -3,15 +3,28 @@
 @section('title', 'Registrar Gasto de Transporte')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
+
 <div class="py-8 px-4 md:px-8 max-w-3xl mx-auto font-['Roboto'] text-gray-800">
 
-    <a href="{{ route('dashboard.transports.index') }}" class="flex items-center text-green-700 hover:text-green-800 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18L9 12l6-6"/>
-        </svg>
-        Volver a Transportes
-    </a>
+<a href="{{ route('dashboard.transports.index') }}"
+   class="mb-6 inline-flex items-center text-white border px-3 py-1 rounded transition-colors"
+   style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18L9 12l6-6"/>
+    </svg>
+    Volver a Transportes
+</a>
+
 
     <h2 class="text-2xl font-semibold mb-4">Registrar Gasto de Transporte</h2>
 
@@ -84,10 +97,12 @@
         </div>
 
         <div class="text-right">
-            <button type="submit"
-                    class="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                Guardar Gasto
-            </button>
+        <button type="submit"
+            class="text-white px-4 py-2 rounded border shadow transition-colors"
+            style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+            Guardar Gasto
+        </button>
+
         </div>
     </form>
 </div>

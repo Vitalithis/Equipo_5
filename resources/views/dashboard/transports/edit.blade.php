@@ -3,6 +3,9 @@
 @section('title', 'Editar Gasto de Transporte')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
 <div class="py-8 px-4 md:px-8 max-w-3xl mx-auto font-['Roboto'] text-gray-800">
 
     <a href="{{ route('dashboard.transports.index') }}" class="flex items-center text-green-700 hover:text-green-800 mb-6">

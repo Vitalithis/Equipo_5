@@ -4,6 +4,40 @@
     @section('title','Listado de tratamientos')
 
     @section('content')
+    @php
+    $pref = Auth::user()?->preference;
+@endphp
+    <style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+
+    .custom-table-header {
+        background-color: var(--table-header-color);
+        color: var(--table-header-text-color) !important;
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
     <div x-data="{ modalTrat: null }" class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
@@ -26,9 +60,11 @@
                 <option value="Otro" {{ request('tipo') === 'Otro' ? 'selected' : '' }}>Otro</option>
             </select>
 
-            <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
-                Buscar
-            </button>
+<button type="submit"
+    class="text-white px-4 py-2 rounded border shadow transition-colors"
+    style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+    Buscar
+</button>
 
             @if(request('nombre') || request('tipo'))
                 <a href="{{ route('dashboard.treatments') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
@@ -41,13 +77,15 @@
             {{-- Botones a la derecha --}}
             <div class="flex items-center space-x-4">
                 <a href="{{ route('dashboard.treatments.create') }}"
-                class="flex items-center whitespace-nowrap text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors font-medium">
+                class="flex items-center text-white border px-3 py-1 rounded transition-colors whitespace-nowrap"
+                style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v16m8-8H4"/>
                     </svg>
                     Agregar Tratamiento Plantas
                 </a>
+
 
                 <a href="{{ route('treatment_applications.index') }}"
                 class="flex items-center whitespace-nowrap text-amber-600 hover:text-amber-700 border border-amber-600 hover:border-amber-700 px-3 py-1 rounded transition-colors font-medium">
@@ -63,8 +101,8 @@
 
 
         <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
-            <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
-                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+            <table class="min-w-full table-auto text-sm text-left text-gray-800 bg-white">
+                <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-6 py-3 whitespace-nowrap">Nombre</th>
                         <th class="px-6 py-3 whitespace-nowrap">Tipo</th>

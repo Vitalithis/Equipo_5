@@ -292,13 +292,11 @@ Route::get('/notificaciones', function () {
     Route::put('/dashboard/descuentos/{id}', [DescuentoController::class, 'update'])->middleware('permission:gestionar descuentos')->name('descuentos.update');
     Route::delete('/dashboard/descuentos/{id}', [DescuentoController::class, 'destroy'])->middleware('permission:gestionar descuentos')->name('descuentos.destroy');
     // Ruta Formulario Contacto
-    use App\Http\Controllers\ContactController;
 
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
     // Ruta para el mantenedor de mantenimientos de infraestructura
-    use App\Http\Controllers\MaintenanceReportController;
 
     Route::middleware(['auth'])->group(function () {
         Route::resource('maintenance', MaintenanceReportController::class);

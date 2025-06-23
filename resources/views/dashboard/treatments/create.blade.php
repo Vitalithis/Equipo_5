@@ -3,6 +3,15 @@
 @section('title', 'Registrar Aplicación de Tratamiento')
 
 @section('content')
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+</style>
 <div class="py-8 px-4 md:px-8 max-w-3xl mx-auto font-['Roboto'] text-gray-800">
     <a href="{{ route('dashboard.treatments') }}" class="flex items-center text-green-700 hover:text-green-800 mb-6">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" stroke="currentColor"
