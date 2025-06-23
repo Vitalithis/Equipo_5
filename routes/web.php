@@ -40,7 +40,8 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\ThemeController;
 
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SimpleCalendarController;
+
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
@@ -53,12 +54,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preferencias/eliminar-logo', [ThemeController::class, 'removeLogo'])->name('theme.remove.logo');
     Route::post('/preferencias/eliminar-perfil', [ThemeController::class, 'removeProfile'])->name('theme.remove.profile');
 });
-// calendario transplantes
-Route::middleware(['auth'])->prefix('calendar')->group(function () {
-    Route::get('/', [CalendarController::class, 'index'])->name('calendar.index');
-    Route::get('/events', [CalendarController::class, 'fetchEvents']);
-    Route::post('/store', [CalendarController::class, 'store']);
+// calendario simple de siembra y trasplante
+Route::middleware(['auth'])->prefix('simple-calendar')->group(function () {
+    Route::get('/', [SimpleCalendarController::class, 'index'])->name('simple_calendar.index');
+    Route::get('/crear', [SimpleCalendarController::class, 'create'])->name('simple_calendar.create');
+    Route::post('/', [SimpleCalendarController::class, 'store'])->name('simple_calendar.store');
 });
+
+// alertas de trasplante para mostrar en dashboard
+Route::get('/alertas-transplante', [SimpleCalendarController::class, 'alertasTransplante'])->middleware('auth');
+
 
 Route::middleware(['web', 'auth', 'tenant'])->group(function () {
 
@@ -365,7 +370,6 @@ Route::get('/api/ventas/resumen', [PedidoController::class, 'resumenMensual'])
     ->name('produccion.mermas.store');
 
 });
-
 */
 
 Route::get('/debug-tenant', function () {

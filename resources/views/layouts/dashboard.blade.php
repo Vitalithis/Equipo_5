@@ -81,6 +81,7 @@
     }
   </style>
 </head>
+@stack('scripts')
 
 <body class="{{ $isDark ? 'dark' : '' }} {{ $fontClass }} {{ $fontSize }} bg-gray-100"
       style="{{ $bgImage }}"
@@ -142,7 +143,8 @@
           @endcan
           @can('ver calendario')
           <li>
-              <a href="{{ route('calendar.index') }}" class="text-gray-700 hover:text-green-700">
+              <a href="{{ route('simple_calendar.index') }}" class="text-gray-700 hover:text-green-700">
+
                   <i class="fa fa-calendar-alt mr-2"></i> Calendario
               </a>
           </li>

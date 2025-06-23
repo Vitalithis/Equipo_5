@@ -68,7 +68,7 @@
                     <div>
                         <strong class="text-black">Acciones:</strong>
                         <div class="mt-2 flex gap-2 flex-wrap">
-                            @if(!in_array($role->name, ['admin', 'user', 'soporte']))
+                            @if(!in_array($role->name, [ 'user', 'soporte']))
                                 @can('editar roles')
                                     <a href="{{ route('roles.edit', ['role' => $role->id, 'source' => $source]) }}"
                                        class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">

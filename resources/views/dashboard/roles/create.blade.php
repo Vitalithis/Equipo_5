@@ -38,38 +38,26 @@
         {{-- Permisos --}}
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">Permisos</label>
+
+            @php
+                $grouped = $permissions->groupBy(function ($perm) {
+                    $parts = explode(' ', $perm->name);
+                    return ucfirst($parts[1] ?? $parts[0]);
+                });
+            @endphp
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border rounded overflow-hidden"
                  style="border-color: var(--table-header-color);">
-
-                @php
-                    $grouped = [
-                        'Dashboard' => ['ver dashboard'],
-                        'Usuarios' => ['gestionar usuarios', 'ver usuarios'],
-                        'Permisos' => ['gestionar permisos'],
-                        'Roles' => ['ver roles', 'crear roles', 'editar roles', 'eliminar roles'],
-                        'Órdenes' => ['ver ordenes', 'crear ordenes', 'editar ordenes', 'eliminar ordenes'],
-                        'Ingresos' => ['gestionar ingresos'],
-                        'Egresos' => ['gestionar egresos'],
-                        'Productos' => ['gestionar productos'],
-                        'Catálogo' => ['gestionar catálogo'],
-                        'Descuentos' => ['gestionar descuentos'],
-                        'Reportes' => ['ver reportes'],
-                        'Pedidos' => ['gestionar pedidos']
-                    ];
-                @endphp
-
-                @foreach($grouped as $group => $perms)
+                @foreach($grouped as $modulo => $perms)
                     <div class="border-t border-r p-4" style="border-color: var(--table-header-color);">
-                        <h3 class="font-bold text-black mb-2">{{ $group }}</h3>
-                        <div class="grid grid-cols-2 gap-x-6 gap-y-2">
-                            @foreach($permissions as $permission)
-                                @if(in_array($permission->name, $perms))
-                                    <label class="inline-flex items-center text-black">
-                                        <input type="checkbox" name="permissions[]" value="{{ $permission->id }}"
-                                               class="form-checkbox text-black border-black rounded focus:ring-black">
-                                        <span class="ml-2 text-sm text-black">{{ $permission->name }}</span>
-                                    </label>
-                                @endif
+                        <h3 class="font-bold text-black mb-2">{{ $modulo }}</h3>
+                        <div class="grid grid-cols-1 gap-y-2">
+                            @foreach($perms as $perm)
+                                <label class="inline-flex items-center text-black">
+                                    <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
+                                           class="form-checkbox text-black border-black rounded focus:ring-black">
+                                    <span class="ml-2 text-sm text-black">{{ $perm->name }}</span>
+                                </label>
                             @endforeach
                         </div>
                     </div>

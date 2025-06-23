@@ -8,7 +8,7 @@
 
     <div class="flex items-center mb-6">
     <a href="{{ route('pedidos.index') }}"
-       class="flex items-center text-black px-3 py-1 rounded transition-colors"
+       class="flex items-center text-white px-3 py-1 rounded transition-colors"
        style="background-color: var(--table-header-color);">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,7 +161,7 @@
 
             <div class="flex justify-end mt-6">
                 <button type="button" id="add-detalle"
-                    class="flex items-center text-black px-3 py-1 rounded transition-colors"
+                    class="flex items-center text-white px-3 py-1 rounded transition-colors"
                     style="background-color: var(--table-header-color);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -223,7 +223,7 @@
                 Cancelar
             </a>
             <button type="submit"
-                class="flex items-center text-black px-3 py-1 rounded transition-colors"
+                class="flex items-center text-white px-3 py-1 rounded transition-colors"
                 style="background-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

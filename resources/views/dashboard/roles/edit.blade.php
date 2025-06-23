@@ -8,7 +8,8 @@
 <div class="py-8 px-4 md:px-8 max-w-4xl mx-auto font-['Roboto'] text-gray-800">
     <div class="flex items-center mb-6">
         <a href="{{ route('roles.index') }}"
-           class="flex items-center text-green-700 hover:text-green-800 transition-colors">
+           class="flex items-center px-4 py-2 rounded text-white text-sm shadow transition-colors"
+           style="background-color: var(--table-header-color);">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m15 18-6-6 6-6" />
@@ -65,11 +66,12 @@
             {{-- Botones --}}
             <div class="flex justify-end gap-3">
                 <a href="{{ route('roles.index') }}"
-                   class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm">
+                class="px-4 py-2 rounded border text-sm text-gray-700 hover:text-black transition"
+                style="background-color: white; border-color: var(--table-header-color);">
                     Cancelar
                 </a>
                 <button type="submit"
-                        class="px-4 py-2 rounded text-white text-sm"
+                        class="px-4 py-2 rounded text-white text-sm shadow"
                         style="background-color: var(--table-header-color);">
                     Guardar Cambios
                 </button>

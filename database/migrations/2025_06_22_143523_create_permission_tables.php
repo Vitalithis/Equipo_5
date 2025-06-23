@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('guard_name');
             $table->foreignId('cliente_id')->nullable()->constrained('clientes')->onDelete('cascade');
             $table->timestamps();
-
             $table->unique(['name', 'guard_name', 'cliente_id']);
         });
 
@@ -23,7 +22,6 @@ return new class extends Migration {
             $table->string('guard_name');
             $table->foreignId('cliente_id')->nullable()->constrained('clientes')->onDelete('cascade');
             $table->timestamps();
-
             $table->unique(['name', 'guard_name', 'cliente_id']);
         });
 
@@ -36,7 +34,8 @@ return new class extends Migration {
             $table->index(['model_id', 'model_type'], 'model_has_permissions_model_id_model_type_index');
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
 
-            $table->primary(['permission_id', 'model_id', 'model_type', 'cliente_id'], 'model_has_permissions_primary');
+            // Usamos UNIQUE en lugar de PRIMARY para permitir valores NULL
+            $table->unique(['permission_id', 'model_id', 'model_type', 'cliente_id'], 'model_has_permissions_unique');
         });
 
         Schema::create('model_has_roles', function (Blueprint $table) {
@@ -48,7 +47,8 @@ return new class extends Migration {
             $table->index(['model_id', 'model_type'], 'model_has_roles_model_id_model_type_index');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
 
-            $table->primary(['role_id', 'model_id', 'model_type', 'cliente_id'], 'model_has_roles_primary');
+            // Usamos UNIQUE en lugar de PRIMARY para permitir valores NULL
+            $table->unique(['role_id', 'model_id', 'model_type', 'cliente_id'], 'model_has_roles_unique');
         });
 
         Schema::create('role_has_permissions', function (Blueprint $table) {
@@ -59,7 +59,8 @@ return new class extends Migration {
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
 
-            $table->primary(['permission_id', 'role_id', 'cliente_id'], 'role_has_permissions_primary');
+            // Usamos UNIQUE en lugar de PRIMARY para permitir valores NULL
+            $table->unique(['permission_id', 'role_id', 'cliente_id'], 'role_has_permissions_unique');
         });
 
         app('cache')

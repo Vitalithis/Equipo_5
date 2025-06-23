@@ -4,68 +4,47 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // Limpiar cache de permisos
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        $permisos = [
+        'ver dashboard',
+        'gestionar usuarios',
+        'gestionar roles',
+        'gestionar permisos',
+        'ver reportes',
+        'gestionar productos',
+        'gestionar clientes',
+        'gestionar pedidos',
+        'gestionar fertilizantes',
+        'gestionar insumos',
+        'gestionar trabajadores',
+        'ver calendario',
+        // Permisos adicionales para que el sidebar funcione
+        'ver panel soporte',
+        'gestionar catálogo',
+        'ver roles',
+        'gestionar descuentos',
+        'gestionar tareas',
+        'gestionar proveedores',
+        'gestionar cuidados',
+        'gestionar finanzas',
+        'ver mantenimiento',
+        'crear roles',
+        'editar roles',
+        'eliminar roles',
+        ];
 
-        $permisos = collect([
-            'ver dashboard',
-            'gestionar usuarios',
-            'ver usuarios',
-            'gestionar permisos',
-            'ver roles',
-            'crear roles',
-            'editar roles',
-            'eliminar roles',
-            'ver ordenes',
-            'crear ordenes',
-            'editar ordenes',
-            'eliminar ordenes',
-            'gestionar ingresos',
-            'gestionar egresos',
-            'gestionar productos',
-            'gestionar proveedores',
-            'gestionar catálogo',
-            'gestionar pedidos',
-            'gestionar descuentos',
-            'gestionar infraestructura',
-            'ver reportes',
-            'gestionar tareas',
-            'gestionar fertilizantes',
-            'gestionar cuidados',
-            'gestionar finanzas',
-            'gestionar insumos',
-            'gestionar cotizaciones',
-            'ver panel soporte',
-            'crear cliente',
-            'gestionar clientes',
-        ])->unique(); // 🔁 Elimina duplicados
-
-        // Crear permisos GLOBALMENTE
-        foreach ($permisos as $nombre) {
+        foreach ($permisos as $permiso) {
             Permission::firstOrCreate([
-                'name' => $nombre,
+                'name' => $permiso,
                 'guard_name' => 'web',
-                'cliente_id' => null, // 🌐 GLOBAL
+                'cliente_id' => null, // 👈 importante
             ]);
         }
 
-        // Crear rol soporte global
-        $rolSoporte = Role::firstOrCreate([
-            'name' => 'soporte',
-            'guard_name' => 'web',
-            'cliente_id' => null, // 🌐 GLOBAL
-        ]);
-
-        // Asignar todos los permisos al rol soporte
-        $rolSoporte->syncPermissions(Permission::whereNull('cliente_id')->get());
-
-        $this->command->info("✅ Permisos globales y rol 'soporte' creados correctamente.");
+        $this->command->info('✅ Permisos globales creados correctamente.');
     }
 }
