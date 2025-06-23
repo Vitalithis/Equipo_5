@@ -40,58 +40,51 @@
 </style>
 
 <div class="max-w-7xl mx-auto px-8 py-10 font-['Roboto'] text-gray-800">
+    {{-- Mensaje de éxito --}}
     @if (session('success'))
         <div id="success-message" class="bg-[#FFF9DB] border-l-4 border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6 shadow">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="flex justify-between items-center mb-4">
-        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+    {{-- Filtros y botón Añadir --}}
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <form method="GET" action="{{ route('pedidos.index') }}" class="flex flex-wrap gap-2 items-center w-full md:max-w-3xl">
+            <input type="text" name="usuario" value="{{ request('usuario') }}" placeholder="Buscar por usuario..."
+                class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
 
-    {{-- Buscador y filtro por estado --}}
-    <form method="GET" action="{{ route('pedidos.index') }}" class="flex flex-wrap gap-2 items-center w-full md:max-w-3xl mb-4">
+            <select name="estado_pedido" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
+                <option value="">Todos los estados</option>
+                @foreach($estados as $valor => $etiqueta)
+                    <option value="{{ $valor }}" {{ request('estado_pedido') === $valor ? 'selected' : '' }}>
+                        {{ $etiqueta }}
+                    </option>
+                @endforeach
+            </select>
 
-        <input type="text" name="usuario" value="{{ request('usuario') }}" placeholder="Buscar por usuario..."
-            class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto" />
+            <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
+                Buscar
+            </button>
 
-        <select name="estado_pedido" class="px-4 py-2 border rounded shadow text-sm w-full md:w-auto">
-            <option value="">Todos los estados</option>
-            @foreach($estados as $valor => $etiqueta)
-                <option value="{{ $valor }}" {{ request('estado_pedido') === $valor ? 'selected' : '' }}>
-                    {{ $etiqueta }}
-                </option>
-            @endforeach
-        </select>
+            @if(request('usuario') || request('estado_pedido'))
+                <a href="{{ route('pedidos.index') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
+                    Limpiar
+                </a>
+            @endif
+        </form>
 
-
-        <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
-            Buscar
-        </button>
-
-        @if(request('usuario') || request('estado_pedido'))
-            <a href="{{ route('pedidos.index') }}" class="text-sm text-gray-600 hover:text-gray-800 underline">
-                Limpiar
-            </a>
-        @endif
-    </form>
-
-</div>
-
-    
-    {{-- Botón Añadir Venta --}}
-    <div class="flex items-center justify-end mb-6">
         <a href="{{ route('pedidos.create') }}"
            class="flex items-center text-white px-3 py-2 rounded transition-colors"
            style="background-color: var(--table-header-color);">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v16m8-8H4"/>
+                <path d="M12 4v16m8-8H4" />
             </svg>
             Añadir Venta
         </a>
     </div>
 
+    {{-- Tabla de pedidos --}}
     @if ($pedidos->count())
         <div class="overflow-x-auto bg-white shadow custom-border">
             <table class="min-w-full text-sm text-left bg-white">
@@ -104,7 +97,6 @@
                         <th class="px-6 py-4 text-center">Acciones</th>
                     </tr>
                 </thead>
-
                 <tbody class="font-['Roboto'] text-gray-800">
                     @foreach ($pedidos as $pedido)
                         <tr class="hover:bg-green-50 transition-colors cursor-pointer" onclick="toggleDetalles({{ $pedido->id }}, event)">
@@ -153,8 +145,7 @@
                                                 <strong class="text-eprimary">Boleta SII:</strong>
                                                 @if($pedido->boleta_final_path)
                                                     <span class="text-green-600 font-medium">Subida</span>
-                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}"
-                                                       target="_blank"
+                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}" target="_blank"
                                                        class="text-esecondary hover:text-eaccent text-sm underline cursor-pointer">
                                                         Ver PDF
                                                     </a>
@@ -172,7 +163,7 @@
                                         <div class="pt-2">
                                             <button class="open-modal-provisoria inline-block bg-yellow-100 hover:bg-yellow-200 text-eprimary font-semibold text-sm px-4 py-2 rounded shadow transition"
                                                     data-url="{{ route('boletas.provisoria', $pedido->id) }}">
-                                                Ver Detalle 
+                                                Ver Detalle
                                             </button>
                                         </div>
                                     </div>
@@ -183,18 +174,17 @@
                 </tbody>
             </table>
         </div>
-
-
-
     @else
         <p class="text-center text-lg text-gray-600 mt-10">No hay pedidos registrados.</p>
     @endif
+
+    {{-- Paginación --}}
+    @if($pedidos instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="mt-6 flex justify-center">
+            {{ $pedidos->withQueryString()->links('components.pagination.custom') }}
+        </div>
+    @endif
 </div>
-        @if($pedidos instanceof \Illuminate\Pagination\LengthAwarePaginator)
-            <div class="mt-6 flex justify-center">
-                {{ $pedidos->withQueryString()->links('components.pagination.custom') }}
-            </div>
-        @endif
 
 {{-- Modales --}}
 @include('pedidos.partials.modals')
@@ -232,6 +222,6 @@
         document.getElementById('deleteModal').classList.remove('flex');
     }
 
-    document.getElementById('delete-modal-close').addEventListener('click', closeDeleteModal);
+    document.getElementById('delete-modal-close')?.addEventListener('click', closeDeleteModal);
 </script>
 @endsection

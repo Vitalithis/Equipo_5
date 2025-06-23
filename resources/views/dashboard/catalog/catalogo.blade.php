@@ -41,18 +41,41 @@
 
 <div class="max-w-7xl mx-auto font-['Roboto'] text-gray-800">
     <div class="rounded-lg shadow-sm p-6">
-        <div class="flex justify-between items-center mb-4">
+
+        {{-- Filtros y botón de añadir --}}
+        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <form method="GET" action="{{ route('dashboard.catalogo') }}" class="flex flex-col md:flex-row gap-3 w-full md:w-auto md:flex-grow">
+                <input type="text" name="busqueda" value="{{ request('busqueda') }}" placeholder="Buscar por nombre"
+                    class="w-full md:w-64 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-green-500" />
+
+                <select name="categoria"
+                    class="w-full md:w-64 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring focus:border-green-500">
+                    <option value="">Todas las categorías</option>
+                    @foreach ($categorias as $cat)
+                        <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <button type="submit"
+                    class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-sm w-full md:w-auto">
+                    Filtrar
+                </button>
+            </form>
+
             <a href="{{ route('catalogo.create') }}"
-            class="ml-auto flex items-center text-white border px-3 py-1 rounded transition-colors"
-            style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
+                class="flex items-center text-white border px-3 py-2 rounded transition-colors"
+                style="background-color: var(--table-header-color); border-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 4v16m8-8H4"/>
+                    <path d="M12 4v16m8-8H4" />
                 </svg>
                 Añadir Producto
             </a>
         </div>
 
+        {{-- Tabla --}}
         <div class="overflow-x-auto bg-white shadow custom-border">
             <table class="min-w-full table-auto text-sm text-left text-gray-800 bg-white">
                 <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
@@ -95,6 +118,11 @@
                     @endforeach
                 </tbody>
             </table>
+
+            {{-- Paginación --}}
+            <div class="mt-6">
+                {{ $productos->withQueryString()->links('components.pagination.custom') }}
+            </div>
         </div>
     </div>
 </div>
