@@ -12,39 +12,48 @@ class IdentifyTenant
 {
     public function handle(Request $request, Closure $next)
     {
-        $host = $request->getHost();
+        $host = $request->getHost(); // ejemplo: dan.localhost
+        $subdominio = explode('.', $host)[0];
 
-        // Permitir acceso si es localhost o dominio base sin subdominio
-        if (in_array($host, ['localhost', '127.0.0.1', 'plantaseditha.me'])) {
+        // ⚠️ Si es el dominio central (soporte), no aplicar lógica de tenant
+        if ($subdominio === 'soporte') {
+            app(PermissionRegistrar::class)->setPermissionsTeamId(null);
             return $next($request);
         }
 
-        $subdominio = explode('.', $host)[0];
+        // Permitir acceso si es localhost o dominio base sin subdominio
+        if (in_array($host, ['localhost', '127.0.0.1', 'plantaseditha.me', 'soporte.plantaseditha.me', 'soporte.localhost'])) {
+            return $next($request);
+        }
+
+        // Buscar el cliente por subdominio
         $cliente = Cliente::where('subdominio', $subdominio)->first();
 
         if (!$cliente) {
             abort(404, 'Cliente no encontrado');
         }
 
+        // Registrar cliente actual en el contenedor
         app()->instance('clienteActual', $cliente);
 
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Soporte tiene acceso global, sin cliente_id para permisos
+            // Soporte tiene acceso global sin tenant
             if ($user->hasRole('soporte')) {
                 app(PermissionRegistrar::class)->setPermissionsTeamId(null);
                 return $next($request);
             }
 
-            // Validar cliente del usuario
+            // Validar si el usuario pertenece al cliente actual
             if ($user->cliente_id !== $cliente->id) {
                 abort(403, 'No tienes acceso a este cliente');
             }
 
-            // Establecer cliente para Spatie
+            // Establecer tenant para Spatie
             app(PermissionRegistrar::class)->setPermissionsTeamId($cliente->id);
 
+            // Asegurar que los roles tengan cliente_id correcto
             $this->ensurePivotClienteIdCorrect($user, $cliente->id);
         }
 

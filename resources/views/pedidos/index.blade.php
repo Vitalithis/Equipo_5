@@ -3,8 +3,41 @@
 @section('title', 'Gestión de Pedidos')
 
 @section('content')
-{{-- Tipografía --}}
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+
+    .custom-table-header {
+        background-color: var(--table-header-color);
+        color: var(--table-header-text-color) !important;
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
 
 <div class="max-w-7xl mx-auto px-8 py-10 font-['Roboto'] text-gray-800">
     @if (session('success'))
@@ -13,11 +46,13 @@
         </div>
     @endif
 
-    <div class="flex justify-between items-center mb-4">
+    {{-- Botón Añadir Venta --}}
+    <div class="flex items-center justify-end mb-6">
         <a href="{{ route('pedidos.create') }}"
-           class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+           class="flex items-center text-white px-3 py-2 rounded transition-colors"
+           style="background-color: var(--table-header-color);">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
             </svg>
             Añadir Venta
@@ -25,41 +60,49 @@
     </div>
 
     @if ($pedidos->count())
-        <div class="overflow-x-auto bg-white rounded-xl shadow border border-eaccent2">
-            <table class="min-w-full divide-y divide-eaccent2 text-sm">
-
-                <!-- Seccion Tabla header -->
-                <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider font-['Roboto_Condensed']">
+        <div class="overflow-x-auto bg-white shadow custom-border">
+            <table class="min-w-full text-sm text-left bg-white">
+                <thead class="custom-table-header uppercase tracking-wider font-['Roboto_Condensed']">
                     <tr>
                         <th class="px-6 py-4 text-center">ID</th>
                         <th class="px-6 py-4 text-center">Usuario</th>
                         <th class="px-6 py-4 text-center">Total</th>
-                        <th class="text-left pl-20">Estado Entrega</th>
-                        <th class=" text-left pl-20">Acciones</th>
+                        <th class="px-6 py-4 text-center">Estado Entrega</th>
+                        <th class="px-6 py-4 text-center">Acciones</th>
                     </tr>
                 </thead>
 
-                <tbody class="font-['Roboto']">
+                <tbody class="font-['Roboto'] text-gray-800">
                     @foreach ($pedidos as $pedido)
-                        <tr class="border-b border-eaccent2 hover:bg-efore transition duration-200 cursor-pointer" onclick="toggleDetalles({{ $pedido->id }}, event)">
+                        <tr class="hover:bg-green-50 transition-colors cursor-pointer" onclick="toggleDetalles({{ $pedido->id }}, event)">
                             <td class="px-6 py-4 text-center font-bold text-eprimary">{{ $pedido->id }}</td>
                             <td class="px-6 py-4 text-center">{{ $pedido->usuario->name }}</td>
                             <td class="px-6 py-4 text-center">${{ number_format($pedido->total, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 text-center">
                                 @include('pedidos.partials.estado_form', ['pedido' => $pedido])
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{{ route('pedidos.edit', $pedido->id) }}" class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors mr-3">
-                                    Editar
-                                </a>
-                                <button type="button" class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
-                                    onclick="openDeleteModal({{ $pedido->id }}, 'Pedido #{{ $pedido->id }}')">
-                                    Eliminar
-                                </button>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap justify-center gap-2">
+                                    <a href="{{ route('pedidos.edit', $pedido->id) }}"
+                                       class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1.5 rounded text-sm transition-colors inline-flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                        </svg>
+                                        Editar
+                                    </a>
+
+                                    <button type="button"
+                                            class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1.5 rounded text-sm transition-colors"
+                                            onclick="openDeleteModal({{ $pedido->id }}, 'Pedido #{{ $pedido->id }}')">
+                                        Eliminar
+                                    </button>
+                                </div>
                             </td>
                         </tr>
 
-                        <!-- Detalles pedido -->
+                        {{-- Detalles del pedido --}}
                         <tr>
                             <td colspan="5" class="p-0 font-['Roboto']">
                                 <div id="detalles-{{ $pedido->id }}" class="max-h-0 overflow-hidden opacity-0 transition-all duration-300 bg-efore text-sm border-t border-esecondary">
@@ -70,18 +113,16 @@
                                             <p><strong class="text-eprimary">Fecha de pedido:</strong> {{ $pedido->created_at->format('d-m-Y H:i') }}</p>
                                             <p><strong class="text-eprimary">Estado de pago:</strong> {{ $pedido->estado_pago }}</p>
                                             <p><strong class="text-eprimary">Observaciones:</strong> {{ $pedido->observaciones ?? 'Sin observaciones' }}</p>
-
                                         </div>
-                                        
-                                         <!-- Seleccion Boleta -->
+
                                         <div class="flex flex-wrap items-center gap-4">
                                             <div class="flex items-center gap-2">
                                                 <strong class="text-eprimary">Boleta SII:</strong>
                                                 @if($pedido->boleta_final_path)
                                                     <span class="text-green-600 font-medium">Subida</span>
-                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}" 
-                                                    target="_blank" 
-                                                    class="text-esecondary hover:text-eaccent text-sm underline cursor-pointer">
+                                                    <a href="{{ asset('storage/' . $pedido->boleta_final_path) }}"
+                                                       target="_blank"
+                                                       class="text-esecondary hover:text-eaccent text-sm underline cursor-pointer">
                                                         Ver PDF
                                                     </a>
                                                 @else
@@ -119,11 +160,8 @@
 @include('pedidos.partials.scripts')
 
 <script>
-    // Abre/cierra detalles solo si no clickeaste en botones de acción (editar/eliminar/estado)
     function toggleDetalles(id, event) {
-        if(event.target.closest('a, button, select, input, form')) {
-            return; // No toggle si click fue en botón o select o formulario
-        }
+        if(event.target.closest('a, button, select, input, form')) return;
 
         const detalles = document.getElementById(`detalles-${id}`);
         if (!detalles) return;
@@ -153,23 +191,6 @@
         document.getElementById('deleteModal').classList.remove('flex');
     }
 
-     // Función para abrir el modal de eliminación con la acción adecuada
-    function openDeleteModal(id, nombre) {
-        document.getElementById('modalProductName').textContent = nombre; // Mostrar nombre en el modal
-        // Cambiar la acción del formulario al ID del pedido
-        document.getElementById('deleteForm').action = `/pedidos/${id}`;
-        document.getElementById('deleteModal').classList.remove('hidden');
-        document.getElementById('deleteModal').classList.add('flex');
-    }
-
-    // Función para cerrar el modal de eliminación
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
-        document.getElementById('deleteModal').classList.remove('flex');
-    }
-
-    // Cerrar modal al hacer clic en el botón de cerrar
     document.getElementById('delete-modal-close').addEventListener('click', closeDeleteModal);
 </script>
-
 @endsection

@@ -17,7 +17,9 @@
                 <option value="completada" {{ request('estado') === 'completada' ? 'selected' : '' }}>Completada</option>
             </select>
 
-            <button type="submit" class="bg-eaccent2 text-white px-3 py-2 rounded hover:bg-green-700 text-sm">
+            <button type="submit"
+                    class="text-white px-3 py-2 rounded text-sm transition-colors"
+                    style="background-color: var(--table-header-color);">
                 Buscar
             </button>
 
@@ -31,7 +33,8 @@
 
         @can('gestionar tareas')
         <a href="{{ route('works.create') }}"
-           class="inline-flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-2 rounded transition-colors whitespace-nowrap">
+           class="flex items-center text-white px-3 py-2 rounded transition-colors"
+           style="background-color: var(--table-header-color);">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16m8-8H4"/>
@@ -42,7 +45,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {{-- Sección: Producción --}}
+        {{-- Producción --}}
         <div>
             <h3 class="text-xl font-semibold mb-2">🌱 Producción</h3>
             <div class="space-y-3">
@@ -82,8 +85,13 @@
                             </form>
 
                             <a href="{{ route('works.edit', $tarea->id) }}"
-                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-3 py-1 rounded text-sm transition-colors">
-                                Editar
+                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-2 py-1 rounded transition-colors"
+                               title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
                             </a>
                         </div>
                         @endcan
@@ -92,7 +100,7 @@
             </div>
         </div>
 
-        {{-- Sección: Local de Venta --}}
+        {{-- Venta --}}
         <div>
             <h3 class="text-xl font-semibold mb-2">🛒 Local de Venta</h3>
             <div class="space-y-3">
@@ -132,8 +140,13 @@
                             </form>
 
                             <a href="{{ route('works.edit', $tarea->id) }}"
-                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-3 py-1 rounded text-sm transition-colors">
-                                Editar
+                               class="text-indigo-600 hover:text-indigo-800 border border-indigo-600 hover:border-indigo-800 px-2 py-1 rounded transition-colors"
+                               title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
                             </a>
                         </div>
                         @endcan

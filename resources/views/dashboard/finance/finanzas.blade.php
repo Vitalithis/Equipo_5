@@ -1,14 +1,44 @@
+
 @extends('layouts.dashboard')
 
 @section('title','Resumen Financiero')
 
 @section('content')
-{{-- Tipografías --}}
+@php
+    $pref = Auth::user()?->preference;
+@endphp
+
+<style>
+    :root {
+        --table-header-color: {{ $pref?->table_header_color ?? '#0a2b59' }};
+        --table-header-text-color: {{ $pref?->table_header_text_color ?? '#FFFFFF' }};
+    }
+
+    .custom-border {
+        border: 2px solid var(--table-header-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-border thead th {
+        border-bottom: 2px solid var(--table-header-color);
+    }
+
+    .custom-border tbody td {
+        border-top: 1px solid #e5e7eb;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .custom-border tbody tr:last-child td {
+        border-bottom: none;
+    }
+</style>
+
 <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 
 <div class="py-8 px-4 md:px-8 w-full font-['Roboto'] text-gray-800">
 
-    {{-- Tarjetas resumen --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-green-100 text-green-800 p-4 rounded shadow">
             <h3 class="font-bold text-lg">Total Ingresos</h3>
@@ -23,58 +53,56 @@
             <p class="text-xl font-semibold">${{ number_format($balance, 0, ',', '.') }}</p>
         </div>
     </div>
-            {{-- Filtro y botón Agregar Movimiento --}}
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            {{-- Filtro por fecha --}}
-            <form method="GET" action="{{ route('dashboard.finanzas') }}" class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <label for="desde" class="text-sm font-medium text-gray-700">Desde:</label>
-                    <input type="date" name="desde" id="desde" value="{{ request('desde') }}"
-                        class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-                <div class="flex items-center gap-2">
-                    <label for="hasta" class="text-sm font-medium text-gray-700">Hasta:</label>
-                    <input type="date" name="hasta" id="hasta" value="{{ request('hasta') }}"
-                        class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
-                    Filtrar
-                </button>
-                @if(request()->filled('desde') || request()->filled('hasta'))
-                    <a href="{{ route('dashboard.finanzas') }}"
-                    class="px-4 py-2 border border-gray-300 rounded text-sm text-gray-700 bg-white hover:bg-gray-100 transition">
-                    Limpiar
-                    </a>
-                @endif
-            </form>
 
-            {{-- Botón agregar --}}
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <form method="GET" action="{{ route('dashboard.finanzas') }}" class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-2">
+                <label for="desde" class="text-sm font-medium text-gray-700">Desde:</label>
+                <input type="date" name="desde" id="desde" value="{{ request('desde') }}"
+                    class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="hasta" class="text-sm font-medium text-gray-700">Hasta:</label>
+                <input type="date" name="hasta" id="hasta" value="{{ request('hasta') }}"
+                    class="px-3 py-2 border rounded-md shadow-sm text-sm focus:ring-green-500 focus:border-green-500">
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 text-white rounded text-sm font-medium transition-colors shadow"
+                    style="background-color: var(--table-header-color);">
+                Filtrar
+            </button>
+            <a href="{{ route('dashboard.finanzas') }}"
+               class="px-4 py-2 border border-gray-300 rounded text-sm text-gray-700 bg-white hover:bg-gray-100 transition">
+                Limpiar
+            </a>
+        </form>
+
+        <div class="flex flex-wrap gap-3 md:ml-auto">
             <a href="{{ route('finanzas.create') }}"
-            class="ml-auto flex items-center text-green-700 hover:text-green-800 border border-green-700 hover:border-green-800 px-3 py-1 rounded transition-colors">
+               class="flex items-center text-white px-4 py-2 rounded transition-colors shadow text-sm font-medium"
+               style="background-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 4v16m8-8H4"/>
                 </svg>
                 Agregar Movimiento
             </a>
 
-            {{-- Descargar PDF --}}
             <a href="{{ route('finanzas.exportarPDF') }}"
-            class="flex items-center text-blue-700 hover:text-blue-800 border border-blue-700 hover:border-blue-800 px-3 py-1 rounded transition-colors font-medium text-sm">
+               class="flex items-center text-white px-4 py-2 rounded transition-colors shadow text-sm font-medium"
+               style="background-color: var(--table-header-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14m7-7H5"/>
                 </svg>
                 Exportar PDF
             </a>
         </div>
+    </div>
 
-
-
-    {{-- Tabla de finanzas --}}
-    <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full">
-        <table class="min-w-full divide-y divide-eaccent2 text-sm text-left">
-            <thead class="bg-eaccent2 text-gray-800 uppercase tracking-wider" style="font-family: 'Roboto Condensed', sans-serif;">
+    <div class="overflow-x-auto bg-white shadow sm:rounded-lg w-full custom-border">
+        <table class="min-w-full divide-y text-sm text-left">
+            <thead style="background-color: var(--table-header-color); color: var(--table-header-text-color);" class="uppercase tracking-wider font-['Roboto_Condensed']">
                 <tr>
                     <th class="px-6 py-3 whitespace-nowrap">Fecha</th>
                     <th class="px-6 py-3 whitespace-nowrap">Tipo</th>
@@ -85,7 +113,7 @@
                     <th class="px-6 py-3 whitespace-nowrap">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-eaccent2 font-['Roboto'] text-gray-800">
+            <tbody class="bg-white font-['Roboto'] text-gray-800">
                 @forelse($finanzas as $item)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->fecha)->format('d/m/Y') }}</td>

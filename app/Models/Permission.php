@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Permission\Models\Permission as SpatiePermission;
-use Illuminate\Support\Facades\Auth;
 
 class Permission extends SpatiePermission
 {
@@ -17,14 +15,14 @@ class Permission extends SpatiePermission
     {
         static::addGlobalScope('tenant', function ($builder) {
             $clienteId = null;
-            if (app()->bound('clienteActual')) {
-                $clienteId = app('clienteActual')->id;
+
+            if (auth()->check()) {
+                $clienteId = auth()->user()->cliente_id;
             }
 
             if ($clienteId) {
-                $builder->where('roles.cliente_id', $clienteId);
+                $builder->where('permissions.cliente_id', $clienteId); // ✅ correcto
             }
         });
     }
-
 }

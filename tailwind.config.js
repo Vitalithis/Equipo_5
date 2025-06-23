@@ -3,6 +3,7 @@ import forms from "@tailwindcss/forms";
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class', 
     content: [
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./resources/**/*.blade.php",
@@ -26,6 +27,9 @@ export default {
             fontFamily: {
                 roboto_sans: ["Roboto", ...defaultTheme.fontFamily.sans], // Fuente general
                 roboto_condensed: ["Roboto Condensed", ...defaultTheme.fontFamily.sans], // Para títulos
+                roboto: ['Roboto', 'sans-serif'],
+                inter: ['Inter', 'sans-serif'],
+                poppins: ['Poppins', 'sans-serif'],
             },
 
             fill: (theme) => ({
