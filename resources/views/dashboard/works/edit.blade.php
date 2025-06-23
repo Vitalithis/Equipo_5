@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto font-['Roboto'] text-gray-800">
-    <h2 class="text-2xl font-bold mb-6"> {{ $work->nombre }}</h2>
 
     <form method="POST" action="{{ route('works.update', $work) }}" class="space-y-4">
         @csrf
@@ -48,14 +47,20 @@
             </select>
         </div>
 
+        {{-- Botones de acción actualizados --}}
         <div class="pt-4 flex justify-end">
-        <div class="flex gap-4 items-center">
-            <a href="{{ route('works.index') }}" class="text-gray-600 hover:underline">Cancelar</a>
-            <button type="submit" class="bg-eaccent2 text-white px-4 py-2 rounded hover:bg-green-700">
-                Actualizar tarea
-            </button>
+            <div class="flex gap-4 items-center">
+                <a href="{{ route('works.index') }}"
+                   class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Cancelar
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 rounded text-white text-sm font-medium transition-colors"
+                        style="background-color: var(--table-header-color);">
+                    Actualizar tarea
+                </button>
+            </div>
         </div>
-    </div>
     </form>
 </div>
 @endsection

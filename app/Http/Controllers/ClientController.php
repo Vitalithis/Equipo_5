@@ -20,13 +20,13 @@ class ClientController extends Controller
     {
         $this->authorize('ver panel soporte');
         $clientes = Cliente::all();
-        return view('client.index', compact('clientes'));
+        return view('dashboard.soporte.index', compact('clientes')); 
     }
 
     public function create()
     {
         $this->authorize('crear cliente');
-        return view('client.create');
+        return view('dashboard.soporte.create'); 
     }
 
     public function store(Request $request)
@@ -50,8 +50,16 @@ class ClientController extends Controller
             ]);
 
             // 2. Clonar permisos globales
-            $globalPermissions = Permission::whereNull('cliente_id')->get();
-            $newPermissions = [];
+            $globalPermissions = Permission::whereNull('cliente_id')
+            ->whereNotIn('name', [
+                'gestionar clientes',
+                'ver panel soporte',
+                'crear cliente',
+                'desactivar cliente',
+                'ver detalles cliente',
+            ])
+            ->get();
+
 
             foreach ($globalPermissions as $permiso) {
                 $clonado = $permiso->replicate();
@@ -61,11 +69,10 @@ class ClientController extends Controller
             }
 
             // 3. Crear rol admin exclusivo para este cliente
-            $adminRole = Role::create([
-                'name' => 'admin',
-                'guard_name' => 'web',
-                'cliente_id' => $cliente->id,
-            ]);
+            $adminRole = Role::firstOrCreate(
+                ['name' => 'admin', 'guard_name' => 'web', 'cliente_id' => $cliente->id]
+            );
+
 
             // 4. Asignar permisos clonados al rol
             foreach ($newPermissions as $permiso) {

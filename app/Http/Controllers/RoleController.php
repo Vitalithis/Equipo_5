@@ -10,7 +10,6 @@ class RoleController extends Controller
 {
     public function index()
     {
-        //$clienteId = app('clienteActual')->id;
         $clienteId = auth()->user()->cliente_id;
         $roles = Role::with('permissions')
             ->where('cliente_id', $clienteId)
@@ -23,22 +22,22 @@ class RoleController extends Controller
 
     public function create()
     {
-         $clienteId = auth()->user()->cliente_id;
-
+        $clienteId = auth()->user()->cliente_id;
         $permissions = Permission::where('cliente_id', $clienteId)->get();
+        $source = request()->get('source', 'default');
 
-        return view('dashboard.roles.create', compact('permissions'));
+        return view('dashboard.roles.create', compact('permissions', 'source'))->with('role', null);
     }
 
     public function store(Request $request)
     {
+        $clienteId = auth()->user()->cliente_id;
+
         $request->validate([
-            'name' => 'required|unique:roles,name',
+            'name' => 'required|unique:roles,name,NULL,id,cliente_id,' . $clienteId,
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ]);
-
-         $clienteId = auth()->user()->cliente_id;
 
         $role = Role::create([
             'name' => $request->name,
@@ -54,14 +53,16 @@ class RoleController extends Controller
             $role->syncPermissions($permissions);
         }
 
-        return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
+        return redirect()->route('roles.index', ['source' => $request->get('source', 'default')])
+            ->with('success', 'Rol creado exitosamente.');
     }
 
     public function edit(Role $role)
     {
-         $clienteId = auth()->user()->cliente_id;
+        $clienteId = auth()->user()->cliente_id;
 
-        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+        // Permitir editar 'admin', proteger solo 'user' y 'soporte'
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['user', 'soporte'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
@@ -73,15 +74,17 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-         $clienteId = auth()->user()->cliente_id;
+        $clienteId = auth()->user()->cliente_id;
 
-        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+        // Permitir editar 'admin', proteger solo 'user' y 'soporte'
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['user', 'soporte'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
         $request->validate([
-            'name' => 'required|unique:roles,name,' . $role->id,
-            'permissions' => 'array',
+            'name' => 'required|unique:roles,name,' . $role->id . ',id,cliente_id,' . $clienteId,
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role->update(['name' => $request->name]);
@@ -92,14 +95,15 @@ class RoleController extends Controller
 
         $role->syncPermissions($permissions);
 
-        return redirect()->route('roles.index')->with('success', 'Rol actualizado exitosamente.');
+        return redirect()->route('roles.index', ['source' => $request->get('source', 'default')])
+            ->with('success', 'Rol actualizado exitosamente.');
     }
 
     public function destroy(Role $role)
     {
         $clienteId = auth()->user()->cliente_id;
 
-        if ($role->cliente_id !== $clienteId || in_array($role->name, ['admin', 'user'])) {
+        if ($role->cliente_id !== $clienteId || in_array($role->name, ['user', 'soporte'])) {
             return redirect()->route('roles.index')->with('error', 'No autorizado o rol protegido.');
         }
 
