@@ -55,6 +55,27 @@ use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\UserDevice;
+/////////////
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StockBajo;
+use App\Models\Producto;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/test-mail', function () {
+    $user = new \App\Models\User([
+        'name' => 'Prueba',
+        'email' => 'scarrascos@ing.ucsc.cl'
+    ]);
+
+    \Mail::to($user->email)->send(new \App\Mail\ClienteCreado($user));
+
+    return 'Correo de prueba enviado.';
+});
+
+
+
 
 Route::post('/device', function (Request $request) {
     if (auth()->check() && $request->player_id) {
@@ -138,8 +159,6 @@ Route::middleware(['web', 'auth', 'tenant'])->group(function () {
 
 
 //Mails
-    use Illuminate\Support\Facades\Mail;
-    use App\Mail\PruebaMailgun;
 
 
     use App\Http\Controllers\DeviceController;

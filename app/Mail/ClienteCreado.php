@@ -19,9 +19,13 @@ class ClienteCreado extends Mailable
         $this->user = $user;
     }
 
-     public function build()
-    {
-        return $this->subject('Bienvenido a nuestra plataforma')
-                    ->view('emails.cliente_creado');
-    }
+public function build()
+{
+    return $this->subject('Registro Exitoso')
+                ->view('emails.cliente_creado')
+                ->with([
+                    'nombre' => $this->user->name,
+                ]);
+}
+
 }
