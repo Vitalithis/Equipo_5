@@ -8,6 +8,7 @@
     <p class="text-sm text-gray-600">Resumen de tareas del vivero.</p>
 </div>
 
+{{-- Tarjetas resumen --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <div class="bg-white shadow rounded-lg p-3">
         <p class="text-xs text-gray-500">💰 Ventas del mes</p>
@@ -33,7 +34,9 @@
     </div>
 </div>
 
+{{-- Gráficos y próximos trasplantes --}}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    {{-- Gráfico de Ventas Diarias --}}
     <div class="bg-white shadow rounded-lg p-2">
         <div class="flex justify-between items-center mb-1">
             <h3 class="text-xs font-semibold text-gray-800">📊 Ventas Diarias</h3>
@@ -43,52 +46,54 @@
         <canvas id="graficoVentas" class="w-full" style="height: 180px;"></canvas>
     </div>
 
+    {{-- Gráfico de Ingresos vs Egresos --}}
     <div class="bg-white shadow rounded-lg p-2">
         <div class="flex justify-between items-center mb-1">
             <h3 class="text-xs font-semibold text-gray-800">🥧 Ingresos vs Egresos</h3>
             <input type="month" id="mesSelector"
                    class="border border-gray-300 rounded px-2 py-0.5 text-xs focus:ring-2 focus:ring-blue-500">
         </div>
-
-        {{-- Tabla: Próximos Trasplantes --}}
-        <div class="bg-white shadow-sm rounded p-3 md:col-span-2">
-            <h3 class="text-base font-bold text-gray-800 mb-3">🌱 Próximos Trasplantes</h3>
-            @if($trasplantesProximos->isEmpty())
-                <p class="text-sm text-gray-500 italic">No hay trasplantes en los próximos días.</p>
-            @else
-                <table class="w-full text-sm text-left">
-                    <thead>
-                        <tr class="text-gray-600 border-b">
-                            <th class="pb-1">Planta</th>
-                            <th class="pb-1">Cantidad</th>
-                            <th class="pb-1">Fecha Trasplante</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-800">
-                        @foreach ($trasplantesProximos as $evento)
-                            @php
-                                $fecha = \Carbon\Carbon::parse($evento->fecha_trasplante);
-                                $hoy = \Carbon\Carbon::today();
-                                $clase = match(true) {
-                                    $fecha->isToday() => 'bg-green-100 text-green-800 font-semibold',
-                                    $fecha->isTomorrow() => 'bg-yellow-100 text-yellow-800 font-semibold',
-                                    default => '',
-                                };
-                            @endphp
-                            <tr class="border-b border-gray-100 hover:bg-green-50 transition {{ $clase }}">
-                                <td class="py-2 font-medium">{{ $evento->planta }}</td>
-                                <td class="py-2">{{ $evento->cantidad ?? '—' }}</td>
-                                <td class="py-2">{{ $fecha->format('d/m/Y') }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
-        </div>
+        <canvas id="graficoTorta" class="w-full" style="height: 180px;"></canvas>
     </div>
 </div>
 
+{{-- Próximos Trasplantes --}}
+<div class="bg-white shadow-sm rounded p-3 mb-6">
+    <h3 class="text-base font-bold text-gray-800 mb-3">🌱 Próximos Trasplantes</h3>
+    @if($trasplantesProximos->isEmpty())
+        <p class="text-sm text-gray-500 italic">No hay trasplantes en los próximos días.</p>
+    @else
+        <table class="w-full text-sm text-left">
+            <thead>
+                <tr class="text-gray-600 border-b">
+                    <th class="pb-1">Planta</th>
+                    <th class="pb-1">Cantidad</th>
+                    <th class="pb-1">Fecha Trasplante</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-800">
+                @foreach ($trasplantesProximos as $evento)
+                    @php
+                        $fecha = \Carbon\Carbon::parse($evento->fecha_trasplante);
+                        $hoy = \Carbon\Carbon::today();
+                        $clase = match(true) {
+                            $fecha->isToday() => 'bg-green-100 text-green-800 font-semibold',
+                            $fecha->isTomorrow() => 'bg-yellow-100 text-yellow-800 font-semibold',
+                            default => '',
+                        };
+                    @endphp
+                    <tr class="border-b border-gray-100 hover:bg-green-50 transition {{ $clase }}">
+                        <td class="py-2 font-medium">{{ $evento->planta }}</td>
+                        <td class="py-2">{{ $evento->cantidad ?? '—' }}</td>
+                        <td class="py-2">{{ $fecha->format('d/m/Y') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
 
+{{-- Tareas pendientes y en progreso --}}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="bg-white shadow-sm rounded p-3">
         <h3 class="text-base font-bold text-gray-800 mb-3">🕒 Tareas Pendientes</h3>
