@@ -28,7 +28,7 @@ class Producto extends Model
         'origen',
         'tamano',
         'activo',
-        'categoria',
+        'categoria_id',
         'codigo_barras'
     ];
 
@@ -37,14 +37,9 @@ class Producto extends Model
         'activo' => 'boolean',
     ];
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsToMany(Categoria::class, 'producto_categoria');
-    }
-
-    public function getCategoriaAttribute()
-    {
-        return $this->categorias()->first()?->nombre;
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
     public function descuentos()
@@ -52,7 +47,7 @@ class Producto extends Model
         return $this->belongsToMany(Descuento::class, 'descuento_producto')->withTimestamps();
     }
 
-    // En App\Models\Producto.php
+    
     public static function toma4ultimos()
     {
         return self::withoutGlobalScopes()
@@ -87,6 +82,7 @@ public function tieneStockParaProducir($cantidadDeseada)
     }
     return true;
 }
+
 public function descontarInsumosParaProduccion($cantidad)
 {
     foreach ($this->insumos as $insumo) {

@@ -31,15 +31,25 @@ use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\FertilizationController;
 use App\Http\Controllers\ProductionController;
 
+
 use App\Models\ProductCategory;
 
 use App\Http\Controllers\AdminClienteController;
 use App\Http\Controllers\ClienteController;
 
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\ThemeController;
+
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SimpleCalendarController;
+
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+// theme
+Route::middleware(['auth'])->group(function () {
+    Route::get('/preferencias', [ThemeController::class, 'index'])->name('preferences.index');
+    Route::put('/preferencias', [ThemeController::class, 'update'])->name('theme.update');
 
 Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
@@ -47,10 +57,35 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
     Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
 
 
+    // Solución: usar POST para evitar colisión con DELETE
+    Route::post('/preferencias/eliminar-logo', [ThemeController::class, 'removeLogo'])->name('theme.remove.logo');
+    Route::post('/preferencias/eliminar-perfil', [ThemeController::class, 'removeProfile'])->name('theme.remove.profile');
+});
+// calendario simple de siembra y trasplante
+Route::middleware(['auth'])->prefix('simple-calendar')->group(function () {
+    Route::get('/', [SimpleCalendarController::class, 'index'])->name('simple_calendar.index');
+    Route::get('/crear', [SimpleCalendarController::class, 'create'])->name('simple_calendar.create');
+    Route::post('/', [SimpleCalendarController::class, 'store'])->name('simple_calendar.store');
+});
 
+// alertas de trasplante para mostrar en dashboard
+Route::get('/alertas-transplante', [SimpleCalendarController::class, 'alertasTransplante'])->middleware('auth');
+
+
+Route::middleware(['web', 'auth', 'tenant'])->group(function () {
+
+    // Rutas protegidas por "ver dashboard"
+    Route::middleware(['permission:ver dashboard'])->group(function () {
+        Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+        Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
+        Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+    });
+
+    // Gestión de usuarios
     Route::get('/usuarios', [UserRoleController::class, 'index'])->middleware('permission:gestionar usuarios')->name('users.index');
     Route::put('/usuarios/{user}/asignar-rol', [UserRoleController::class, 'updateRole'])->middleware('permission:gestionar usuarios')->name('users.updateRole');
 
+    // Gestión de roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:ver roles')->name('roles.index');
     Route::get('/roles/create', [RoleController::class, 'create'])->middleware('permission:crear roles')->name('roles.create');
     Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:crear roles')->name('roles.store');
@@ -58,6 +93,7 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
     Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:editar roles')->name('roles.update');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:eliminar roles')->name('roles.destroy');
 });
+
 
 
     Route::middleware(['auth', 'tenant', 'permission:gestionar permisos'])->group(function () {
@@ -70,13 +106,20 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
     });
 
 
-    Route::middleware(['auth', 'tenant', 'permission:gestionar ingresos'])->group(function () {
-        Route::get('/ingresos', [IngresoController::class, 'index'])->name('ingresos.index');
+    Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(function () {
+        Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+        Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
+        Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+
+        // 👉 Esta línea es la clave
+        Route::get('/ingresos', [FinanzaController::class, 'index'])->name('ingresos');
     });
 
+
     Route::middleware(['auth', 'tenant', 'permission:gestionar egresos'])->group(function () {
-        Route::get('/egresos', [EgresoController::class, 'index'])->name('egresos.index');
+        Route::get('/egresos', [FinanzaController::class, 'index'])->name('egresos.index');
     });
+
 
 
 
@@ -155,9 +198,6 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::post('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-    // Vaciar carrito en base de datos
-    Route::delete('/cart/vaciar', [CartController::class, 'vaciarCarrito'])->name('cart.vaciar');
-
     // Ajax para agregar producto al carrito
     Route::post('/cart/ajax/agregar/{id}', [CartController::class, 'ajaxAñadirCarrito'])->name('cart.ajaxAdd');
 });
@@ -200,6 +240,7 @@ Route::prefix('dashboard')->middleware(['auth', 'can:ver dashboard'])->group(fun
 Route::put('/cart/update/{id}', [CartController::class, 'actualizarProducto'])->name('cart.update');
 Route::post('/cart/aplicar-descuento', [CartController::class, 'aplicarDescuento'])->name('cart.aplicar-descuento');
 
+// Productos
 Route::get('/producto/{slug}', [ProductoController::class, 'show'])->name('products.show');
 Route::get('/productos', [ProductoController::class, 'home'])->name('products.index');
 Route::get('/productos/categoria/{category}', [ProductoController::class, 'filterByCategory'])
@@ -213,15 +254,15 @@ Route::get(
         'ordenar_ascendente' => 'true|false'
     ])
     ->name('productos.filter');
-Route::get('/sobre-nosotros', function () {
-    return view('about');
-})->name('about');
-Route::get('/contacto', function () {
-    return view('contact');
-})->name('contact');
-Route::get('/faq', function () {
-    return view('faq');
-})->name('faq');
+//Categorias
+Route::prefix('dashboard/categorias')->name('categorias.')->controller(CategoriaController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::get('/add', 'add')->name('add');
+    Route::get('/{categoria}/edit', 'edit')->name('edit');
+    Route::put('/{categoria}', 'update')->name('update');
+    Route::delete('/{categoria}', 'destroy')->name('destroy');
+});
 
 //Rutas fertilizantes
 Route::get('/dashboard/fertilizantes', [FertilizanteController::class, 'mostrarTodos'])->middleware(['auth', 'permission:gestionar productos'])->name('dashboard.fertilizantes');
@@ -304,15 +345,9 @@ Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 // Actualización directa del estado de tareas
 Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.updateStatus');
 Route::resource('works', WorkController::class);
-//rutas soporte
-use App\Http\Controllers\ClientController;
 
-Route::middleware(['auth', 'tenant', 'permission:gestionar clientes'])->group(function () {
-    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-});
-Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+
+
 
 // Legal
 Route::view('/politicas-de-privacidad', 'politicas')->name('politicas');
@@ -340,10 +375,30 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     ->name('produccion.mermas.store');
 
 });
+*/
 
+Route::get('/debug-tenant', function () {
+    return response()->json([
+        'tenant' => tenant()?->id,
+        'host' => request()->getHost(),
+        'user' => auth()->user()?->email,
+        'permissions' => auth()->user()?->getAllPermissions()->pluck('name'),
+    ]);
+})->middleware(['web', 'auth', 'tenant']);
+//rutas soporte
 
+Route::domain('soporte.localhost')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
+    Route::get('/', function () {
+        return view('soporte.dashboard');
+    })->name('soporte.dashboard');
 
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
+    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
+    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+});
 
 require __DIR__ . '/auth.php';
  

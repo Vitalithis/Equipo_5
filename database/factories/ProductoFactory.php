@@ -18,7 +18,7 @@ class ProductoFactory extends Factory
             'slug' => $this->faker->unique()->slug(),
             'nombre_cientifico' => $this->faker->optional(70)->words(3, true),
             'descripcion' => $this->faker->paragraph(3),
-            'precio' => $this->faker->numberBetween(1000, 99990), // Entre $1.000 y $99.990
+            'precio' => $this->faker->numberBetween(1000, 99990),
             'cantidad' => $this->faker->numberBetween(0, 100),
             'imagen' => 'storage/images/default-logo.png',
             'codigo_barras' => $this->faker->unique()->ean13(),
@@ -29,113 +29,42 @@ class ProductoFactory extends Factory
             'beneficios' => $this->generateBenefits(),
             'toxica' => $this->faker->boolean(20),
             'origen' => $this->faker->country(),
-            'tamano' => $this->faker->numberBetween(5, 200), // En cm para más realismo
+            'tamano' => $this->faker->numberBetween(5, 200),
             'activo' => $this->faker->boolean(90),
-            'categoria' => Categoria::inRandomOrder()->first()?->id
+            'categoria_id' => Categoria::inRandomOrder()->first()?->id
         ];
     }
 
-
-    // Métodos auxiliares para generar datos más realistas
     private function generateProductName(): string
     {
         $types = [
-            'Planta',
-            'Árbol',
-            'Arbusto',
-            'Cactus',
-            'Suculenta',
-            'Flor',
-            'Helecho',
-            'Bonsái',
-            'Palma',
-            'Orquídea',
-            'Hierba',
-            'Enredadera',
-            'Musgo',
-            'Bulbo',
-            'Bambú',
-            'Ciprés',
-            'Pino',
-            'Cedro',
-            'Rosal',
-            'Lavanda',
-            'Aloe',
-            'Hiedra',
-            'Begonia',
-            'Geranio',
-            'Clavel',
-            'Tulipán',
-            'Margarita',
-            'Lirio',
-            'Girasol',
-            'Jazmín',
-            'Azalea'
+            'Planta', 'Árbol', 'Arbusto', 'Cactus', 'Suculenta', 'Flor',
+            'Helecho', 'Bonsái', 'Palma', 'Orquídea', 'Hierba', 'Enredadera',
+            'Musgo', 'Bulbo', 'Bambú', 'Ciprés', 'Pino', 'Cedro', 'Rosal',
+            'Lavanda', 'Aloe', 'Hiedra', 'Begonia', 'Geranio', 'Clavel',
+            'Tulipán', 'Margarita', 'Lirio', 'Girasol', 'Jazmín', 'Azalea'
         ];
         $colors = [
-            'Verde',
-            'Roja',
-            'Amarilla',
-            'Multicolor',
-            'Blanca',
-            'Azul',
-            'Morada',
-            'Naranja',
-            'Rosada',
-            'Negra',
-            'Plateada',
-            'Dorada',
-            'Carmesí',
-            'Turquesa',
-            'Esmeralda',
-            'Celeste',
-            'Coral',
-            'Beige',
-            'Gris',
-            'Marrón',
-            'Champán',
-            'Lavanda',
-            'Fucsia',
-            'Violeta'
+            'Verde', 'Roja', 'Amarilla', 'Multicolor', 'Blanca', 'Azul',
+            'Morada', 'Naranja', 'Rosada', 'Negra', 'Plateada', 'Dorada',
+            'Carmesí', 'Turquesa', 'Esmeralda', 'Celeste', 'Coral', 'Beige',
+            'Gris', 'Marrón', 'Champán', 'Lavanda', 'Fucsia', 'Violeta'
         ];
         $features = [
-            'Colgante',
-            'Decorativa',
-            'Perenne',
-            'Exótica',
-            'Rara',
-            'Fragante',
-            'Medicinal',
-            'Comestible',
-            'Resistente',
-            'Compacta',
-            'De interior',
-            'De exterior',
-            'Trepadora',
-            'Aromática',
-            'De sombra',
-            'De sol',
-            'De bajo mantenimiento',
-            'De rápido crecimiento',
-            'De hojas grandes',
-            'De hojas pequeñas',
-            'De flores grandes',
-            'De flores pequeñas',
-            'De raíces profundas',
-            'De raíces aéreas',
-            'De tallo grueso',
-            'De tallo delgado',
-            'De follaje denso',
-            'De follaje ligero',
-            'De crecimiento lento',
-            'De crecimiento rápido'
+            'Colgante', 'Decorativa', 'Perenne', 'Exótica', 'Rara', 'Fragante',
+            'Medicinal', 'Comestible', 'Resistente', 'Compacta', 'De interior',
+            'De exterior', 'Trepadora', 'Aromática', 'De sombra', 'De sol',
+            'De bajo mantenimiento', 'De rápido crecimiento', 'De hojas grandes',
+            'De hojas pequeñas', 'De flores grandes', 'De flores pequeñas',
+            'De raíces profundas', 'De raíces aéreas', 'De tallo grueso',
+            'De tallo delgado', 'De follaje denso', 'De follaje ligero',
+            'De crecimiento lento', 'De crecimiento rápido'
         ];
 
-        return $this->faker->randomElement($types) . ' ' .
-            $this->faker->randomElement($colors) . ' ' .
-            $this->faker->randomElement($features);
+        return $this->faker->unique()->randomElement($types) . ' ' .
+               $this->faker->randomElement($colors) . ' ' .
+               $this->faker->randomElement($features);
     }
-
 
     private function generateCareInstructions(): string
     {
