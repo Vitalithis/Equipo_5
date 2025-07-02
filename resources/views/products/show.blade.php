@@ -50,14 +50,11 @@
                         <p class="text-4xl font-normal tracking-widest" style="font-family: 'Libre Barcode 128 Text', cursive;">
                             {{ $producto->codigo_barras }}
                         </p>
-                        <p class="text-xs text-gray-600 mt-1 tracking-widest">
-                            {{ $producto->codigo_barras }}
-                        </p>
                     </div>
                 </div>
 
                 <!-- Agregar al carrito -->
-                <form method="POST" action="{{ route('cart.add', ['id' => $producto->id]) }}" class="space-y-4 mt-6">
+                <form method="POST" action="{{ route('cart.add', ['id' => $producto->id]) }}" class="space-y-2">
                     @csrf
                     <input type="hidden" name="producto_id" value="{{ $producto->id }}">
 
