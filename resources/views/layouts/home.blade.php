@@ -17,6 +17,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -35,7 +37,7 @@
 
     {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
-    
+
     {{-- Contenido principal (ocupa espacio restante) --}}
     <main class="flex-1 pt-24">
         @yield('content')
