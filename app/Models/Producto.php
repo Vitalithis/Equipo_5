@@ -90,13 +90,18 @@ public function descontarInsumosParaProduccion($cantidad)
         $insumo->cantidad -= $cantidadDescontar;
         $insumo->save();
     }
-
-
-
 }
     public function aplicacionesTratamientos()
     {
         return $this->hasMany(TreatmentApplication::class);
+    }
+
+    /**
+     * Scope para productos con stock bajo
+     */
+    public function scopeStockBajo($query, $umbral = 10)
+    {
+        return $query->where('stock', '<', $umbral);
     }
 
 }

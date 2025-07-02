@@ -123,6 +123,11 @@ Route::middleware(['auth', 'tenant', 'permission:ver dashboard'])->group(functio
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::get('/api/finanzas/ingresos-egresos', [HomeController::class, 'ingresosEgresosPorMes']);
     Route::get('/api/ventas/por-dia', [HomeController::class, 'ventasPorDia']);
+    Route::get('/api/ventas/por-semana', [HomeController::class, 'ventasPorSemana']);
+    Route::get('/api/ventas/por-mes', [HomeController::class, 'ventasPorMes']);
+    Route::get('/api/ventas/ultimos-6-meses', [HomeController::class, 'ventasUltimos6Meses']);
+    Route::get('/api/ventas/mes-vs-anterior', [HomeController::class, 'ventasMesVsAnterior']);
+    Route::get('/api/ventas/ultimos-3-meses', [HomeController::class, 'ventasUltimos3Meses']);
 });
 // calendario simple de siembra y trasplante
 Route::middleware(['auth'])->prefix('simple-calendar')->group(function () {

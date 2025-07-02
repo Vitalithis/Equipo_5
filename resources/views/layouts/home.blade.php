@@ -31,13 +31,13 @@
     </style>
 </head>
 
-<body :class="[fontFamily, backgroundColor, textColor, 'transition-all', 'duration-300', 'flex', 'flex-col', 'min-h-screen']">
+<body :class="[fontFamily, backgroundColor, textColor, 'transition-all', 'duration-300', 'min-h-screen', 'flex', 'flex-col']">
 
     {{-- Navbar reutilizable con color dinámico --}}
     @include('components.navbar')
-    <div style="height: 100px;"></div>
+    
     {{-- Contenido principal (ocupa espacio restante) --}}
-    <main class="flex-grow flex flex-col justify-center">
+    <main class="flex-1 pt-24 pb-8">
         @yield('content')
     </main>
 

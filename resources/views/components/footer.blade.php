@@ -8,7 +8,7 @@
     <div class="max-w-screen-xl mx-auto px-6 py-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-                <img src="{{ $logo }}" class="h-20 mb-3" alt="Logo Plantas Editha">
+                <img src="{{ $logo }}" class="h-20 mb-3 rounded-xl shadow-lg" alt="Logo Plantas Editha">
                 <span class="text-sm">Vivero de calidad, naturaleza con amor.</span>
             </div>
             <div>

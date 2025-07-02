@@ -83,4 +83,12 @@ class Pedido extends Model
     {
         return $this->hasMany(DetallePedido::class, 'pedido_id');
     }
+
+    /**
+     * Scope para pedidos pendientes de entrega
+     */
+    public function scopePendientesEntrega($query)
+    {
+        return $query->whereIn('estado_pedido', ['pendiente', 'en_preparacion']);
+    }
 }
