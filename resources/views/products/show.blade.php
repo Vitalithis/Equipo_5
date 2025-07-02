@@ -9,24 +9,40 @@
         ← Volver a productos
     </a>
 
-    <div class="bg-white rounded-lg  p-6 pt-16"> <!-- sombra más grande y espacio arriba para el link -->
+    <div class="bg-white rounded-lg p-6 pt-16">
         <div class="flex flex-col md:flex-row gap-8">
-            <!-- Imagen principal -->
-            <img src="{{ '../' . $producto->imagen }}"
-                onerror="this.onerror=null;this.src='storage/images/default-logo.png';"
-                alt="{{ $producto->nombre }}"
-                class="w-full md:w-1/2 h-auto object-cover rounded-lg">
+            <!-- Imagen contenida -->
+            <div class="w-full md:w-1/2 max-h-[400px] flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
+                <img src="{{ '../' . $producto->imagen }}"
+                     onerror="this.onerror=null;this.src='{{ asset('storage/images/default-logo.png') }}';"
+                     alt="{{ $producto->nombre }}"
+                     class="object-contain max-h-full w-auto">
+            </div>
 
             <!-- Detalles del producto -->
             <div class="flex-1 space-y-4 text-blueDark">
                 <h2 class="text-3xl font-bold">{{ $producto->nombre }}</h2>
-                <p class="text-greenPrimary text-2xl font-semibold">{{ number_format($producto->precio, 0, ',', '.') }} CLP</p>
+                <p class="italic text-sm text-gray-500">{{ $producto->nombre_cientifico }}</p>
 
-                <div>
-                    <p><strong>Tamaño máximo:</strong> {{ $producto->tamano }} cm</p>
+                <p class="text-greenPrimary text-2xl font-semibold">
+                    {{ number_format($producto->precio, 0, ',', '.') }} CLP
+                </p>
+
+                <p class="text-sm text-gray-600">Stock disponible: {{ $producto->stock }}</p>
+
+                <p class="mt-2">{{ $producto->descripcion ?? 'Sin descripción' }}</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-4">
+                    <p><strong>Categoría:</strong> {{ $producto->categoria->nombre ?? 'Sin categoría' }}</p>
                     <p><strong>Dificultad:</strong> {{ $producto->nivel_dificultad }}</p>
-                    <p><strong>Categoría:</strong> {{ $producto->categoria->nombre }}</p>
-                    <p class="mt-4">{{ $producto->descripcion_larga ?? $producto->descripcion_corta }}</p>
+                    <p><strong>Riego:</strong> {{ $producto->frecuencia_riego }}</p>
+                    <p><strong>Ubicación ideal:</strong> {{ $producto->ubicacion_ideal }}</p>
+                    <p><strong>Beneficios:</strong> {{ $producto->beneficios }}</p>
+                    <p><strong>Tóxica:</strong> {{ $producto->toxica ? 'Sí' : 'No' }}</p>
+                    <p><strong>Origen:</strong> {{ $producto->origen }}</p>
+                    <p><strong>Tamaño máximo:</strong> {{ $producto->tamano }} cm</p>
+                    <p><strong>Cuidados:</strong> {{ $producto->cuidados }}</p>
+                    <p><strong>Código de barras:</strong> {{ $producto->codigo_barras }}</p>
                 </div>
 
                 <!-- Agregar al carrito -->
@@ -50,7 +66,6 @@
                         </span>
                     @endif
                 </form>
-
             </div>
         </div>
 
@@ -62,7 +77,7 @@
                     <div class="bg-white rounded-lg shadow-md p-4">
                         <a href="{{ route('products.show', $rel->slug) }}">
                             <img src="{{ asset('storage/images/product' . $rel->imagen_principal) }}"
-                                 onerror="this.onerror=null;this.src='storage/images/default-logo.png';"
+                                 onerror="this.onerror=null;this.src='{{ asset('storage/images/default-logo.png') }}';"
                                  class="w-full h-32 object-cover rounded mb-2">
                             <h4 class="text-blueDark font-semibold">{{ $rel->nombre }}</h4>
                             <p class="text-greenPrimary font-bold">{{ number_format($rel->precio, 0, ',', '.') }} CLP</p>
