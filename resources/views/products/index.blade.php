@@ -116,24 +116,26 @@
                     </a>
 
                     <!-- Contenido principal con botones al fondo -->
-                    <div class="p-4 flex flex-col justify-between flex-grow">
+                    <div class="p-4 flex flex-col justify-between flex-grow min-h-[200px]">
                         <!-- Nombre y precio -->
-                        <div>
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-lg font-semibold text-blueDark py-2">{{ $producto->nombre }}</h3>
-                                <span class="text-greenPrimary font-bold py-2">{{ number_format($producto->precio, 0, ',', '.') }} CLP</span>
-                            </div>
-
-                            <div class="flex items-center mt-2">
-                                <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded mr-2">
+                           <div class="flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold text-blueDark py-2  max-w-[65%] truncate">{{ $producto->nombre }}</h3>
+                                    <span class="text-greenPrimary font-bold py-2">
+                                        {{ number_format($producto->precio, 0, ',', '.') }} CLP
+                                    </span>
+                                </div>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <span class="text-sm text-blueDark bg-blueLight px-2 py-1 rounded whitespace-nowrap">
                                     {{ $producto->nivel_dificultad }}
                                 </span>
-                                <span class="text-sm text-blueDark">{{ $producto->tamano }}cm</span>
+                                <span class="text-sm text-blueDark whitespace-nowrap">
+                                    Max. {{ $producto->tamano }} cm
+                                </span>
                             </div>
 
-                            <p class="text-blueDark mt-2 line-clamp-2">{{ $producto->descripcion_corta }}</p>
-                        </div>
-
+                                <p class="text-blueDark mt-2 line-clamp-2">{{ $producto->descripcion_corta }}</p>
+                            </div>
                         <!-- Botones -->
                         <div class="mt-4">
                             <a href="{{ route('products.show', $producto->slug) }}">
@@ -164,34 +166,35 @@
                                         </button>
                                     </div>
                                 @endif
-
-                                @auth
-                                    @if($producto->stock == 0)
+                                @if((int) $producto->stock < 1)
                                         <button
                                             class="flex-1 py-2 bg-red-500 text-white rounded-lg cursor-not-allowed"
                                             disabled>
                                             Producto sin Stock
                                         </button>
-                                    @else
-                                        <button
-                                            class="flex-1 py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors"
-                                            onclick="agregarAlCarrito({{ $producto->id }})">
-                                            Agregar al carrito
-                                        </button>
-                                    @endif
-                                    <button
-                                        class="py-2 bg-yellow-300 text-blueDark rounded-lg hover:bg-yellow-400 transition-colors"
-                                        onclick="agregarACotizacion({{ $producto->id }})">
-                                        <i class="fas fa-file-invoice-dollar p-2">Cotizar</i>
-                                    </button>
-                                @endauth
+                                @else
+                                    @auth
 
-                                @guest
+                                            <button
+                                                class="flex-1 py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors"
+                                                onclick="agregarAlCarrito({{ $producto->id }})">
+                                                Agregar al carrito
+                                            </button>
+
+                                        <button
+                                            class="py-2 bg-yellow-300 text-blueDark rounded-lg hover:bg-yellow-400 transition-colors"
+                                            onclick="agregarACotizacion({{ $producto->id }})">
+                                            <i class="fas fa-file-invoice-dollar p-2">Cotizar</i>
+                                        </button>
+                                    @endauth
+                                    @guest
                                     <a href="{{ route('login') }}"
                                         class="flex-1 block text-center py-2 bg-blueLight text-blueDark rounded-lg hover:bg-blueDark hover:text-white transition-colors">
                                         Agregar al carrito
                                     </a>
-                                @endguest
+                                    @endguest
+                                @endif
+
                             </div>
                         </div>
                     </div>

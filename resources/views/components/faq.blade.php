@@ -77,14 +77,7 @@
         <p class="mb-2 text-blueDark">
           Sí, realizamos envíos dentro de San Pedro de la Paz. El costo depende de la comuna o sector. También puedes retirar tu pedido en nuestra tienda física.
         </p>
-        <ul class="pl-5 text-blueDark list-disc">
-          <li>
-            <a href="https://plantaseditha.me" class="text-greenPrimary hover:underline hover:text-greenDark transition-colors duration-200">Plantas Editha</a>
-          </li>
-          <li>
-            <a href="https://tailwindui.com/" rel="nofollow" class="text-greenPrimary hover:underline hover:text-greenDark transition-colors duration-200">Tailwind UI</a>
-          </li>
-        </ul>
+
       </div>
     </div>
 
