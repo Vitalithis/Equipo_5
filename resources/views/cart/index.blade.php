@@ -148,6 +148,7 @@
             <p class="text-gray-700 text-lg">Tu carrito está vacío.</p>
             <a href="{{ route('home') }}" class="mt-4 inline-block text-blue-600 hover:underline">Volver a la tienda</a>
         </div>
+        <div class="h-60 md:h-96"></div>
     @endif
 </div>
 @endsection

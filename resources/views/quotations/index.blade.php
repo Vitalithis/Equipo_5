@@ -62,6 +62,7 @@
         @endforeach
     @else
         <div class="text-center text-blueDark">No has agregado cotizaciones.</div>
+        <div class="h-60 md:h-96"></div>
     @endif
 </div>
 @endsection

@@ -37,7 +37,7 @@
     @include('components.navbar')
     
     {{-- Contenido principal (ocupa espacio restante) --}}
-    <main class="flex-1 pt-24 pb-8">
+    <main class="flex-1 pt-24">
         @yield('content')
     </main>
 
@@ -45,5 +45,28 @@
     @include('components.footer')
 
     @stack('scripts')
+
+    @push('scripts')
+    <script>
+    function ajustarFooter() {
+        const main = document.querySelector('main');
+        const footer = document.querySelector('footer');
+        if (!main || !footer) return;
+        // Quitar margen previo
+        footer.style.marginTop = '';
+        // Calcular espacio disponible
+        const windowHeight = window.innerHeight;
+        const bodyRect = document.body.getBoundingClientRect();
+        const mainRect = main.getBoundingClientRect();
+        const footerRect = footer.getBoundingClientRect();
+        const espacioOcupado = mainRect.top + main.offsetHeight + footer.offsetHeight;
+        if (espacioOcupado < windowHeight) {
+            footer.style.marginTop = (windowHeight - espacioOcupado) + 'px';
+        }
+    }
+    window.addEventListener('DOMContentLoaded', ajustarFooter);
+    window.addEventListener('resize', ajustarFooter);
+    </script>
+    @endpush
 </body>
 </html>

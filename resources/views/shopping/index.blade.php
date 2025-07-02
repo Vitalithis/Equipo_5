@@ -10,6 +10,7 @@
         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded shadow-md text-center max-w-xl mx-auto">
             Aún no has realizado ninguna compra.
         </div>
+        <div class="h-60 md:h-96"></div>
     @else
         <div class="overflow-x-auto bg-white shadow-md sm:rounded-lg">
             <table class="min-w-full divide-y divide-gray-200">
