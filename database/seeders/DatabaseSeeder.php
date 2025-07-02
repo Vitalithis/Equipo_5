@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
             GastoTransporteSeeder::class,
             PlantTreatmentSeeder::class,
             TreatmentApplicationSeeder::class,
-            
+
             ClienteSeeder::class,
             CategoriaSeeder::class,
             DescuentoSeeder::class,
-            ProductoSeeder::class,
+            //ProductoSeeder::class,
             PedidoSeeder::class,
             FertilizanteSeeder::class,
             OrdenProduccionSeeder::class,

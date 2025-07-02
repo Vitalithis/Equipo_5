@@ -14,8 +14,7 @@ class CategoriaSeeder extends Seeder
             'Interior',
             'Exterior',
             'Medicinal',
-            'Árbol',
-            'Decorativa'
+            'Árbol'
         ];
 
         foreach ($categorias as $nombre) {
