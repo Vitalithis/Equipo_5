@@ -100,7 +100,7 @@
                             </td>
                             <td class="px-4 py-2">{{ $product->nombre }}</td>
                             <td class="px-4 py-2">{{ $product->precio }}</td>
-                            <td class="px-4 py-2">{{ $product->categoria_nombre->nombre }}</td>
+                            <td class="px-4 py-2">{{ $product->categoria_nombre}}</td>
                             <td class="px-4 py-2">{{ $product->activo ? 'Sí' : 'No' }}</td>
                             <td class="px-4 py-2">{{ $product->stock }}</td>
                             <td class="px-4 py-2">
@@ -109,7 +109,7 @@
                                        class="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded transition-colors">Editar</a>
                                     <button type="button"
                                             class="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded transition-colors"
-                                            onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria_nombre->nombre }}')">
+                                            onclick="openDeleteModal({{ $product->id }}, '{{ $product->nombre }}', '{{ $product->categoria_nombre}}')">
                                         Eliminar
                                     </button>
                                 </div>
