@@ -98,7 +98,7 @@
 
   <div class="flex h-screen">
     {{-- SIDEBAR --}}
-    <div class="w-64 flex-shrink-0 sidebar" style="background-color: {{ $accentColor }};" :class="{'-ml-64': !sidebarOpen}">
+    <div class="w-64 flex-shrink-0 sidebar h-screen overflow-y-auto" style="background-color: {{ $accentColor }};" :class="{'-ml-64': !sidebarOpen}">
       <div class="p-4 border-b border-white">
         <div class="flex items-center space-x-2">
           <img src="{{ $logo }}" alt="Logo" class="h-20 w-20 rounded-full object-contain">
