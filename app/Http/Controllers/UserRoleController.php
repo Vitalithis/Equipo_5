@@ -32,7 +32,7 @@ class UserRoleController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        // Sin restricciones de asignación para el rol admin
+        // Permite cambiar entre admin y user sin restricciones
         $user->syncRoles([$request->role]);
 
         return redirect()->back()->with('success', 'Rol asignado correctamente.');

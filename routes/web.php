@@ -575,17 +575,18 @@ Route::get('/debug-tenant', function () {
 })->middleware(['web', 'auth', 'tenant']);
 //rutas soporte
 
+// Ruta especial solo para el dominio principal
 Route::domain('plantaseditha.me')->middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
     Route::get('/', function () {
         return view('soporte.dashboard');
     })->name('soporte.dashboard');
+    // ... otras rutas solo para el dominio principal ...
+});
 
+// Ruta /dashboard accesible desde cualquier tenant/subdominio
+Route::middleware(['web', 'auth', 'permission:ver dashboard'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
-
-    Route::get('/clientes', [ClientController::class, 'index'])->name('clients.index');
-    Route::get('/clientes/crear', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clientes', [ClientController::class, 'store'])->name('clients.store');
-    Route::patch('/clientes/{cliente}/toggle', [ClientController::class, 'toggleActivo'])->name('clients.toggle');
+    // ... otras rutas protegidas ...
 });
 
 require __DIR__ . '/auth.php';

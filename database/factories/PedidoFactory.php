@@ -12,11 +12,14 @@ class PedidoFactory extends Factory
 
     public function definition(): array
     {
-        // Busca el usuario admin@editha.com
-        $usuario = User::where('email', 'admin@editha.com')->first();
+        // Selecciona un usuario aleatorio existente
+        $usuario = \App\Models\User::inRandomOrder()->first();
+        if (!$usuario) {
+            throw new \Exception('No existen usuarios en la base de datos para asignar a los pedidos.');
+        }
 
         return [
-            'usuario_id' => $usuario?->id ?? 1, // Usa el ID del usuario encontrado o fallback al ID 1
+            'usuario_id' => $usuario->id,
             'metodo_entrega' => $this->faker->randomElement(['retiro', 'domicilio']),
             'direccion_entrega' => $this->faker->address,
             'estado_pedido' => $this->faker->randomElement([

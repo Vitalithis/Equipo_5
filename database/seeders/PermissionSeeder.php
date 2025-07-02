@@ -115,94 +115,33 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate([
                 'name' => $permiso,
                 'guard_name' => 'web',
-                'cliente_id' => null, // 👈 importante
+                'cliente_id' => null, // global
             ]);
         }
 
-        // Crear rol soporte si no existe
-        $rolSoporte = Role::firstOrCreate([
-            'name' => 'soporte',
+        // Crear roles globales
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate([
+            'name' => 'admin',
             'guard_name' => 'web',
+            'cliente_id' => null,
+        ]);
+        $userRole = \Spatie\Permission\Models\Role::firstOrCreate([
+            'name' => 'user',
+            'guard_name' => 'web',
+            'cliente_id' => null,
         ]);
 
-        // Asignar permisos del soporte
-        $rolSoporte->syncPermissions([
-            'ver dashboard',
-            'gestionar usuarios',
-            'ver usuarios',
-            'gestionar permisos',
-            'ver roles',
-            'crear roles',
-            'editar roles',
-            'eliminar roles',
-            'ver ordenes',
-            'crear ordenes',
-            'editar ordenes',
-            'eliminar ordenes',
-            'gestionar ingresos',
-            'gestionar egresos',
-            'gestionar productos',
-            'gestionar proveedores',
-            'gestionar catálogo',
-            'gestionar transporte',
-            // Pedidos y descuentos
+        // Asignar permisos globales al admin, excepto los de clientes
+        $permisosAdmin = \Spatie\Permission\Models\Permission::whereNull('cliente_id')
+            ->whereNotIn('name', [
+                'gestionar clientes',
+                'ver panel soporte',
+                'crear cliente',
+                'desactivar cliente',
+                'ver detalles cliente',
+            ])->pluck('name');
+        $adminRole->syncPermissions($permisosAdmin);
 
-            //transporte y tratamientos
-
-            'gestionar tratamientos',
-
-            'gestionar pedidos',
-            'gestionar descuentos',
-
-            'gestionar descuentos',    // <-- Usado para sección descuentos
-
-            // Proveedores ✅ AÑADIDO
-            'gestionar proveedores',
-
-            // Mantenimiento Infrastructura // listado de arreglos que se hacen, tienen que tener, titulo, costo, fecha, descripcion
-            'gestionar infraestructura',
-            // Reportes
-
-            'ver reportes',
-            'gestionar tareas',
-            'gestionar fertilizantes',
-            'gestionar cuidados',
-            'gestionar finanzas',
-            'gestionar insumos',
-            'gestionar tratamientos',
-
-            // Cotizaciones
-            'gestionar cotizaciones',       
-           
-
-            // Permisos para soporte
-            'ver panel soporte',
-            'crear cliente',
-            'gestionar clientes',
-            'ver dashboard',
-            'gestionar usuarios',
-            'ver usuarios',
-            'gestionar permisos',
-            'ver roles',
-            'crear roles',
-            'editar roles',
-            'eliminar roles',
-            'ver ordenes',
-            'crear ordenes',
-            'editar ordenes',
-            'eliminar ordenes',
-            'gestionar ingresos',
-            'gestionar egresos',
-            'gestionar productos',
-            'gestionar catálogo',
-            'gestionar pedidos',
-            'gestionar descuentos',
-            'ver reportes',
-            'gestionar tareas',
-
-
-        ]);
-
-        $this->command->info("Permisos y rol soporte creados correctamente.");
+        $this->command->info("Permisos y roles globales admin/user creados correctamente.");
     }
 }

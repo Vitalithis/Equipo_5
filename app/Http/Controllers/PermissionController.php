@@ -35,6 +35,7 @@ class PermissionController extends Controller
             'cliente_id' => $clienteId,
         ]);
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         return redirect()->route('permissions.index')->with('success', 'Permiso creado correctamente.');
     }
 
@@ -58,6 +59,7 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions,name,' . $permission->id,
         ]);
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         $permission->update(['name' => $request->name]);
 
         return redirect()->route('permissions.index')->with('success', 'Permiso actualizado correctamente.');
@@ -69,6 +71,7 @@ class PermissionController extends Controller
             abort(403, 'No autorizado.');
         }
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         $permission->delete();
 
         return redirect()->route('permissions.index')->with('success', 'Permiso eliminado correctamente.');

@@ -13,12 +13,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission as SpatiePermission;
+use Spatie\Permission\Models\Role as SpatieRole;
+use Spatie\Permission\Models\PermissionRegistrar;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
     public function index()
     {
         $this->authorize('ver panel soporte');
+        if (Auth::check()) {
+            $user = Auth::user();
+        }
         $clientes = Cliente::all();
         return view('dashboard.soporte.index', compact('clientes')); 
     }
@@ -68,15 +75,22 @@ class ClientController extends Controller
                 $newPermissions[] = $clonado;
             }
 
+            // Recargar los permisos clonados del cliente
+            $newPermissions = Permission::where('cliente_id', $cliente->id)->get();
+
             // 3. Crear rol admin exclusivo para este cliente
             $adminRole = Role::firstOrCreate(
                 ['name' => 'admin', 'guard_name' => 'web', 'cliente_id' => $cliente->id]
             );
 
 
-            // 4. Asignar permisos clonados al rol
+            // 4. Asignar permisos clonados al rol (insert directo como en el seeder)
             foreach ($newPermissions as $permiso) {
-                $adminRole->givePermissionTo($permiso);
+                DB::table('role_has_permissions')->insertOrIgnore([
+                    'permission_id' => $permiso->id,
+                    'role_id' => $adminRole->id,
+                    'cliente_id' => $cliente->id,
+                ]);
             }
 
             // 5. Crear usuario administrador

@@ -39,6 +39,11 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
+        // No permitir crear roles admin o user desde la interfaz
+        if (in_array(strtolower($request->name), ['admin', 'user'])) {
+            return redirect()->route('roles.index')->with('error', 'No puedes crear el rol admin o user desde la interfaz.');
+        }
+
         $role = Role::create([
             'name' => $request->name,
             'guard_name' => 'web',
@@ -53,6 +58,7 @@ class RoleController extends Controller
             $role->syncPermissions($permissions);
         }
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         return redirect()->route('roles.index', ['source' => $request->get('source', 'default')])
             ->with('success', 'Rol creado exitosamente.');
     }
@@ -95,6 +101,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($permissions);
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         return redirect()->route('roles.index', ['source' => $request->get('source', 'default')])
             ->with('success', 'Rol actualizado exitosamente.');
     }
@@ -109,6 +116,7 @@ class RoleController extends Controller
 
         $role->delete();
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         return redirect()->route('roles.index')->with('success', 'Rol eliminado exitosamente.');
     }
 }
