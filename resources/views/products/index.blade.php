@@ -108,7 +108,7 @@
                 <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
                     <a href="{{ route('products.show', $producto->slug) }}" class="block">
                         <div class="h-48 overflow-hidden">
-                            <img src="{{ asset('storage/images/product' . $producto->imagen_principal) }}"
+                            <img src="{{ asset($product->imagen) }}"
                                 onerror="this.onerror=null;this.src='storage/images/default-logo.png';this.className='w-3/5 h-full justify-self-center align-self-center scale-95 opacity-50 hover:scale-100 transition-transform duration-300';"
                                 alt="{{ $producto->nombre }}"
                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
