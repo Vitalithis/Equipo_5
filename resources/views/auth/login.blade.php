@@ -63,18 +63,16 @@
         </div>
 
         <!-- Acciones -->
-        <div class="flex items-center justify-between mt-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6 gap-2">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-green-700 hover:text-green-900" href="{{ route('password.request') }}">
+                <a class="underline text-sm text-green-700 hover:text-green-900 mb-2 sm:mb-0" href="{{ route('password.request') }}">
                     ¿Olvidaste tu contraseña?
                 </a>
             @endif
-
             <div class="flex gap-2">
                 <x-primary-button class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-5 py-2">
                     Acceder
                 </x-primary-button>
-
                 <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2 bg-green-100 border border-green-300 rounded-lg font-semibold text-sm text-green-800 hover:bg-green-200 transition">
                     Registrarse
                 </a>

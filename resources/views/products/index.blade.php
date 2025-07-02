@@ -11,7 +11,7 @@
             <p class="text-xl md:text-2xl text-white max-w-2xl mx-auto">Descubre nuestra selección de plantas para todos los espacios y niveles de cuidado</p>
         </div>
     </div>
-    <img src="{{ asset('/storage/images/banner-productos.jpg') }}" alt="Variedad de plantas" class="w-full h-full object-cover">
+    {{-- <img src="{{ asset('/storage/images/banner-productos.jpg') }}" alt="Variedad de plantas" class="w-full h-full object-cover"> --}}
 </div>
 
 <!-- Contenedor principal -->
